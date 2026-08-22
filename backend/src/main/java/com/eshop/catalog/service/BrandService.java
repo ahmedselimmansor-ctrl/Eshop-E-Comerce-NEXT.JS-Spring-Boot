@@ -1,6 +1,7 @@
 package com.eshop.catalog.service;
 
 import com.eshop.catalog.domain.Brand;
+import com.eshop.catalog.web.dto.BrandResponse;
 import com.eshop.catalog.repository.BrandRepository;
 import com.eshop.common.exception.BusinessException;
 import com.eshop.common.exception.ErrorCode;
@@ -36,6 +37,17 @@ public class BrandService {
     @Transactional(readOnly = true)
     public List<Brand> listFeatured() {
         return brands.findByActiveTrueAndFeaturedTrueOrderByPositionAsc();
+    }
+
+    /**
+     * One brand, as the API returns it.
+     *
+     * <p>The mapping lives here rather than in the controller so no detached entity crosses that
+     * boundary. See {@code LayeringTest} for why that rule exists.
+     */
+    @Transactional(readOnly = true)
+    public BrandResponse responseBySlug(String slug, String locale) {
+        return BrandResponse.from(requireBySlug(slug), locale);
     }
 
     @Transactional(readOnly = true)

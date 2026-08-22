@@ -9,7 +9,11 @@ import com.eshop.common.exception.BusinessException;
 import com.eshop.common.exception.ErrorCode;
 import com.eshop.common.exception.NotFoundException;
 import com.eshop.user.repository.UserRepository;
+import com.eshop.inventory.service.InventoryService;
 import com.eshop.wishlist.domain.Wishlist;
+import java.util.Map;
+import java.util.HashMap;
+import com.eshop.wishlist.web.dto.WishlistResponse;
 import com.eshop.wishlist.domain.WishlistItem;
 import com.eshop.wishlist.repository.WishlistItemRepository;
 import com.eshop.wishlist.repository.WishlistRepository;
@@ -51,6 +55,7 @@ public class WishlistService {
     private final ProductService products;
     private final CartService carts;
     private final UserRepository users;
+    private final InventoryService inventory;
 
     /**
      * The caller's default list, created on first access.
@@ -251,4 +256,94 @@ public class WishlistService {
     public List<UUID> productIds(Wishlist wishlist) {
         return wishlist.getItems().stream().map(item -> item.getProduct().getId()).toList();
     }
+
+    // -------------------------------------------------------------- responses --
+    //
+    // WishlistResponse walks the saved items and each item's product and variant, and needs a
+    // per-item availability lookup on top. Building it in a controller means reading lazy
+    // associations off a detached wishlist, so the mapping lives here instead.
+
+    /** One bulk availability lookup for the whole list rather than one per saved item. */
+    @Transactional(readOnly = true)
+    public WishlistResponse toResponse(Wishlist wishlist, boolean includeToken, String locale) {
+        List<InventoryService.SkuRef> refs = wishlist.getItems().stream()
+                .map(WishlistService::skuOf)
+                .distinct()
+                .toList();
+
+        Map<InventoryService.SkuRef, Integer> bySku = inventory.availabilityFor(refs);
+
+        Map<UUID, Integer> byItem = new HashMap<>();
+        for (WishlistItem item : wishlist.getItems()) {
+            byItem.put(item.getId(), bySku.getOrDefault(skuOf(item), 0));
+        }
+
+        return WishlistResponse.from(wishlist, locale, byItem, includeToken);
+    }
+
+    private static InventoryService.SkuRef skuOf(WishlistItem item) {
+        return new InventoryService.SkuRef(
+                item.getProduct().getId(),
+                item.getVariant() == null ? null : item.getVariant().getId());
+    }
+
+    @Transactional
+    public WishlistResponse currentResponse(UUID userId, String locale) {
+        return toResponse(getOrCreate(userId), true, locale);
+    }
+
+    @Transactional
+    public WishlistResponse addResponse(UUID userId, UUID productId, UUID variantId,
+                                        String locale) {
+        return toResponse(add(userId, productId, variantId), true, locale);
+    }
+
+    @Transactional
+    public WishlistResponse removeResponse(UUID userId, UUID itemId, String locale) {
+        return toResponse(remove(userId, itemId), true, locale);
+    }
+
+    @Transactional
+    public WishlistResponse removeProductResponse(UUID userId, UUID productId, UUID variantId,
+                                                  String locale) {
+        return toResponse(removeProduct(userId, productId, variantId), true, locale);
+    }
+
+    @Transactional
+    public WishlistResponse clearResponse(UUID userId, String locale) {
+        return toResponse(clear(userId), true, locale);
+    }
+
+    @Transactional
+    public WishlistResponse setPublicResponse(UUID userId, boolean isPublic, String locale) {
+        return toResponse(setPublic(userId, isPublic), true, locale);
+    }
+
+    /** A shared list, seen by someone who is not its owner - so never with the share token. */
+    @Transactional(readOnly = true)
+    public WishlistResponse sharedResponse(String token, String locale) {
+        return toResponse(shared(token), false, locale);
+    }
+
+    /**
+     * Moves a saved item into the cart and returns both, because both badges change.
+     *
+     * <p>Mapped here so the cart half goes through {@link CartService#toResponse}, which is the one
+     * place that knows how to attach per-line availability.
+     */
+    @Transactional
+    public MoveToCartResponse moveToCartResponse(UUID userId, UUID itemId, int quantity,
+                                                 String locale) {
+        MoveResult result = moveToCart(userId, itemId, quantity);
+
+        return new MoveToCartResponse(
+                toResponse(result.wishlist(), true, locale),
+                carts.toResponse(result.cart(), List.of(), locale));
+    }
+
+    /** Both badges change on a move, so both are returned rather than forcing a refetch. */
+    public record MoveToCartResponse(WishlistResponse wishlist,
+                                     com.eshop.cart.web.dto.CartResponse cart) {
+    }
+
 }

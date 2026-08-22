@@ -6,6 +6,7 @@ import com.eshop.common.exception.ErrorCode;
 import com.eshop.common.exception.NotFoundException;
 import com.eshop.common.util.HtmlSanitizer;
 import com.eshop.review.domain.Review;
+import com.eshop.review.web.dto.ReviewResponse;
 import com.eshop.review.domain.ReviewMedia;
 import com.eshop.review.domain.ReviewVote;
 import com.eshop.review.repository.ReviewRepository;
@@ -229,4 +230,20 @@ public class ReviewService {
             review.getMedia().add(media);
         }
     }
+
+    // -------------------------------------------------------------- responses --
+    //
+    // ReviewResponse reads the review's media collection, which is lazy, so the mapping has to
+    // happen while the session is open.
+
+    @Transactional
+    public ReviewResponse submitResponse(UUID productId, UUID userId, ReviewRequest request) {
+        return ReviewResponse.from(submit(productId, userId, request));
+    }
+
+    @Transactional
+    public ReviewResponse editResponse(UUID reviewId, UUID userId, ReviewRequest request) {
+        return ReviewResponse.from(edit(reviewId, userId, request));
+    }
+
 }

@@ -72,10 +72,11 @@ public class ProductController {
         UUID categoryId = null;
         List<UUID> categoryIds = List.of();
         if (categorySlug != null && !categorySlug.isBlank()) {
-            Category category = categories.requireBySlug(categorySlug);
-            categoryId = category.getId();
-            // Expanded here so a listing for a parent category includes everything beneath it.
-            categoryIds = categories.selfAndDescendantIds(category);
+            // Ids, not the category: expanded to the whole subtree so a listing for a parent
+            // includes everything beneath it, and resolved inside the service's transaction.
+            CategoryService.CategoryScope scope = categories.scopeFor(categorySlug);
+            categoryId = scope.id();
+            categoryIds = scope.selfAndDescendants();
         }
 
         ProductQuery query = new ProductQuery(

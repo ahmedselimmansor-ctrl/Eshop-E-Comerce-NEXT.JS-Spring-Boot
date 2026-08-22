@@ -8,6 +8,7 @@ import com.eshop.notification.service.Recipient;
 import com.eshop.security.PasswordPolicy;
 import com.eshop.user.domain.Role;
 import com.eshop.user.domain.User;
+import com.eshop.user.web.dto.UserResponse;
 import com.eshop.user.domain.UserStatus;
 import com.eshop.user.repository.RoleRepository;
 import com.eshop.user.repository.UserRepository;
@@ -138,6 +139,25 @@ public class UserService {
 
         refreshTokens.revokeAllForUser(userId);
         log.info("user_deleted user={}", userId);
+    }
+
+    // -------------------------------------------------------------- responses --
+
+    /**
+     * The caller's own profile.
+     *
+     * <p>Mapped here rather than in the controller because {@code UserResponse} reads the role and
+     * permission collections, and an entity handed back to a controller is already detached.
+     */
+    @Transactional(readOnly = true)
+    public UserResponse profileOf(UUID userId) {
+        return UserResponse.from(require(userId));
+    }
+
+    /** Applies a profile edit and returns the updated profile. */
+    @Transactional
+    public UserResponse updateProfileResponse(UUID userId, UpdateProfileRequest request) {
+        return UserResponse.from(updateProfile(userId, request));
     }
 
     // ----------------------------------------------------------- admin side --

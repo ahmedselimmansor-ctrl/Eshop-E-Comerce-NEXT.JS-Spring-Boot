@@ -7,6 +7,7 @@ import com.eshop.order.domain.OrderReturn;
 import com.eshop.order.domain.OrderStatus;
 import com.eshop.order.service.OrderService;
 import com.eshop.order.web.dto.OrderResponse;
+import com.eshop.order.web.dto.ReturnResponse;
 import com.eshop.security.UserPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -71,12 +72,11 @@ public class OrderController {
     @Operation(summary = "One of your orders, in full")
     public ResponseEntity<OrderResponse> detail(@AuthenticationPrincipal UserPrincipal caller,
                                                 @PathVariable String orderNumber) {
-        Order order = orders.requireVisible(orderNumber, caller.id(), null);
+
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())
-                .body(OrderResponse.from(order, RequestContext.locale(),
-                        orders.shipmentsOf(order.getId())));
+                .body(orders.responseFor(orderNumber, caller.id(), RequestContext.locale()));
     }
 
     @PostMapping("/me/orders/{orderNumber}/cancel")
@@ -87,8 +87,8 @@ public class OrderController {
                                 @PathVariable String orderNumber,
                                 @Valid @RequestBody CancelRequest request) {
 
-        Order order = orders.cancelByCustomer(orderNumber, caller.id(), request.reason());
-        return OrderResponse.from(order, RequestContext.locale(), orders.shipmentsOf(order.getId()));
+        return orders.cancelByCustomerResponse(orderNumber, caller.id(), request.reason(),
+                RequestContext.locale());
     }
 
     @PostMapping("/me/orders/{orderNumber}/returns")
@@ -99,10 +99,10 @@ public class OrderController {
                                                         @PathVariable String orderNumber,
                                                         @Valid @RequestBody ReturnRequest request) {
 
-        OrderReturn created = orders.requestReturn(orderNumber, caller.id(),
+        ReturnResponse created = orders.requestReturnResponse(orderNumber, caller.id(),
                 request.quantitiesByItemId(), request.reason(), request.note());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(ReturnResponse.from(created));
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     /**
@@ -116,12 +116,10 @@ public class OrderController {
     @SecurityRequirements
     public ResponseEntity<OrderResponse> track(@PathVariable String orderNumber,
                                                @RequestParam String email) {
-        Order order = orders.requireVisible(orderNumber, null, email);
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())
-                .body(OrderResponse.from(order, RequestContext.locale(),
-                        orders.shipmentsOf(order.getId())));
+                .body(orders.trackResponse(orderNumber, email, RequestContext.locale()));
     }
 
     // ------------------------------------------------------------ payload types --
@@ -135,17 +133,4 @@ public class OrderController {
             @Size(max = 1000) String note) {
     }
 
-    public record ReturnResponse(UUID id, String returnNumber, OrderReturn.Status status,
-                                 OrderReturn.Reason reason, int totalQuantity, Instant createdAt) {
-
-        static ReturnResponse from(OrderReturn orderReturn) {
-            return new ReturnResponse(
-                    orderReturn.getId(),
-                    orderReturn.getReturnNumber(),
-                    orderReturn.getStatus(),
-                    orderReturn.getReason(),
-                    orderReturn.totalQuantity(),
-                    orderReturn.getCreatedAt());
-        }
-    }
 }

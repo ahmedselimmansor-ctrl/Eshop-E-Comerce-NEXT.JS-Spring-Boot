@@ -36,14 +36,14 @@ public class AddressController {
     @GetMapping
     @Operation(summary = "List saved addresses", description = "Default shipping address first.")
     public List<AddressResponse> list(@AuthenticationPrincipal UserPrincipal caller) {
-        return AddressResponse.from(addressService.listForUser(caller.id()));
+        return addressService.listResponsesForUser(caller.id());
     }
 
     @GetMapping("/{addressId}")
     @Operation(summary = "Get one address")
     public AddressResponse get(@AuthenticationPrincipal UserPrincipal caller,
                                @PathVariable UUID addressId) {
-        return AddressResponse.from(addressService.require(addressId, caller.id()));
+        return addressService.responseFor(addressId, caller.id());
     }
 
     @PostMapping
@@ -51,7 +51,7 @@ public class AddressController {
             description = "The first saved address automatically becomes the default for shipping and billing.")
     public ResponseEntity<AddressResponse> create(@AuthenticationPrincipal UserPrincipal caller,
                                                   @Valid @RequestBody AddressRequest request) {
-        AddressResponse created = AddressResponse.from(addressService.create(caller.id(), request));
+        AddressResponse created = addressService.createResponse(caller.id(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -61,7 +61,7 @@ public class AddressController {
     public AddressResponse update(@AuthenticationPrincipal UserPrincipal caller,
                                   @PathVariable UUID addressId,
                                   @Valid @RequestBody AddressRequest request) {
-        return AddressResponse.from(addressService.update(addressId, caller.id(), request));
+        return addressService.updateResponse(addressId, caller.id(), request);
     }
 
     @DeleteMapping("/{addressId}")
@@ -78,6 +78,6 @@ public class AddressController {
                                        @PathVariable UUID addressId,
                                        @Parameter(description = "shipping or billing")
                                        @RequestParam(defaultValue = "shipping") String type) {
-        return AddressResponse.from(addressService.makeDefault(addressId, caller.id(), type));
+        return addressService.makeDefaultResponse(addressId, caller.id(), type);
     }
 }

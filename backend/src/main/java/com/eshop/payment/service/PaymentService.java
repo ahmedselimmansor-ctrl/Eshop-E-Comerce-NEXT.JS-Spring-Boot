@@ -12,6 +12,7 @@ import com.eshop.order.domain.OrderStatus;
 import com.eshop.order.domain.OrderStatusHistory;
 import com.eshop.order.domain.PaymentStatus;
 import com.eshop.order.repository.OrderRepository;
+import com.eshop.order.web.dto.PaymentInstructionResponse;
 import com.eshop.payment.domain.Payment;
 import com.eshop.payment.domain.PaymentMethod;
 import com.eshop.payment.domain.PaymentProviderType;
@@ -449,4 +450,46 @@ public class PaymentService {
     public boolean isSettled(UUID orderId) {
         return payments.findCapturedForOrder(orderId).isPresent();
     }
+
+    // -------------------------------------------------------------- responses --
+
+    /** Reconciles with the provider and returns the payment's current instruction. */
+    @Transactional
+    public PaymentInstructionResponse statusResponse(UUID paymentId) {
+        return PaymentInstructionResponse.status(reconcile(paymentId));
+    }
+
+    /**
+     * Starts a fresh attempt for a payment that failed or expired.
+     *
+     * <p>A new {@code Payment} row rather than a mutation of the old one, so the failed attempt stays
+     * visible for support and reconciliation.
+     *
+     * <p>The ownership check walks {@code payment.order.user}, two lazy hops. Doing that in a
+     * controller reads a detached proxy, and an authorization check that throws instead of deciding
+     * is not a check. Here it runs with the session open.
+     */
+    @Transactional
+    public PaymentInstructionResponse retryResponse(UUID paymentId, UUID callerId,
+                                                    String idempotencyKey) {
+        Payment previous = require(paymentId);
+
+        if (callerId != null
+                && previous.getOrder().getUser() != null
+                && !previous.getOrder().getUser().getId().equals(callerId)) {
+            // Not 403: telling a stranger that a payment exists is itself a disclosure.
+            throw NotFoundException.of("Payment", paymentId);
+        }
+
+        String key = idempotencyKey == null || idempotencyKey.isBlank()
+                ? previous.getIdempotencyKey() + ":retry:" + System.currentTimeMillis()
+                : idempotencyKey;
+
+        return PaymentInstructionResponse.from(initiate(
+                previous.getOrder().getId(),
+                previous.getProvider(),
+                previous.getMethod(),
+                key));
+    }
+
 }

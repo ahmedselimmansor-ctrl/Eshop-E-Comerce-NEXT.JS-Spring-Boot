@@ -61,25 +61,9 @@ public class CategoryController {
     @GetMapping("/{slug}")
     @Operation(summary = "Category by slug",
             description = "Includes ancestors for breadcrumbs and immediate children for sub-navigation.")
-    public ResponseEntity<CategoryDetail> bySlug(@PathVariable String slug) {
-        String locale = RequestContext.locale();
-        Category category = categories.requireBySlug(slug);
-
-        CategoryDetail body = new CategoryDetail(
-                CategoryResponse.flat(category, locale),
-                categories.ancestorsOf(category).stream()
-                        .map(ancestor -> CategoryResponse.flat(ancestor, locale))
-                        .toList(),
-                categories.childrenOf(category.getId()).stream()
-                        .filter(Category::isActive)
-                        .map(child -> CategoryResponse.flat(child, locale))
-                        .toList());
-
+    public ResponseEntity<CategoryService.CategoryDetail> bySlug(@PathVariable String slug) {
+        CategoryService.CategoryDetail body = categories.detailBySlug(slug, RequestContext.locale());
         return ResponseEntity.ok().cacheControl(PUBLIC_CACHE).body(body);
     }
 
-    public record CategoryDetail(CategoryResponse category,
-                                 List<CategoryResponse> breadcrumb,
-                                 List<CategoryResponse> children) {
-    }
 }

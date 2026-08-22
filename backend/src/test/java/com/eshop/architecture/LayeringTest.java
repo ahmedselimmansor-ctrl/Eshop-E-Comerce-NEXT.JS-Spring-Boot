@@ -87,14 +87,13 @@ class LayeringTest {
         //
         // A controller that never holds an entity cannot make the mistake.
         //
-        // Scoped to the admin layer, and that is a deliberate admission rather than a design: the
-        // storefront controllers violate this in 57 places. Most are safe today because their
-        // queries declare an @EntityGraph, but "safe because of a fetch plan somewhere else" is
-        // exactly the property that quietly stops holding. Widening this rule means moving those
-        // mappings into their services, which is worth doing and is not a change to make blind.
+        // This holds for every controller in the codebase. It did not always: the storefront
+        // violated it in 57 places, safe only because their queries happened to declare an
+        // @EntityGraph, which is the kind of guarantee that lives somewhere else and quietly stops
+        // holding. Those mappings now live in their services, and this rule is what keeps them
+        // there.
         ArchRule rule = noClasses()
                 .that().areAnnotatedWith(RestController.class)
-                .and().resideInAPackage("com.eshop.admin.web..")
                 .should(ArchConditions.callMethodWhere(
                         JavaCall.Predicates.target(
                                 HasReturnType.Predicates.rawReturnType(

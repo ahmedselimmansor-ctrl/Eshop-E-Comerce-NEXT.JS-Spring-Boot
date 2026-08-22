@@ -56,7 +56,7 @@ public class CartController {
             @Parameter(description = "Guest session identifier")
             @RequestHeader(value = RequestContext.HEADER_SESSION_ID, required = false) String sessionId) {
 
-        return respond(carts.getOrCreate(userId(caller), sessionId), List.of());
+        return ok(carts.currentResponse(userId(caller), sessionId, RequestContext.locale()));
     }
 
     @PostMapping("/items")
@@ -68,9 +68,8 @@ public class CartController {
             @RequestHeader(value = RequestContext.HEADER_SESSION_ID, required = false) String sessionId,
             @Valid @RequestBody CartRequests.AddItem request) {
 
-        Cart cart = carts.addItem(userId(caller), sessionId,
-                request.productId(), request.variantId(), request.quantity());
-        return respond(cart, List.of());
+        return ok(carts.addItemResponse(userId(caller), sessionId, request.productId(),
+                request.variantId(), request.quantity(), RequestContext.locale()));
     }
 
     @PatchMapping("/items/{itemId}")
@@ -81,7 +80,8 @@ public class CartController {
             @PathVariable UUID itemId,
             @Valid @RequestBody CartRequests.UpdateItem request) {
 
-        return respond(carts.updateQuantity(userId(caller), sessionId, itemId, request.quantity()), List.of());
+        return ok(carts.updateQuantityResponse(userId(caller), sessionId, itemId,
+                request.quantity(), RequestContext.locale()));
     }
 
     @DeleteMapping("/items/{itemId}")
@@ -91,7 +91,7 @@ public class CartController {
             @RequestHeader(value = RequestContext.HEADER_SESSION_ID, required = false) String sessionId,
             @PathVariable UUID itemId) {
 
-        return respond(carts.removeItem(userId(caller), sessionId, itemId), List.of());
+        return ok(carts.removeItemResponse(userId(caller), sessionId, itemId, RequestContext.locale()));
     }
 
     @DeleteMapping
@@ -100,7 +100,7 @@ public class CartController {
             @AuthenticationPrincipal UserPrincipal caller,
             @RequestHeader(value = RequestContext.HEADER_SESSION_ID, required = false) String sessionId) {
 
-        return respond(carts.clear(userId(caller), sessionId), List.of());
+        return ok(carts.clearResponse(userId(caller), sessionId, RequestContext.locale()));
     }
 
     @PostMapping("/coupon")
@@ -112,8 +112,8 @@ public class CartController {
             @RequestHeader(value = RequestContext.HEADER_SESSION_ID, required = false) String sessionId,
             @Valid @RequestBody CartRequests.ApplyCoupon request) {
 
-        carts.applyCoupon(userId(caller), sessionId, request.code());
-        return respond(carts.getOrCreate(userId(caller), sessionId), List.of());
+        return ok(carts.applyCouponResponse(userId(caller), sessionId, request.code(),
+                RequestContext.locale()));
     }
 
     @DeleteMapping("/coupon")
@@ -122,7 +122,7 @@ public class CartController {
             @AuthenticationPrincipal UserPrincipal caller,
             @RequestHeader(value = RequestContext.HEADER_SESSION_ID, required = false) String sessionId) {
 
-        return respond(carts.removeCoupon(userId(caller), sessionId), List.of());
+        return ok(carts.removeCouponResponse(userId(caller), sessionId, RequestContext.locale()));
     }
 
     @PostMapping("/merge")
@@ -131,7 +131,7 @@ public class CartController {
                     + "unavailable in the meantime are skipped rather than failing the merge.")
     public ResponseEntity<CartResponse> merge(@AuthenticationPrincipal UserPrincipal caller,
                                               @Valid @RequestBody CartRequests.Merge request) {
-        return respond(carts.merge(caller.id(), request.sessionId()), List.of());
+        return ok(carts.mergeResponse(caller.id(), request.sessionId(), RequestContext.locale()));
     }
 
     @PostMapping("/validate")
@@ -142,9 +142,7 @@ public class CartController {
             @AuthenticationPrincipal UserPrincipal caller,
             @RequestHeader(value = RequestContext.HEADER_SESSION_ID, required = false) String sessionId) {
 
-        List<CartService.Issue> issues = carts.validate(userId(caller), sessionId);
-        Cart cart = carts.getOrCreate(userId(caller), sessionId);
-        return respond(cart, issues);
+        return ok(carts.validateResponse(userId(caller), sessionId, RequestContext.locale()));
     }
 
     @PostMapping("/reconcile")
@@ -155,28 +153,19 @@ public class CartController {
             @AuthenticationPrincipal UserPrincipal caller,
             @RequestHeader(value = RequestContext.HEADER_SESSION_ID, required = false) String sessionId) {
 
-        return respond(carts.reconcile(userId(caller), sessionId), List.of());
+        return ok(carts.reconcileResponse(userId(caller), sessionId, RequestContext.locale()));
     }
 
     // --------------------------------------------------------------- helpers --
 
     /**
-     * Builds the response with one bulk availability lookup for the whole cart rather than one per
-     * line.
+     * Every cart response is no-store.
+     *
+     * <p>A cart is per-customer and changes on every interaction; a cached one shown to the wrong
+     * person, or a stale one shown to the right person, are both worse than a round trip.
      */
-    private ResponseEntity<CartResponse> respond(Cart cart, List<CartService.Issue> issues) {
-        List<InventoryService.SkuRef> refs = cart.getItems().stream()
-                .map(item -> new InventoryService.SkuRef(
-                        item.getProduct().getId(),
-                        item.getVariant() == null ? null : item.getVariant().getId()))
-                .toList();
-
-        Map<InventoryService.SkuRef, Integer> bySku = inventory.availabilityFor(refs);
-        Map<UUID, Integer> byItem = CartResponse.availabilityByItem(cart, bySku);
-
-        return ResponseEntity.ok()
-                .cacheControl(CacheControl.noStore())
-                .body(CartResponse.from(cart, RequestContext.locale(), byItem, issues));
+    private static ResponseEntity<CartResponse> ok(CartResponse body) {
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(body);
     }
 
     private static UUID userId(UserPrincipal caller) {

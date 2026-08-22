@@ -8,6 +8,7 @@ import com.eshop.user.domain.User;
 import com.eshop.user.repository.AddressRepository;
 import com.eshop.user.repository.UserRepository;
 import com.eshop.user.web.dto.AddressRequest;
+import com.eshop.user.web.dto.AddressResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -159,4 +160,36 @@ public class AddressService {
         String trimmed = value.trim();
         return trimmed.isEmpty() ? null : trimmed;
     }
+
+    // -------------------------------------------------------------- responses --
+    //
+    // The controller never holds an Address. AddressResponse renders a single-line `formatted`
+    // string from several columns, and doing that on a detached entity is the shape of bug that
+    // LayeringTest now forbids.
+
+    @Transactional(readOnly = true)
+    public List<AddressResponse> listResponsesForUser(UUID userId) {
+        return AddressResponse.from(listForUser(userId));
+    }
+
+    @Transactional(readOnly = true)
+    public AddressResponse responseFor(UUID addressId, UUID userId) {
+        return AddressResponse.from(require(addressId, userId));
+    }
+
+    @Transactional
+    public AddressResponse createResponse(UUID userId, AddressRequest request) {
+        return AddressResponse.from(create(userId, request));
+    }
+
+    @Transactional
+    public AddressResponse updateResponse(UUID addressId, UUID userId, AddressRequest request) {
+        return AddressResponse.from(update(addressId, userId, request));
+    }
+
+    @Transactional
+    public AddressResponse makeDefaultResponse(UUID addressId, UUID userId, String type) {
+        return AddressResponse.from(makeDefault(addressId, userId, type));
+    }
+
 }

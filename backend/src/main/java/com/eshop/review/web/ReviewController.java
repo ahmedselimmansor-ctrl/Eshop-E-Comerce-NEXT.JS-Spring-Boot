@@ -68,7 +68,7 @@ public class ReviewController {
     public ResponseEntity<ReviewResponse> submit(@AuthenticationPrincipal UserPrincipal caller,
                                                  @PathVariable UUID productId,
                                                  @Valid @RequestBody ReviewRequest request) {
-        ReviewResponse created = ReviewResponse.from(reviews.submit(productId, caller.id(), request));
+        ReviewResponse created = reviews.submitResponse(productId, caller.id(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -77,7 +77,7 @@ public class ReviewController {
     public ReviewResponse edit(@AuthenticationPrincipal UserPrincipal caller,
                                @PathVariable UUID reviewId,
                                @Valid @RequestBody ReviewRequest request) {
-        return ReviewResponse.from(reviews.edit(reviewId, caller.id(), request));
+        return reviews.editResponse(reviewId, caller.id(), request);
     }
 
     @DeleteMapping("/reviews/{reviewId}")

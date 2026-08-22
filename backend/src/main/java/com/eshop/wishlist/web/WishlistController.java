@@ -56,7 +56,7 @@ public class WishlistController {
             description = "Creates an empty list on first access. Prices and availability are read "
                     + "live, so a saved item reflects today's sale rather than the day it was saved.")
     public ResponseEntity<WishlistResponse> get(@AuthenticationPrincipal UserPrincipal caller) {
-        return respond(wishlists.getOrCreate(caller.id()), true);
+        return ok(wishlists.currentResponse(caller.id(), RequestContext.locale()));
     }
 
     @PostMapping("/items")
@@ -66,7 +66,8 @@ public class WishlistController {
     public ResponseEntity<WishlistResponse> add(@AuthenticationPrincipal UserPrincipal caller,
                                                 @Valid @RequestBody WishlistRequests.Add request) {
 
-        return respond(wishlists.add(caller.id(), request.productId(), request.variantId()), true);
+        return ok(wishlists.addResponse(caller.id(), request.productId(), request.variantId(),
+                RequestContext.locale()));
     }
 
     @DeleteMapping("/items/{itemId}")
@@ -75,7 +76,7 @@ public class WishlistController {
     public ResponseEntity<WishlistResponse> remove(@AuthenticationPrincipal UserPrincipal caller,
                                                    @PathVariable UUID itemId) {
 
-        return respond(wishlists.remove(caller.id(), itemId), true);
+        return ok(wishlists.removeResponse(caller.id(), itemId, RequestContext.locale()));
     }
 
     @DeleteMapping("/products/{productId}")
@@ -88,14 +89,15 @@ public class WishlistController {
             @PathVariable UUID productId,
             @RequestParam(required = false) UUID variantId) {
 
-        return respond(wishlists.removeProduct(caller.id(), productId, variantId), true);
+        return ok(wishlists.removeProductResponse(caller.id(), productId, variantId,
+                RequestContext.locale()));
     }
 
     @DeleteMapping
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Empty the wishlist")
     public ResponseEntity<WishlistResponse> clear(@AuthenticationPrincipal UserPrincipal caller) {
-        return respond(wishlists.clear(caller.id()), true);
+        return ok(wishlists.clearResponse(caller.id(), RequestContext.locale()));
     }
 
     @PostMapping("/items/{itemId}/move-to-cart")
@@ -103,19 +105,17 @@ public class WishlistController {
     @Operation(summary = "Move a saved item into the cart",
             description = "The item leaves the wishlist only if the cart accepted it - an "
                     + "out-of-stock product fails the call and stays saved.")
-    public ResponseEntity<MoveToCartResponse> moveToCart(
+    public ResponseEntity<WishlistService.MoveToCartResponse> moveToCart(
             @AuthenticationPrincipal UserPrincipal caller,
             @PathVariable UUID itemId,
             @Valid @RequestBody(required = false) WishlistRequests.MoveToCart request) {
 
         int quantity = request == null ? 1 : request.quantityOrOne();
-        WishlistService.MoveResult result = wishlists.moveToCart(caller.id(), itemId, quantity);
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())
-                .body(new MoveToCartResponse(
-                        body(result.wishlist(), true),
-                        cartBody(result.cart())));
+                .body(wishlists.moveToCartResponse(caller.id(), itemId, quantity,
+                        RequestContext.locale()));
     }
 
     @PutMapping("/share")
@@ -126,7 +126,8 @@ public class WishlistController {
     public ResponseEntity<WishlistResponse> share(@AuthenticationPrincipal UserPrincipal caller,
                                                   @Valid @RequestBody WishlistRequests.Share request) {
 
-        return respond(wishlists.setPublic(caller.id(), request.isPublic()), true);
+        return ok(wishlists.setPublicResponse(caller.id(), request.isPublic(),
+                RequestContext.locale()));
     }
 
     @GetMapping("/shared/{token}")
@@ -135,54 +136,14 @@ public class WishlistController {
             description = "Anonymous. The token is the authorisation; the owner's identity and the "
                     + "token itself are not echoed back.")
     public ResponseEntity<WishlistResponse> shared(@PathVariable String token) {
-        return respond(wishlists.shared(token), false);
+        return ok(wishlists.sharedResponse(token, RequestContext.locale()));
     }
 
     // --------------------------------------------------------------- helpers --
 
-    private ResponseEntity<WishlistResponse> respond(Wishlist wishlist, boolean includeToken) {
-        return ResponseEntity.ok()
-                .cacheControl(CacheControl.noStore())
-                .body(body(wishlist, includeToken));
+    /** Wishlists are per-customer and change on every interaction, so never cached. */
+    private static ResponseEntity<WishlistResponse> ok(WishlistResponse body) {
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(body);
     }
 
-    /** One bulk availability lookup for the whole list rather than one per saved item. */
-    private WishlistResponse body(Wishlist wishlist, boolean includeToken) {
-        List<InventoryService.SkuRef> refs = wishlist.getItems().stream()
-                .map(WishlistController::skuOf)
-                .distinct()
-                .toList();
-
-        Map<InventoryService.SkuRef, Integer> bySku = inventory.availabilityFor(refs);
-
-        Map<UUID, Integer> byItem = new HashMap<>();
-        for (WishlistItem item : wishlist.getItems()) {
-            byItem.put(item.getId(), bySku.getOrDefault(skuOf(item), 0));
-        }
-
-        return WishlistResponse.from(wishlist, RequestContext.locale(), byItem, includeToken);
-    }
-
-    private CartResponse cartBody(Cart cart) {
-        List<InventoryService.SkuRef> refs = cart.getItems().stream()
-                .map(item -> new InventoryService.SkuRef(
-                        item.getProduct().getId(),
-                        item.getVariant() == null ? null : item.getVariant().getId()))
-                .toList();
-
-        Map<InventoryService.SkuRef, Integer> bySku = inventory.availabilityFor(refs);
-        Map<UUID, Integer> byItem = CartResponse.availabilityByItem(cart, bySku);
-
-        return CartResponse.from(cart, RequestContext.locale(), byItem, List.of());
-    }
-
-    private static InventoryService.SkuRef skuOf(WishlistItem item) {
-        return new InventoryService.SkuRef(
-                item.getProduct().getId(),
-                item.getVariant() == null ? null : item.getVariant().getId());
-    }
-
-    /** Both badges change on a move, so both are returned rather than forcing a refetch. */
-    public record MoveToCartResponse(WishlistResponse wishlist, CartResponse cart) {
-    }
 }

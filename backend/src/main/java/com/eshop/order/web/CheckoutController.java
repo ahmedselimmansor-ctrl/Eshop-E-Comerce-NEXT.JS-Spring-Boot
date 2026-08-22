@@ -86,7 +86,7 @@ public class CheckoutController {
     @ApiResponse(responseCode = "201", description = "Order created; `payment` says what to do next")
     @ApiResponse(responseCode = "409",
             description = "OUT_OF_STOCK, PRICE_CHANGED, COUPON_* , COD_NOT_SUPPORTED or IDEMPOTENCY_CONFLICT")
-    public ResponseEntity<PlacedOrderResponse> placeOrder(
+    public ResponseEntity<CheckoutService.PlacedOrderResponse> placeOrder(
             @AuthenticationPrincipal UserPrincipal caller,
             @RequestHeader(value = RequestContext.HEADER_SESSION_ID, required = false) String sessionId,
             @Parameter(description = "Unique per checkout attempt", required = true)
@@ -99,23 +99,17 @@ public class CheckoutController {
         UUID userId = userId(caller);
         String locale = RequestContext.locale();
 
-        PlacedOrderResponse response = idempotency.execute(
+        CheckoutService.PlacedOrderResponse response = idempotency.execute(
                 idempotencyKey,
                 "POST /api/v1/checkout/orders",
                 userId,
                 request,
-                PlacedOrderResponse.class,
-                () -> {
-                    CheckoutService.Placed placed = checkout.placeOrder(
-                            userId, sessionId, request, idempotencyKey,
-                            RequestContext.resolveClientIp(httpRequest),
-                            httpRequest.getHeader(HttpHeaders.USER_AGENT),
-                            locale);
-
-                    return new PlacedOrderResponse(
-                            OrderResponse.from(placed.order(), locale, List.of()),
-                            PaymentInstructionResponse.from(placed.payment()));
-                });
+                CheckoutService.PlacedOrderResponse.class,
+                () -> checkout.placeOrderResponse(
+                        userId, sessionId, request, idempotencyKey,
+                        RequestContext.resolveClientIp(httpRequest),
+                        httpRequest.getHeader(HttpHeaders.USER_AGENT),
+                        locale));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -151,8 +145,6 @@ public class CheckoutController {
 
     // ----------------------------------------------------------- payload types --
 
-    public record PlacedOrderResponse(OrderResponse order, PaymentInstructionResponse payment) {
-    }
 
     public record QuoteResponse(String currency, Money subtotal, Money discount, Money tax,
                                 Money shipping, Money codFee, Money grandTotal,

@@ -7,6 +7,8 @@ import com.eshop.common.outbox.OutboxEvent;
 import com.eshop.common.outbox.OutboxService;
 import com.eshop.inventory.service.InventoryService;
 import com.eshop.order.domain.Order;
+import com.eshop.order.web.dto.ReturnResponse;
+import com.eshop.order.web.dto.OrderResponse;
 import com.eshop.order.domain.OrderItem;
 import com.eshop.order.domain.OrderReturn;
 import com.eshop.order.domain.OrderStatus;
@@ -418,4 +420,45 @@ public class OrderService {
         }
         return stale.size();
     }
+
+    // -------------------------------------------------------------- responses --
+    //
+    // OrderResponse walks items, their product references, the status timeline and the shipment
+    // list. All four are lazy, so the mapping belongs inside the transaction rather than in a
+    // controller holding a detached order.
+
+    /** One order, for the customer who placed it. */
+    @Transactional(readOnly = true)
+    public OrderResponse responseFor(String orderNumber, UUID userId, String locale) {
+        Order order = requireVisible(orderNumber, userId, null);
+        return OrderResponse.from(order, locale, shipmentsOf(order.getId()));
+    }
+
+    /**
+     * One order, for a guest tracking it.
+     *
+     * <p>Takes the email rather than a user id: the order number alone is short enough to guess, so
+     * pairing it with the address it was placed under is what makes a guessed number reveal nothing.
+     */
+    @Transactional(readOnly = true)
+    public OrderResponse trackResponse(String orderNumber, String guestEmail, String locale) {
+        Order order = requireVisible(orderNumber, null, guestEmail);
+        return OrderResponse.from(order, locale, shipmentsOf(order.getId()));
+    }
+
+    @Transactional
+    public OrderResponse cancelByCustomerResponse(String orderNumber, UUID userId, String reason,
+                                                  String locale) {
+        Order order = cancelByCustomer(orderNumber, userId, reason);
+        return OrderResponse.from(order, locale, shipmentsOf(order.getId()));
+    }
+
+    @Transactional
+    public ReturnResponse requestReturnResponse(String orderNumber, UUID userId,
+                                                java.util.Map<UUID, Integer> quantitiesByItemId,
+                                                OrderReturn.Reason reason, String note) {
+        return ReturnResponse.from(
+                requestReturn(orderNumber, userId, quantitiesByItemId, reason, note));
+    }
+
 }

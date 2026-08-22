@@ -37,7 +37,7 @@ public class MeController {
     @GetMapping
     @Operation(summary = "Current profile")
     public UserResponse me(@AuthenticationPrincipal UserPrincipal caller) {
-        return UserResponse.from(userService.require(caller.id()));
+        return userService.profileOf(caller.id());
     }
 
     @PatchMapping
@@ -46,7 +46,7 @@ public class MeController {
                     + "Email is not editable here; changing it runs through its own verification flow.")
     public UserResponse update(@AuthenticationPrincipal UserPrincipal caller,
                                @Valid @RequestBody UpdateProfileRequest request) {
-        return UserResponse.from(userService.updateProfile(caller.id(), request));
+        return userService.updateProfileResponse(caller.id(), request);
     }
 
     @PostMapping("/change-password")

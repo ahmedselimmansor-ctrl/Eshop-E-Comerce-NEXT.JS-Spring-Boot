@@ -1,6 +1,7 @@
 package com.eshop.catalog.service;
 
 import com.eshop.catalog.domain.Category;
+import com.eshop.catalog.web.dto.CategoryResponse;
 import com.eshop.catalog.repository.CategoryRepository;
 import com.eshop.common.exception.BusinessException;
 import com.eshop.common.exception.ErrorCode;
@@ -40,6 +41,51 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public List<Category> flat(boolean activeOnly) {
         return categories.findTree(activeOnly);
+    }
+
+    /**
+     * The set of category ids a listing filtered by {@code slug} should cover.
+     *
+     * <p>Expanded to the whole subtree, so a listing for "Electronics" includes everything filed
+     * under "Mobile Phones" too. Returns ids rather than the category so the caller never holds a
+     * detached entity.
+     */
+    @Transactional(readOnly = true)
+    public CategoryScope scopeFor(String slug) {
+        Category category = requireBySlug(slug);
+        return new CategoryScope(category.getId(), selfAndDescendantIds(category));
+    }
+
+    /** A category and everything beneath it, as ids. */
+    public record CategoryScope(UUID id, java.util.List<UUID> selfAndDescendants) {
+    }
+
+    /**
+     * A category with its ancestors and its active children.
+     *
+     * <p>Assembled here rather than in the controller: {@code ancestorsOf} walks the materialised
+     * path and {@code childrenOf} issues its own query, and both are read off an entity that would
+     * otherwise be detached by the time the controller touched it.
+     */
+    @Transactional(readOnly = true)
+    public CategoryDetail detailBySlug(String slug, String locale) {
+        Category category = requireBySlug(slug);
+
+        return new CategoryDetail(
+                CategoryResponse.flat(category, locale),
+                ancestorsOf(category).stream()
+                        .map(ancestor -> CategoryResponse.flat(ancestor, locale))
+                        .toList(),
+                childrenOf(category.getId()).stream()
+                        .filter(Category::isActive)
+                        .map(child -> CategoryResponse.flat(child, locale))
+                        .toList());
+    }
+
+    /** A category, its breadcrumb, and the sub-categories beneath it. */
+    public record CategoryDetail(CategoryResponse category,
+                                 java.util.List<CategoryResponse> breadcrumb,
+                                 java.util.List<CategoryResponse> children) {
     }
 
     @Transactional(readOnly = true)

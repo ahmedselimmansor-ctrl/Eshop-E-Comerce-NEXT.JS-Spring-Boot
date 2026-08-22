@@ -44,11 +44,9 @@ public class PaymentController {
     @Operation(summary = "Current payment status",
             description = "Re-reads from the provider when the payment is not yet in a final state.")
     public ResponseEntity<PaymentInstructionResponse> status(@PathVariable UUID paymentId) {
-        Payment payment = payments.reconcile(paymentId);
-
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())
-                .body(PaymentInstructionResponse.status(payment));
+                .body(payments.statusResponse(paymentId));
     }
 
     /**
@@ -63,21 +61,7 @@ public class PaymentController {
                                             @PathVariable UUID paymentId,
                                             @RequestParam(required = false) String idempotencyKey) {
 
-        Payment previous = payments.require(paymentId);
-
-        if (caller != null && previous.getOrder().getUser() != null
-                && !previous.getOrder().getUser().getId().equals(caller.id())) {
-            throw NotFoundException.of("Payment", paymentId);
-        }
-
-        String key = idempotencyKey == null || idempotencyKey.isBlank()
-                ? previous.getIdempotencyKey() + ":retry:" + System.currentTimeMillis()
-                : idempotencyKey;
-
-        return PaymentInstructionResponse.from(payments.initiate(
-                previous.getOrder().getId(),
-                previous.getProvider(),
-                previous.getMethod(),
-                key));
+        return payments.retryResponse(paymentId, caller == null ? null : caller.id(),
+                idempotencyKey);
     }
 }

@@ -47,7 +47,7 @@ public class BrandController {
     @GetMapping("/{slug}")
     @Operation(summary = "Brand by slug")
     public ResponseEntity<BrandResponse> bySlug(@PathVariable String slug) {
-        BrandResponse body = BrandResponse.from(brands.requireBySlug(slug), RequestContext.locale());
+        BrandResponse body = brands.responseBySlug(slug, RequestContext.locale());
         return ResponseEntity.ok().cacheControl(PUBLIC_CACHE).body(body);
     }
 }

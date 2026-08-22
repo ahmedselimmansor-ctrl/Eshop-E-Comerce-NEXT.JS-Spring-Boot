@@ -12,6 +12,8 @@ import com.eshop.order.domain.OrderStatus;
 import com.eshop.order.domain.OrderStatusHistory;
 import com.eshop.order.repository.OrderRepository;
 import com.eshop.order.web.dto.CheckoutRequest;
+import com.eshop.order.web.dto.PaymentInstructionResponse;
+import com.eshop.order.web.dto.OrderResponse;
 import com.eshop.payment.domain.PaymentProviderType;
 import com.eshop.payment.service.PaymentService;
 import com.eshop.promotion.service.CouponService;
@@ -189,4 +191,29 @@ public class CheckoutService {
                         String appliedCoupon,
                         String couponRejectionCode) {
     }
+
+    // -------------------------------------------------------------- responses --
+
+    /**
+     * Places the order and maps it, inside the same transaction.
+     *
+     * <p>{@code OrderResponse} walks the order's items and its status history. Mapping the returned
+     * entity in the controller reads those detached, and this is the one request in the system where
+     * failing after the write has committed leaves a customer charged for an order they never saw.
+     */
+    @Transactional
+    public PlacedOrderResponse placeOrderResponse(UUID userId, String sessionId,
+                                                  CheckoutRequest request, String idempotencyKey,
+                                                  String ip, String userAgent, String locale) {
+        Placed placed = placeOrder(userId, sessionId, request, idempotencyKey, ip, userAgent, locale);
+
+        return new PlacedOrderResponse(
+                OrderResponse.from(placed.order(), locale, java.util.List.of()),
+                PaymentInstructionResponse.from(placed.payment()));
+    }
+
+    /** The order, and what the customer has to do next to pay for it. */
+    public record PlacedOrderResponse(OrderResponse order, PaymentInstructionResponse payment) {
+    }
+
 }

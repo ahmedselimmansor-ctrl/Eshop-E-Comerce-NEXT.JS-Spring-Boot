@@ -1,6 +1,7 @@
 package com.eshop.cart.service;
 
 import com.eshop.cart.domain.Cart;
+import com.eshop.cart.web.dto.CartResponse;
 import com.eshop.cart.domain.CartItem;
 import com.eshop.cart.repository.CartItemRepository;
 import com.eshop.cart.repository.CartRepository;
@@ -481,4 +482,87 @@ public class CartService {
 
     public record Issue(UUID itemId, IssueType type, int available, Money currentPrice) {
     }
+
+    // -------------------------------------------------------------- responses --
+
+    /**
+     * The cart as the API returns it.
+     *
+     * <p>Every mutation below returns this rather than the entity. {@code CartResponse} walks the
+     * items and each item's product and variant, and it needs a per-line availability lookup on top,
+     * so building it in a controller means reading four lazy associations off a detached cart. The
+     * availability query is one bulk call for the whole cart, not one per line.
+     */
+    @Transactional(readOnly = true)
+    public CartResponse toResponse(Cart cart, List<Issue> issues, String locale) {
+        List<InventoryService.SkuRef> refs = cart.getItems().stream()
+                .map(item -> new InventoryService.SkuRef(
+                        item.getProduct().getId(),
+                        item.getVariant() == null ? null : item.getVariant().getId()))
+                .toList();
+
+        Map<InventoryService.SkuRef, Integer> bySku = inventory.availabilityFor(refs);
+        Map<UUID, Integer> byItem = CartResponse.availabilityByItem(cart, bySku);
+
+        return CartResponse.from(cart, locale, byItem, issues);
+    }
+
+    @Transactional
+    public CartResponse currentResponse(UUID userId, String sessionId, String locale) {
+        return toResponse(getOrCreate(userId, sessionId), List.of(), locale);
+    }
+
+    @Transactional
+    public CartResponse addItemResponse(UUID userId, String sessionId, UUID productId,
+                                        UUID variantId, int quantity, String locale) {
+        return toResponse(addItem(userId, sessionId, productId, variantId, quantity),
+                List.of(), locale);
+    }
+
+    @Transactional
+    public CartResponse updateQuantityResponse(UUID userId, String sessionId, UUID itemId,
+                                               int quantity, String locale) {
+        return toResponse(updateQuantity(userId, sessionId, itemId, quantity), List.of(), locale);
+    }
+
+    @Transactional
+    public CartResponse removeItemResponse(UUID userId, String sessionId, UUID itemId,
+                                           String locale) {
+        return toResponse(removeItem(userId, sessionId, itemId), List.of(), locale);
+    }
+
+    @Transactional
+    public CartResponse clearResponse(UUID userId, String sessionId, String locale) {
+        return toResponse(clear(userId, sessionId), List.of(), locale);
+    }
+
+    @Transactional
+    public CartResponse applyCouponResponse(UUID userId, String sessionId, String code,
+                                            String locale) {
+        applyCoupon(userId, sessionId, code);
+        return toResponse(getOrCreate(userId, sessionId), List.of(), locale);
+    }
+
+    @Transactional
+    public CartResponse removeCouponResponse(UUID userId, String sessionId, String locale) {
+        return toResponse(removeCoupon(userId, sessionId), List.of(), locale);
+    }
+
+    @Transactional
+    public CartResponse mergeResponse(UUID userId, String sessionId, String locale) {
+        return toResponse(merge(userId, sessionId), List.of(), locale);
+    }
+
+    /** Validation issues alongside the cart they describe, so a client can act on both at once. */
+    @Transactional
+    public CartResponse validateResponse(UUID userId, String sessionId, String locale) {
+        List<Issue> issues = validate(userId, sessionId);
+        return toResponse(getOrCreate(userId, sessionId), issues, locale);
+    }
+
+    @Transactional
+    public CartResponse reconcileResponse(UUID userId, String sessionId, String locale) {
+        return toResponse(reconcile(userId, sessionId), List.of(), locale);
+    }
+
 }

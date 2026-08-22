@@ -142,9 +142,11 @@ tests:
 
 - **No entity or repository may depend on the web layer.** A domain object that knows about a
   response DTO cannot be reused, and the dependency ends up pointing both ways.
-- **No controller may inject a repository.** A controller holding a repository queries outside a
-  transaction and maps the result after the session has closed. With `open-in-view` disabled that
-  compiles perfectly and throws `LazyInitializationException` on every call.
+- **No controller may inject a repository, or so much as touch an entity.** With `open-in-view`
+  disabled, an entity handed back to a controller is already detached, so reading a lazy association
+  off it compiles perfectly and throws at request time. Services return finished DTOs. Six bugs in
+  this codebase had exactly that shape, and the last only failed on a *retry*, which is why the rule
+  is a test rather than a convention.
 
 And the modules themselves, with the dependencies that actually exist between them:
 
