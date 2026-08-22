@@ -890,7 +890,7 @@ flowchart LR
 
     subgraph CI ["CI (.github/workflows/ci.yml)"]
         direction TB
-        BE["Backend<br/>compile · 72 tests<br/>real Postgres + Redis"]
+        BE["Backend<br/>compile · 94 tests<br/>real Postgres + Redis"]
         MIG["Migrations<br/>apply, then re-apply R__<br/>to prove idempotency"]
         WEB["Web<br/>typecheck · lint · 70 tests · build"]
         MOB["Mobile<br/>analyze · 49 tests"]
@@ -1037,7 +1037,7 @@ on every call. Services return finished DTOs.
 
 ```bash
 make test          # backend, web and mobile
-make test-backend  # 72 tests, needs `make infra` running
+make test-backend  # 94 tests, needs `make infra` running
 make test-web      # typecheck, lint, and 70 unit and component tests
 make test-mobile   # flutter analyze and 49 tests
 ```
@@ -1091,7 +1091,7 @@ and rolls back on failure.
 ## Status
 
 **Backend.** Complete and tested: migrations, security, catalog, inventory, cart, promotions,
-checkout, orders, payments, search, media, notifications, and the admin API. Seventy-two tests,
+checkout, orders, payments, search, media, notifications, and the admin API. Ninety-four tests,
 covering checkout, the full refund path against a captured payment, webhook signature verification
 in both directions, the store rules that live in settings, the admin API, JSON round-tripping, and
 the layering rules.
@@ -1110,9 +1110,19 @@ rendering, and the API contract against responses captured from a running server
 
 **Infrastructure.** Docker, Kustomize for three environments, Terraform for GCP, and CI/CD.
 
-**Tests.** 125 in total: 56 backend, 46 web, 23 mobile. All three run in CI.
+**Tests.** 213 in total: 94 backend, 70 web, 49 mobile. All three run in CI.
 
-Known gaps: no end-to-end or component tests on the web (the unit tests cover the API contract, the
-formatting helpers and the listing-parameter clamping, not rendering); the refund path has not been
-exercised against a real captured payment, since a cash-on-delivery order has nothing to refund and
-the API correctly rejects it.
+The backend suite runs against a real PostgreSQL and Redis and covers checkout, the full refund path
+against a captured payment, webhook signature verification in both directions, the security posture,
+and the layering rules. The web suite runs in three Vitest projects: `unit` in Node for contracts and
+formatting, and `admin` and `storefront` in jsdom for components. The apps cannot share one project
+because both use `@` for their own `src`.
+
+Known gaps:
+
+- **No end-to-end tests.** The component tests render individual components, not whole flows through
+  a browser, so a route that breaks only when its data loading and its rendering are combined would
+  still get through.
+- **Paymob and Fawry are exercised only through their callback handling.** Signature verification,
+  duplicate delivery and the unconfigured case are covered; actually taking a card payment needs
+  sandbox credentials, so `initiate` and `refund` against a live gateway are not.
