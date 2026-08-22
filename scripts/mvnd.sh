@@ -12,6 +12,8 @@ MAVEN_IMAGE="${MAVEN_IMAGE:-maven:3.9-eclipse-temurin-21}"
 
 mkdir -p "${HOME}/.m2"
 
+# --network host so the integration tests can reach the Postgres and Redis published by
+# `docker compose up -d postgres redis` on localhost.
 exec docker run --rm \
   --network host \
   -v "${REPO_ROOT}/backend":/app \

@@ -25,6 +25,33 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
+    # Real PostgreSQL and Redis, published on localhost where the test suite expects them. The
+    # integration tests exist to catch what a mock cannot see — a jsonb column rejecting a value, a
+    # lazy association read after its session closed, a migration that does not apply — so stubbing
+    # these out would remove the only reason the suite is worth running.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: eshop
+          POSTGRES_USER: eshop
+          POSTGRES_PASSWORD: eshop
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U eshop"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
 
@@ -40,16 +67,19 @@ jobs:
         working-directory: backend
         run: mvn -B -ntp clean compile
 
-      - name: Unit tests
+      # One pass. The suite mixes fast pure-Java tests (Money arithmetic, the ArchUnit layering
+      # rules) with tests that drive the real HTTP stack against a real database; splitting them
+      # across two Maven invocations would only pay the JVM and context startup twice.
+      - name: Tests
         working-directory: backend
+        env:
+          TEST_DB_HOST: localhost
+          TEST_DB_PORT: '5432'
+          TEST_DB_USER: eshop
+          TEST_DB_PASSWORD: eshop
+          TEST_REDIS_HOST: localhost
+          TEST_REDIS_PORT: '6379'
         run: mvn -B -ntp test
-
-      # Testcontainers starts real PostgreSQL, Redis, and Elasticsearch. Slower than mocks, and the
-      # only way to catch what actually breaks: a migration that fails on real DDL, a query that
-      # H2 accepts and PostgreSQL rejects, a JSONB mapping that never worked.
-      - name: Integration tests
-        working-directory: backend
-        run: mvn -B -ntp verify -DskipUnitTests
 
       - name: Package
         working-directory: backend

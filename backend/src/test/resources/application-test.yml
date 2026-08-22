@@ -1,0 +1,48 @@
+# Test profile.
+#
+# Datasource and Redis are injected by the Testcontainers base class; everything here is the rest of
+# what an integration test needs and a developer's machine should not have to provide.
+
+eshop:
+  elasticsearch:
+    enabled: false
+  storage:
+    # Local disk. The GCS provider is the default and needs a Storage bean that only exists with
+    # real GCP credentials, so leaving it unset would fail context startup rather than any assertion.
+    provider: local
+    cdn-base-url: http://localhost:8080/media
+  pubsub:
+    enabled: false
+  jwt:
+    # Blank, so an ephemeral RS256 keypair is generated at startup. Every run therefore signs with a
+    # fresh key, which is what a throwaway environment should do.
+    private-key: ""
+    public-key: ""
+  rate-limit:
+    # Off. Rate limiting is its own concern with its own test; leaving it on here would make an
+    # unrelated suite fail intermittently once it grew past the window.
+    enabled: false
+
+spring:
+  flyway:
+    enabled: true
+    clean-disabled: false
+  jpa:
+    # Flyway owns the schema. Letting Hibernate validate it means a migration that drifts from the
+    # entities fails the suite loudly rather than at runtime in production.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: false
+  task:
+    scheduling:
+      pool:
+        size: 1
+
+logging:
+  level:
+    root: WARN
+    com.eshop: INFO
+    org.hibernate.SQL: WARN
+    org.testcontainers: WARN
+    com.github.dockerjava: WARN

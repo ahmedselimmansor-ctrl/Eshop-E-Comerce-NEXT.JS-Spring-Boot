@@ -1,6 +1,8 @@
 package com.eshop.admin.service;
 
 import com.eshop.admin.web.dto.StockRow;
+import com.eshop.inventory.domain.InventoryItem;
+import com.eshop.inventory.repository.InventoryItemRepository;
 import com.eshop.inventory.service.InventoryService;
 import com.eshop.review.service.ReviewService;
 import com.eshop.review.web.dto.ReviewResponse;
@@ -8,6 +10,8 @@ import com.eshop.user.domain.UserStatus;
 import com.eshop.user.service.UserService;
 import com.eshop.user.web.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,10 +39,32 @@ import java.util.UUID;
 public class AdminOpsService {
 
     private final InventoryService inventory;
+    private final InventoryItemRepository items;
     private final ReviewService reviews;
     private final UserService users;
 
     // ------------------------------------------------------------- inventory --
+
+    /**
+     * Stock levels for the console.
+     *
+     * <p>The query lives here rather than in the controller so the rows are mapped while the session
+     * is still open. Both repository methods declare an {@code @EntityGraph} over product, variant
+     * and warehouse, which would make mapping outside a transaction work today — but only until
+     * someone trims the graph, and then it fails at request time rather than at compile time.
+     */
+    @Transactional(readOnly = true)
+    public Page<StockRow> stock(String query, UUID warehouseId, boolean lowStockOnly,
+                                Pageable pageable) {
+
+        String normalised = query == null || query.isBlank() ? null : query.trim();
+
+        Page<InventoryItem> results = lowStockOnly
+                ? items.findLowStock(warehouseId, pageable)
+                : items.search(normalised, warehouseId, pageable);
+
+        return results.map(StockRow::from);
+    }
 
     @Transactional
     public StockRow adjust(UUID itemId, int quantityOnHand, String reason, UUID actorId) {

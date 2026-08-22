@@ -5,7 +5,6 @@ import com.eshop.admin.web.dto.StockRow;
 import com.eshop.catalog.service.ProductSearchPort;
 import com.eshop.common.web.PageResponse;
 import com.eshop.common.web.RequestContext;
-import com.eshop.inventory.repository.InventoryItemRepository;
 import com.eshop.inventory.service.InventoryService;
 import com.eshop.review.domain.Review;
 import com.eshop.review.service.ReviewService;
@@ -61,7 +60,6 @@ public class AdminOpsController {
 
     private final InventoryService inventory;
     private final AdminOpsService adminOps;
-    private final InventoryItemRepository inventoryItems;
     private final UserService users;
     private final ReviewService reviews;
     private final SettingsService settings;
@@ -80,16 +78,8 @@ public class AdminOpsController {
                                             @RequestParam(defaultValue = "0") int page,
                                             @RequestParam(defaultValue = "20") int size) {
 
-        PageRequest pageable = PageRequest.of(Math.max(0, page), Math.clamp(size, 1, 100));
-
-        var results = lowStockOnly
-                ? inventoryItems.findLowStock(warehouseId, pageable)
-                : inventoryItems.search(q == null || q.isBlank() ? null : q.trim(), warehouseId, pageable);
-
-        // Safe to map outside a transaction only because both queries declare an @EntityGraph over
-        // product, variant, and warehouse — the three associations StockRow reads. Remove the graph
-        // and this throws LazyInitializationException on every call.
-        return PageResponse.of(results.map(StockRow::from));
+        return PageResponse.of(adminOps.stock(q, warehouseId, lowStockOnly,
+                PageRequest.of(Math.max(0, page), Math.clamp(size, 1, 100))));
     }
 
     @PostMapping("/inventory/{itemId}/adjust")
