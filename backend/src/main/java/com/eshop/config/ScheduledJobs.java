@@ -41,7 +41,7 @@ public class ScheduledJobs {
      * Releases stock held for checkouts that were abandoned mid-payment.
      *
      * <p>The most operationally important job here. Without it, every abandoned Paymob iframe holds
-     * its units until the heat death of the store — during a flash sale that is the difference
+     * its units until the heat death of the store - during a flash sale that is the difference
      * between selling out and appearing to sell out.
      */
     @Scheduled(fixedDelay = 60_000, initialDelay = 30_000)

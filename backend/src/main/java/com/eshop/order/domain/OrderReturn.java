@@ -28,7 +28,7 @@ import java.util.UUID;
  * and a class called {@code Return} reads badly at every call site. The table is {@code returns}.
  *
  * <p>Approval and physical receipt are separate steps. Stock is only restocked on
- * {@code RECEIVED} — crediting inventory on approval would let a customer who never posts the
+ * {@code RECEIVED} - crediting inventory on approval would let a customer who never posts the
  * parcel inflate available stock, and the resulting oversell surfaces days later as a cancelled
  * order for someone else.
  */

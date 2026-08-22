@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  *
  * <p>Two things happen on every write and are easy to forget individually, so they are centralised
  * here: rich text is sanitised before it is stored, and a {@code product.updated} event is queued so
- * the search index catches up. Indexing is never called inline — that would tie a catalog edit to
+ * the search index catches up. Indexing is never called inline - that would tie a catalog edit to
  * the availability of the search cluster and would index changes that later roll back.
  */
 @Slf4j
@@ -69,7 +69,7 @@ public class AdminProductService {
      *
      * <p>The mapping deliberately happens here rather than in the controller. {@code open-in-view} is
      * off, so a {@code Page<Product>} handed back to a controller is a page of entities whose lazy
-     * associations are already unreachable — reading {@code variants} or {@code images} from the
+     * associations are already unreachable - reading {@code variants} or {@code images} from the
      * response mapper throws {@code LazyInitializationException} at request time while compiling
      * perfectly well. Returning finished rows makes that mistake impossible to write.
      *
@@ -96,7 +96,7 @@ public class AdminProductService {
     /**
      * One product, fully loaded for the editor.
      *
-     * <p>Everything the DTO touches is initialised inside this transaction — {@code open-in-view} is
+     * <p>Everything the DTO touches is initialised inside this transaction - {@code open-in-view} is
      * off, and the DTO reads four separate collections.
      */
     @Transactional(readOnly = true)
@@ -195,7 +195,7 @@ public class AdminProductService {
         log.info("product_deleted id={} actor={}", productId, actorId);
     }
 
-    /** Bulk status changes from the product list — publish, archive, or feature a selection. */
+    /** Bulk status changes from the product list - publish, archive, or feature a selection. */
     @Transactional
     public int bulkUpdateStatus(List<UUID> productIds, ProductStatus status, UUID actorId) {
         int updated = 0;
@@ -244,7 +244,7 @@ public class AdminProductService {
         variant.setActive(spec.active());
         product.addVariant(variant);
 
-        // A product with variants is VARIABLE by definition — inferred rather than asked for, so
+        // A product with variants is VARIABLE by definition - inferred rather than asked for, so
         // the two can never disagree.
         product.setType(ProductType.VARIABLE);
 
@@ -284,8 +284,8 @@ public class AdminProductService {
         product.setNameEn(request.nameEn() == null ? null : request.nameEn().trim());
         product.setShortDescriptionAr(request.shortDescriptionAr());
         product.setShortDescriptionEn(request.shortDescriptionEn());
-        // Sanitised on the way in, so the stored value is safe for every consumer — web, mobile,
-        // email, and export — rather than relying on each of them to escape correctly.
+        // Sanitised on the way in, so the stored value is safe for every consumer - web, mobile,
+        // email, and export - rather than relying on each of them to escape correctly.
         product.setDescriptionAr(HtmlSanitizer.richText(request.descriptionAr()));
         product.setDescriptionEn(HtmlSanitizer.richText(request.descriptionEn()));
         product.setBasePrice(request.basePrice());
@@ -413,12 +413,12 @@ public class AdminProductService {
      * Creates the stock row for a new SKU at zero.
      *
      * <p>Without a row, availability queries return nothing and the product is simply invisible in
-     * stock-filtered listings — a confusing failure that looks like a search bug.
+     * stock-filtered listings - a confusing failure that looks like a search bug.
      */
     private void ensureInventoryRow(Product product, ProductVariant variant) {
         var warehouse = warehouses.findByActiveTrueOrderByPriorityAscCodeAsc().stream().findFirst();
         if (warehouse.isEmpty()) {
-            log.warn("no_active_warehouse — inventory row not created for product {}", product.getId());
+            log.warn("no_active_warehouse - inventory row not created for product {}", product.getId());
             return;
         }
 

@@ -34,7 +34,7 @@ public class PaymentController {
      *
      * <p>Deliberately does not wait for the webhook: the callback and the browser redirect race
      * each other, and the redirect usually wins. Calling {@code reconcile} asks the provider
-     * directly, so the confirmation screen is correct even when the callback has not landed yet —
+     * directly, so the confirmation screen is correct even when the callback has not landed yet -
      * and it doubles as the recovery path for a callback that never arrives.
      *
      * <p>Guests can reach this: the payment id is a UUIDv7 that was only ever handed to whoever

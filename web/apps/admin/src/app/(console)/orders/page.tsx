@@ -55,7 +55,7 @@ export default function OrdersPage() {
  * The order queue.
  *
  * Filters live in the URL rather than in component state, so "orders awaiting fulfilment" is a link
- * an operator can bookmark or paste into a ticket — which is exactly how the dashboard's queue tiles
+ * an operator can bookmark or paste into a ticket - which is exactly how the dashboard's queue tiles
  * reach this screen.
  */
 function OrdersList() {

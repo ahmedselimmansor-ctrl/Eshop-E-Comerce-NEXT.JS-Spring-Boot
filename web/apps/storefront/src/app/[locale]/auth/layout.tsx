@@ -6,7 +6,7 @@ import { Link } from '@/i18n/routing';
  * Shell for every authentication screen.
  *
  * Narrow and centred, with the store name as the only navigation. Sign-in is the one place where
- * the usual header — search, categories, cart — is a distraction from the single thing the visitor
+ * the usual header - search, categories, cart - is a distraction from the single thing the visitor
  * came to do.
  */
 export default async function AuthLayout({ children }: { children: ReactNode }) {

@@ -18,7 +18,7 @@ import java.util.Objects;
  *
  * <pre>{ "amount": "1299.00", "currency": "EGP" }</pre>
  *
- * <p>Arithmetic across differing currencies throws rather than silently coercing — mixing EGP and
+ * <p>Arithmetic across differing currencies throws rather than silently coercing - mixing EGP and
  * USD in one total is a bug, not a rounding concern.
  */
 public record Money(
@@ -91,7 +91,7 @@ public record Money(
         return new Money(amount.multiply(rate), currency);
     }
 
-    /** Clamps to zero — used where a discount must never push a line negative. */
+    /** Clamps to zero - used where a discount must never push a line negative. */
     public Money atLeastZero() {
         return isNegative() ? zero(currency) : this;
     }
@@ -131,7 +131,7 @@ public record Money(
         return amount.compareTo(other.amount) < 0;
     }
 
-    /** Minor units (piastres for EGP) — the unit Paymob and Fawry expect on the wire. */
+    /** Minor units (piastres for EGP) - the unit Paymob and Fawry expect on the wire. */
     @JsonIgnore
     public long toMinorUnits() {
         return amount.movePointRight(SCALE).longValueExact();

@@ -1,9 +1,9 @@
 -- ============================================================================
--- V7 — Payments, refunds, webhook idempotency
+-- V7 - Payments, refunds, webhook idempotency
 --
 -- PCI scope note: card data never reaches this system. Paymob's iframe and
 -- Fawry's hosted flow collect the PAN. We persist provider identifiers,
--- the brand, and the last four digits — nothing else.
+-- the brand, and the last four digits - nothing else.
 -- ============================================================================
 
 CREATE TABLE payments (

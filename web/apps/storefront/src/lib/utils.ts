@@ -75,7 +75,7 @@ export function formatRelativeTime(iso: string, locale: string): string {
  * Stable guest cart identifier.
  *
  * Kept in `localStorage` rather than a cookie so it is never sent on requests that do not need it,
- * and so it survives the visitor clearing cookies for tracking reasons — losing a cart to a privacy
+ * and so it survives the visitor clearing cookies for tracking reasons - losing a cart to a privacy
  * setting is a bad trade for everyone.
  */
 const SESSION_KEY = 'eshop.sessionId';
@@ -97,7 +97,7 @@ export function clearSessionId(): void {
   }
 }
 
-/** Debounces a function — used for the search-as-you-type box and filter sliders. */
+/** Debounces a function - used for the search-as-you-type box and filter sliders. */
 export function debounce<Args extends unknown[]>(
   fn: (...args: Args) => void,
   delayMs: number,

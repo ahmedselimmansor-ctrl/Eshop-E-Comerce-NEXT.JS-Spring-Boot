@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Google Cloud Storage implementation.
  *
- * <p>Authentication is via Workload Identity — the pod's Kubernetes service account is bound to a
+ * <p>Authentication is via Workload Identity - the pod's Kubernetes service account is bound to a
  * Google service account, and the client picks up credentials from the metadata server. No service
  * account JSON key exists anywhere in the image, the repository, or a secret.
  */

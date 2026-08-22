@@ -42,7 +42,7 @@ public class MediaController {
             description = """
                     Returns a URL valid for a single PUT of a single object, for about fifteen
                     minutes. The `Content-Type` header on the upload must match
-                    `requiredContentType` exactly — it is part of the signature, so a mismatched
+                    `requiredContentType` exactly - it is part of the signature, so a mismatched
                     upload is rejected by Cloud Storage rather than by us.
 
                     The object key is generated server-side. A client-supplied path would be a
@@ -65,7 +65,7 @@ public class MediaController {
     @DeleteMapping
     @PreAuthorize("hasAuthority('media:write')")
     @Operation(summary = "Delete an object",
-            description = "Idempotent — deleting a key that does not exist succeeds.")
+            description = "Idempotent - deleting a key that does not exist succeeds.")
     public ResponseEntity<Void> delete(@AuthenticationPrincipal UserPrincipal caller,
                                        @Valid @RequestBody DeleteRequest request) {
         storage.delete(request.objectKey());

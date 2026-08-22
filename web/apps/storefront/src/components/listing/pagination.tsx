@@ -11,7 +11,7 @@ import { useListingParams } from './use-listing-params';
  *
  * Numbered pages rather than infinite scroll: a shopper who opens a product and comes back expects
  * to be where they were, and infinite scroll loses that. Numbered pages are also what makes the
- * listing crawlable — each page has a real URL.
+ * listing crawlable - each page has a real URL.
  */
 export function Pagination({ page }: { page: PageMeta }) {
   const { update, isPending } = useListingParams();

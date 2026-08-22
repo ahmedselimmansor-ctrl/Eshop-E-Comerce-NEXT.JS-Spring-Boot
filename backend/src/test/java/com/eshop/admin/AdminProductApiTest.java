@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * <p>The list once mapped its rows in the controller, after the service transaction had committed.
  * With {@code open-in-view} disabled that reads a detached proxy, so every call threw
- * {@code LazyInitializationException} — while compiling perfectly well.
+ * {@code LazyInitializationException} - while compiling perfectly well.
  *
  * <p>The editor once loaded a product through the storefront's locale-resolved DTO, which exposes a
  * single {@code name}. The form filled both language fields from it, so saving an untouched form
@@ -43,7 +43,7 @@ class AdminProductApiTest extends IntegrationTest {
         mvc.perform(get("/api/v1/admin/products").param("size", "20").with(Auth.as(admin)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(2))
-                // Drafts are visible here and nowhere on the storefront — the whole point of the screen.
+                // Drafts are visible here and nowhere on the storefront - the whole point of the screen.
                 .andExpect(jsonPath("$.content[?(@.sku=='SKU-2')].status").value("DRAFT"))
                 .andExpect(jsonPath("$.content[?(@.sku=='SKU-1')].status").value("ACTIVE"))
                 .andExpect(jsonPath("$.content[?(@.sku=='SKU-1')].available").value(25))

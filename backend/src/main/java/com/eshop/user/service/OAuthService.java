@@ -226,7 +226,7 @@ public class OAuthService {
             // No password hash: this account can only be entered through Google until the owner
             // sets one via the password-reset flow.
             created.addRole(roles.findByName(Role.CUSTOMER).orElseThrow(
-                    () -> new IllegalStateException("CUSTOMER role missing — seed data not applied")));
+                    () -> new IllegalStateException("CUSTOMER role missing - seed data not applied")));
             log.info("oauth_user_created provider=GOOGLE email_verified={}", profile.emailVerified());
             return users.save(created);
         });

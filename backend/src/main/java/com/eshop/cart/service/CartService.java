@@ -41,7 +41,7 @@ import java.util.UUID;
  *   <li><b>Prices come from the catalog, never from the client.</b> A request says what to add and
  *       how many; the price is looked up. Accepting a submitted price is the single most commonly
  *       exploited flaw in a storefront API.</li>
- *   <li><b>Ownership is checked on every operation.</b> A cart id is not a capability — the caller
+ *   <li><b>Ownership is checked on every operation.</b> A cart id is not a capability - the caller
  *       must be the signed-in owner or hold the guest session id.</li>
  * </ol>
  *
@@ -186,7 +186,7 @@ public class CartService {
     /**
      * Applies a code to the cart for display.
      *
-     * <p>Advisory only — the same code is revalidated under a lock at checkout. Storing it here is
+     * <p>Advisory only - the same code is revalidated under a lock at checkout. Storing it here is
      * a convenience so the shopper does not have to retype it, not a reservation of the discount.
      */
     @Transactional
@@ -246,7 +246,7 @@ public class CartService {
             merged = Math.min(merged, properties.getCart().getMaxQuantityPerItem());
 
             // A product that went out of stock or was archived while the guest browsed is skipped
-            // rather than failing the whole merge — and the sign-in it is attached to.
+            // rather than failing the whole merge - and the sign-in it is attached to.
             int available = inventory.available(productId, variantId);
             if (available <= 0) {
                 log.info("cart_merge_skipped_unavailable product={} variant={}", productId, variantId);
@@ -285,7 +285,7 @@ public class CartService {
      * Pre-checkout check: has anything changed since these items were added?
      *
      * <p>Returns issues instead of throwing, because the customer needs to see all of them at once
-     * — fixing them one 409 at a time is a miserable checkout.
+     * - fixing them one 409 at a time is a miserable checkout.
      */
     @Transactional
     public List<Issue> validate(UUID userId, String sessionId) {
@@ -396,7 +396,7 @@ public class CartService {
     /**
      * Converts cart lines into the shape the discount engine consumes, resolving each product's
      * category ancestors so category-scoped coupons match sub-categories too. Ancestors are
-     * memoised per call — a cart usually spans only a handful of distinct categories.
+     * memoised per call - a cart usually spans only a handful of distinct categories.
      */
     public List<PriceableLine> priceableLines(Cart cart) {
         Map<UUID, Set<UUID>> ancestorCache = new HashMap<>();
@@ -442,7 +442,7 @@ public class CartService {
             }
             return null;
         }
-        // Checks the pairing, not just the id — a variant id from a different product is rejected.
+        // Checks the pairing, not just the id - a variant id from a different product is rejected.
         return variants.findByIdAndProductId(variantId, product.getId())
                 .filter(ProductVariant::isActive)
                 .orElseThrow(() -> NotFoundException.of("ProductVariant", variantId));

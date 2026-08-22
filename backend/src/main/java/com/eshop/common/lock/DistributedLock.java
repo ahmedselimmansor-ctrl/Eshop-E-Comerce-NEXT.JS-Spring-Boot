@@ -14,12 +14,12 @@ import java.util.function.Supplier;
 /**
  * Best-effort mutual exclusion across pods, backed by a single Redis instance.
  *
- * <p>Used for work that is wasteful — not catastrophic — to run twice: the outbox relay, the
+ * <p>Used for work that is wasteful - not catastrophic - to run twice: the outbox relay, the
  * reservation sweeper, nightly cleanup, and search reindexing. Every one of those is idempotent by
  * construction, so a lock lost to a Redis failover costs duplicated effort, never corrupted data.
  *
  * <p><b>What this is not.</b> This is not a correctness boundary. Anything that must happen exactly
- * once — decrementing stock, capturing a payment — relies on the database instead: {@code SELECT
+ * once - decrementing stock, capturing a payment - relies on the database instead: {@code SELECT
  * … FOR UPDATE}, a unique constraint, or an optimistic-lock version column. A single-node Redis lock
  * cannot survive a failover window, and pretending otherwise is how oversold inventory happens.
  */
@@ -106,7 +106,7 @@ public class DistributedLock {
         try {
             Long released = redis.execute(RELEASE_SCRIPT, List.of(key), token);
             if (released == null || released == 0L) {
-                // The lease expired while the job was still running — the job took longer than the
+                // The lease expired while the job was still running - the job took longer than the
                 // lease allowed, which means another pod may already have started it.
                 log.warn("lock_lease_expired_before_release name={}", name);
             }

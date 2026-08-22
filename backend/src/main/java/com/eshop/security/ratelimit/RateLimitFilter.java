@@ -24,7 +24,7 @@ import java.util.Map;
  * Applies the tiered limits from {@code docs/02-API-CONTRACT.md}.
  *
  * <p>Runs after authentication so an identified user is throttled on their user id rather than on
- * their IP — otherwise everyone behind one corporate NAT or mobile carrier gateway shares a single
+ * their IP - otherwise everyone behind one corporate NAT or mobile carrier gateway shares a single
  * bucket and locks each other out.
  *
  * <p>Rejection is raised as an exception rather than written here directly, so the 429 body is the
@@ -71,7 +71,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
      * Webhooks, health probes, and metrics are exempt.
      *
      * <p>Webhooks are authenticated by HMAC signature, and a payment provider retrying a burst of
-     * callbacks after an outage must not be throttled — dropping those would leave paid orders stuck
+     * callbacks after an outage must not be throttled - dropping those would leave paid orders stuck
      * in {@code PENDING_PAYMENT}.
      */
     @Override

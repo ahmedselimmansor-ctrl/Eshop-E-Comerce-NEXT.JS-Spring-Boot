@@ -18,7 +18,7 @@ public final class HtmlSanitizer {
 
     /**
      * What a product description may contain: basic formatting, lists, tables, links, and images.
-     * No {@code <script>}, no {@code <style>}, no {@code <iframe>}, no event handlers — jsoup's
+     * No {@code <script>}, no {@code <style>}, no {@code <iframe>}, no event handlers - jsoup's
      * allow-list model drops anything not named here rather than trying to blacklist attacks.
      */
     private static final Safelist RICH_TEXT = Safelist.relaxed()
@@ -49,7 +49,7 @@ public final class HtmlSanitizer {
         return Jsoup.clean(input, Safelist.none()).trim();
     }
 
-    /** Plain text, truncated on a word boundary — for meta descriptions and previews. */
+    /** Plain text, truncated on a word boundary - for meta descriptions and previews. */
     public static String excerpt(String html, int maxLength) {
         String text = plainText(html);
         if (text == null || text.length() <= maxLength) {

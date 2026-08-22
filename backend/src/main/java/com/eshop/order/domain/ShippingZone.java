@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * A group of governorates that share shipping rates.
  *
- * <p>Egypt's delivery economics cluster naturally — Greater Cairo is next-day and cheap, the Delta
+ * <p>Egypt's delivery economics cluster naturally - Greater Cairo is next-day and cheap, the Delta
  * is two to three days, Upper Egypt and the frontier governorates cost meaningfully more. Zones
  * capture that without a rate row per governorate.
  *

@@ -52,7 +52,7 @@ export function LoginForm({ labels }: { labels: Labels }) {
       setSession(response.user, response.tokens.accessToken);
 
       // Folds anything added while browsing anonymously into the customer's cart. A failure here
-      // is not worth blocking the sign-in over — they are signed in either way, and the merge is
+      // is not worth blocking the sign-in over - they are signed in either way, and the merge is
       // retried on the next session restore.
       const sessionId = getOrCreateSessionId();
       if (sessionId) {

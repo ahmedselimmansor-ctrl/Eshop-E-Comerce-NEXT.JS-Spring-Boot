@@ -4,7 +4,7 @@ import type { NextConfig } from 'next';
  * Admin console.
  *
  * Deliberately simpler than the storefront: no i18n routing (staff work in one language), no image
- * optimisation for a public CDN, and no SEO metadata — the whole surface is `noindex`.
+ * optimisation for a public CDN, and no SEO metadata - the whole surface is `noindex`.
  */
 const config: NextConfig = {
   reactStrictMode: true,

@@ -3,7 +3,7 @@ import { forwardRef, type HTMLAttributes, type InputHTMLAttributes, type ReactNo
 import { cn } from '@/lib/utils';
 
 /**
- * The small shared primitives — card, badge, input, textarea, select, skeleton.
+ * The small shared primitives - card, badge, input, textarea, select, skeleton.
  *
  * Grouped in one file because each is a handful of lines and they are almost always imported
  * together. The pieces with real behaviour (Button, dialogs, the quantity stepper) live in their
@@ -163,7 +163,7 @@ export function Field({
 /**
  * Loading placeholder.
  *
- * Sized to match the real content so the layout does not shift when data arrives — a spinner in a
+ * Sized to match the real content so the layout does not shift when data arrives - a spinner in a
  * zero-height box is what produces the jump that Cumulative Layout Shift measures.
  */
 export function Skeleton({ className, ...props }: HTMLAttributes<HTMLDivElement>) {

@@ -4,8 +4,8 @@ import { instantSchema, localeSchema } from './common';
 /**
  * Egyptian mobile numbers, local or international form.
  *
- * Mirrors the server-side pattern exactly. Client validation here is a UX affordance — it gives
- * instant feedback instead of a round trip — and never a substitute for the server's check.
+ * Mirrors the server-side pattern exactly. Client validation here is a UX affordance - it gives
+ * instant feedback instead of a round trip - and never a substitute for the server's check.
  */
 export const egyptianPhoneSchema = z
   .string()
@@ -15,7 +15,7 @@ export const egyptianPhoneSchema = z
  * Length only, matching the server.
  *
  * Composition rules ("one uppercase, one digit, one symbol") reliably produce `Password1!` while
- * blocking genuinely strong passphrases — NIST SP 800-63B recommends length plus a breach check
+ * blocking genuinely strong passphrases - NIST SP 800-63B recommends length plus a breach check
  * instead, which the server applies.
  */
 export const passwordSchema = z

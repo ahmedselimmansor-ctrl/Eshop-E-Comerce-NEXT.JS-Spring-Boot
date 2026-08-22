@@ -1,4 +1,4 @@
-# Eshop — Architecture (GCP)
+# Eshop - Architecture (GCP)
 
 > **This document is the single source of truth.** Every module in this repo MUST conform to it.
 > Companion docs: [`01-DATA-MODEL.md`](01-DATA-MODEL.md), [`02-API-CONTRACT.md`](02-API-CONTRACT.md), [`03-CONVENTIONS.md`](03-CONVENTIONS.md).
@@ -11,11 +11,11 @@
 | Currency | `EGP` primary, multi-currency capable (`currency CHAR(3)` everywhere money is stored). |
 | Payments | **Paymob** (card / wallet / installment), **Fawry** (kiosk / reference code), **COD** (cash on delivery). Behind a `PaymentProvider` SPI. |
 | Auth | Self-hosted **JWT** in Spring Boot: 15-min access token + rotating refresh token, RBAC with fine-grained permissions, Google OAuth2 social login. |
-| Backend shape | **Modular monolith** — one Spring Boot deployable, package-per-domain, enforced by ArchUnit. Split into services later without rewriting domain code. |
+| Backend shape | **Modular monolith** - one Spring Boot deployable, package-per-domain, enforced by ArchUnit. Split into services later without rewriting domain code. |
 | Deployment | GKE Autopilot, one Deployment per app (api, web, admin), HPA on CPU + RPS. |
 
 ### Why a modular monolith and not microservices
-The domain boundaries here (catalog / cart / order / payment) share transactional invariants — reserving stock and creating an order must be atomic. Microservices force that into sagas on day one for no benefit at this scale. The package structure below *is* the future service boundary: each domain owns its tables, exposes a Java interface, and never reaches into another domain's repositories. When one domain genuinely needs independent scaling, it lifts out cleanly.
+The domain boundaries here (catalog / cart / order / payment) share transactional invariants - reserving stock and creating an order must be atomic. Microservices force that into sagas on day one for no benefit at this scale. The package structure below *is* the future service boundary: each domain owns its tables, exposes a Java interface, and never reaches into another domain's repositories. When one domain genuinely needs independent scaling, it lifts out cleanly.
 
 ## 2. Repository layout
 
@@ -170,9 +170,9 @@ Postgres write → transactional outbox row → Pub/Sub `product.updated` → in
 | Availability | 99.9% | Regional GKE (3 zones), Cloud SQL regional HA (sync standby, automatic failover), Memorystore Standard HA, LB health checks. |
 | RTO | < 30 min | Terraform-reproducible infra; DB failover is automatic (~60s); PITR restore documented in `docs/06-RUNBOOKS.md`. |
 | RPO | < 5 min | Cloud SQL PITR (WAL archiving), continuous. Nightly logical `pg_dump` to GCS with 30-day retention. |
-| Scaling — web | HPA 2→20 pods @ 70% CPU | Stateless Next.js; CDN absorbs most load. |
-| Scaling — api | HPA 3→50 pods @ 70% CPU + 1000 RPS/pod | Stateless; sticky nothing; sessions in Redis/JWT. |
-| Scaling — DB | Vertical + read replica | Reporting/admin analytics routed to replica via `@Transactional(readOnly=true)` + `LazyConnectionDataSourceProxy`. |
+| Scaling - web | HPA 2→20 pods @ 70% CPU | Stateless Next.js; CDN absorbs most load. |
+| Scaling - api | HPA 3→50 pods @ 70% CPU + 1000 RPS/pod | Stateless; sticky nothing; sessions in Redis/JWT. |
+| Scaling - DB | Vertical + read replica | Reporting/admin analytics routed to replica via `@Transactional(readOnly=true)` + `LazyConnectionDataSourceProxy`. |
 | Burst events (flash sale) | Pre-warm | `minReplicas` bumped via scheduled HPA patch; Cloud Armor rate limits protect origin. |
 | Graceful shutdown | `preStop` sleep 10s + `server.shutdown=graceful` (30s) | No dropped in-flight requests during rollout. |
 | Rollout | `RollingUpdate maxSurge=1 maxUnavailable=0` + readiness gate | Zero-downtime. Argo Rollouts canary documented as an upgrade path. |
@@ -200,13 +200,13 @@ Postgres write → transactional outbox row → Pub/Sub `product.updated` → in
 
 ## 7. Observability
 
-- **Logs** — JSON structured (`logstash-logback-encoder`), one line per request with `trace_id`, `span_id`, `user_id`, `route`, `status`, `duration_ms`. Auto-ingested by Cloud Logging on GKE. Log-based metrics + alerts on `ERROR` rate.
-- **Metrics** — Micrometer → Prometheus endpoint → Google Managed Prometheus. RED metrics per endpoint + business metrics (`orders_placed_total`, `payment_failures_total`, `cart_abandonment_ratio`, `search_latency_seconds`).
-- **Traces** — OpenTelemetry auto-instrumentation → Cloud Trace. Trace propagated browser → Next.js → API → DB/Redis/ES.
-- **Errors** — Cloud Error Reporting + Sentry (frontend + mobile).
-- **Dashboards** — Terraform-managed Cloud Monitoring dashboards: Golden Signals, Business KPIs, Infra.
-- **Alerts** — p99 latency > 1s (5m), 5xx rate > 1%, DB CPU > 80%, Redis memory > 85%, payment failure rate > 5%, certificate expiry < 15d, HPA at max replicas.
-- **SLOs** — availability 99.9%, p95 API latency < 300ms, checkout success rate > 98%. Error budget policy documented.
+- **Logs** - JSON structured (`logstash-logback-encoder`), one line per request with `trace_id`, `span_id`, `user_id`, `route`, `status`, `duration_ms`. Auto-ingested by Cloud Logging on GKE. Log-based metrics + alerts on `ERROR` rate.
+- **Metrics** - Micrometer → Prometheus endpoint → Google Managed Prometheus. RED metrics per endpoint + business metrics (`orders_placed_total`, `payment_failures_total`, `cart_abandonment_ratio`, `search_latency_seconds`).
+- **Traces** - OpenTelemetry auto-instrumentation → Cloud Trace. Trace propagated browser → Next.js → API → DB/Redis/ES.
+- **Errors** - Cloud Error Reporting + Sentry (frontend + mobile).
+- **Dashboards** - Terraform-managed Cloud Monitoring dashboards: Golden Signals, Business KPIs, Infra.
+- **Alerts** - p99 latency > 1s (5m), 5xx rate > 1%, DB CPU > 80%, Redis memory > 85%, payment failure rate > 5%, certificate expiry < 15d, HPA at max replicas.
+- **SLOs** - availability 99.9%, p95 API latency < 300ms, checkout success rate > 98%. Error budget policy documented.
 
 ## 8. Environments
 
@@ -216,4 +216,4 @@ Postgres write → transactional outbox row → Pub/Sub `product.updated` → in
 | `staging` | Autopilot, regional | Enterprise, HA | Standard 2GB | staging.eshop.eg |
 | `prod` | Autopilot, regional | Enterprise Plus, HA + replica | Standard HA 5GB | eshop.eg |
 
-Local development uses `docker-compose.yml` (Postgres, Redis, Elasticsearch, Kibana, MailHog, fake-gcs-server, Jaeger) — no GCP account needed.
+Local development uses `docker-compose.yml` (Postgres, Redis, Elasticsearch, Kibana, MailHog, fake-gcs-server, Jaeger) - no GCP account needed.

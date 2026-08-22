@@ -21,7 +21,7 @@ import { useAuthStore } from '@/stores/auth-store';
 /**
  * Requests a reset link.
  *
- * Always reports success, whether or not the address is registered — the API returns 202 either
+ * Always reports success, whether or not the address is registered - the API returns 202 either
  * way. A screen that said "no account with that email" would be an enumeration oracle, and the
  * wording below is deliberately conditional ("if that address is registered") so it is honest
  * rather than merely evasive.

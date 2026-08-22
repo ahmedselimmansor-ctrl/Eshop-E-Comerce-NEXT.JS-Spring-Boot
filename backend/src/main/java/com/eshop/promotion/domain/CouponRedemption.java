@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * Records that a coupon was actually applied to an order.
  *
- * <p>This table — not {@code coupons.used_count} — is what enforces usage limits. The unique
+ * <p>This table - not {@code coupons.used_count} - is what enforces usage limits. The unique
  * constraint on {@code (coupon_id, order_id)} makes a double-submitted checkout idempotent, and
  * counting rows per user inside the checkout transaction is immune to the lost-update race that a
  * counter increment would have.

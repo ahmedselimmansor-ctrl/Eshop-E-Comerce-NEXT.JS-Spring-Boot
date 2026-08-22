@@ -13,7 +13,7 @@ import { isSupportedLocale, routing } from '@/i18n/routing';
  *
  * 2. It reads the locale and the guest session from the incoming request rather than from module
  *    state. Server components render concurrently for different visitors in the same process, so
- *    anything stored at module scope would leak one visitor's context into another's page — the
+ *    anything stored at module scope would leak one visitor's context into another's page - the
  *    kind of bug that only appears under load.
  */
 export async function serverApi(): Promise<EshopApi> {
@@ -31,7 +31,7 @@ export async function serverApi(): Promise<EshopApi> {
     getLocale: () => locale,
     getSessionId: () => cookieStore.get('eshop_session')?.value,
 
-    // Server-side rendering has no access token — the access token lives in browser memory. Pages
+    // Server-side rendering has no access token - the access token lives in browser memory. Pages
     // that need per-customer data fetch it from the browser instead, which is also what keeps them
     // cacheable at the edge.
     getAccessToken: () => null,
@@ -50,7 +50,7 @@ export async function serverApi(): Promise<EshopApi> {
 /**
  * Resolves the active locale in a server component.
  *
- * Reads the path first because that is authoritative — the URL is what was requested, and the
+ * Reads the path first because that is authoritative - the URL is what was requested, and the
  * cookie is only a fallback for a request that somehow arrived without a locale prefix.
  */
 export async function currentLocale(): Promise<string> {

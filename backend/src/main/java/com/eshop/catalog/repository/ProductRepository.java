@@ -23,7 +23,7 @@ import java.util.UUID;
  * <p>{@link JpaSpecificationExecutor} backs the filtered listing: price ranges, brand sets, and an
  * arbitrary number of attribute facets cannot be expressed as one static JPQL query without either
  * a combinatorial explosion of methods or a string-concatenated query. Specifications compose the
- * predicate from whichever filters the caller actually supplied — see {@code ProductSpecifications}.
+ * predicate from whichever filters the caller actually supplied - see {@code ProductSpecifications}.
  *
  * <p>The storefront normally reaches this through Elasticsearch; these queries serve the admin
  * console, the search fallback when the cluster is down, and the reindexing job.
@@ -52,7 +52,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
     @Query("SELECT p FROM Product p WHERE p.id = :id AND p.deletedAt IS NULL")
     Optional<Product> findDetailById(@Param("id") UUID id);
 
-    /** Listing projection — brand and images only, which is all a product card needs. */
+    /** Listing projection - brand and images only, which is all a product card needs. */
     @EntityGraph(attributePaths = {"brand", "images"})
     @Query("SELECT p FROM Product p WHERE p.id IN :ids AND p.deletedAt IS NULL")
     List<Product> findCardsByIds(@Param("ids") List<UUID> ids);
@@ -154,7 +154,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
      * Fire-and-forget view counter.
      *
      * <p>A bare UPDATE rather than a read-modify-write so concurrent views cannot lose increments,
-     * and so the product's {@code @Version} is untouched — a page view should never make a
+     * and so the product's {@code @Version} is untouched - a page view should never make a
      * concurrent admin edit fail with an optimistic-lock error.
      */
     @Modifying(clearAutomatically = false, flushAutomatically = false)
@@ -170,13 +170,13 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
 
     // ------------------------------------------------------- fallback facets --
     // Used only when Elasticsearch is unavailable. Counts are scoped to the category, not to the
-    // full active filter set — see ProductQueryService#degradedFacets for why that trade-off is
+    // full active filter set - see ProductQueryService#degradedFacets for why that trade-off is
     // acceptable in a fallback path.
 
     /*
      * Two methods rather than one with an optional filter.
      *
-     * `IN :ids` cannot be neutralised by passing null — JPQL has no meaning for a null collection,
+     * `IN :ids` cannot be neutralised by passing null - JPQL has no meaning for a null collection,
      * and an empty list renders as `in ()`, which PostgreSQL rejects. Splitting the query is both
      * valid and one predicate cheaper on the unfiltered path, which is the common one.
      */

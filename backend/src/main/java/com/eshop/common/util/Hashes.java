@@ -12,7 +12,7 @@ import java.util.HexFormat;
 /**
  * Digest and MAC helpers used for opaque tokens, webhook signature checks, and idempotency hashes.
  *
- * <p>These are <em>not</em> for passwords — those go through Argon2id via
+ * <p>These are <em>not</em> for passwords - those go through Argon2id via
  * {@code PasswordEncoder}. SHA-256 here is only used where the input is already high-entropy
  * (a 256-bit random token) or where the goal is a stable fingerprint rather than secrecy.
  */

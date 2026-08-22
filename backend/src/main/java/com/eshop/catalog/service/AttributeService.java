@@ -72,7 +72,7 @@ public class AttributeService {
         attribute.setPosition(changes.getPosition());
 
         // Type and variant-axis status are immutable once set. Flipping either would silently
-        // invalidate every product and variant already bound to this attribute — a colour that
+        // invalidate every product and variant already bound to this attribute - a colour that
         // stops being an axis leaves orphaned variants with no way to select them.
         if (changes.getType() != attribute.getType()
                 || changes.isVariantAxis() != attribute.isVariantAxis()) {

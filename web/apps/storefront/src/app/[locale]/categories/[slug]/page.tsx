@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  * Category listing.
  *
  * The same components as `/products`, with the category pinned. The API expands the category to
- * include its descendants, so browsing "Electronics" shows everything filed under Phones as well —
+ * include its descendants, so browsing "Electronics" shows everything filed under Phones as well -
  * which is what a shopper expects and what a naive equality filter would miss.
  */
 export default async function CategoryPage({ params, searchParams }: PageProps) {

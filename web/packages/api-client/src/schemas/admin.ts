@@ -27,7 +27,7 @@ export const metricSchema = z.object({
   /**
    * Absent when the previous period was zero.
    *
-   * Growth from nothing has no percentage — the API returns null rather than inventing "+100%", and
+   * Growth from nothing has no percentage - the API returns null rather than inventing "+100%", and
    * the tile renders no change indicator at all. Requiring a number here would reject the entire
    * dashboard payload on the most ordinary case there is: a store's first week.
    */
@@ -39,7 +39,7 @@ export type Metric = z.infer<typeof metricSchema>;
 export const countMetricSchema = z.object({
   current: z.number(),
   previous: z.number(),
-  /** Null when the previous period was zero — see {@link metricSchema}. */
+  /** Null when the previous period was zero - see {@link metricSchema}. */
   changePercent: z.number().nullable().optional(),
 });
 
@@ -90,7 +90,7 @@ export const lowStockItemSchema = z.object({
 
 export type LowStockItem = z.infer<typeof lowStockItemSchema>;
 
-/** Searches that returned nothing — the most direct signal of a gap in the catalog. */
+/** Searches that returned nothing - the most direct signal of a gap in the catalog. */
 export const zeroResultQuerySchema = z.object({
   query: z.string(),
   searches: z.number(),
@@ -113,7 +113,7 @@ export const stockRowSchema = z.object({
   warehouse: z.string().nullable().optional(),
   onHand: z.number(),
   reserved: z.number(),
-  /** On-hand minus reserved — the figure that decides whether a customer can actually buy. */
+  /** On-hand minus reserved - the figure that decides whether a customer can actually buy. */
   available: z.number(),
   reorderLevel: z.number(),
   lowStock: z.boolean(),
@@ -148,7 +148,7 @@ export const returnSummarySchema = z.object({
 export type ReturnSummary = z.infer<typeof returnSummarySchema>;
 
 /**
- * An order as staff see it: the customer's view plus everything deliberately withheld from them —
+ * An order as staff see it: the customer's view plus everything deliberately withheld from them -
  * internal notes, the originating IP, and every payment attempt including the failed ones.
  */
 export const adminOrderDetailSchema = z.object({
@@ -300,7 +300,7 @@ export const reviewModerationStatusSchema = z.enum(['PENDING', 'APPROVED', 'REJE
 export type ReviewModerationStatus = z.infer<typeof reviewModerationStatusSchema>;
 
 /**
- * A product as the editor sees it — raw and per-language.
+ * A product as the editor sees it - raw and per-language.
  *
  * Deliberately not `productDetailSchema`: that one resolves `name` and `description` for a visitor's
  * locale, and prefilling both language fields from one resolved string would overwrite Arabic with

@@ -7,7 +7,7 @@ import java.util.Set;
  * The order lifecycle, with its legal transitions encoded on the enum itself.
  *
  * <p>Keeping the state machine here rather than as scattered {@code if} statements in services
- * means every caller — the checkout flow, an admin action, a payment webhook, the expiry sweeper —
+ * means every caller - the checkout flow, an admin action, a payment webhook, the expiry sweeper -
  * is constrained by the same rules. An order cannot go from {@code DELIVERED} back to
  * {@code PROCESSING} because someone clicked the wrong dropdown.
  *
@@ -49,7 +49,7 @@ public enum OrderStatus {
     private static final Set<OrderStatus> TERMINAL =
             EnumSet.of(DELIVERED, CANCELLED, REFUNDED, FAILED);
 
-    /** Statuses a customer may cancel from — nothing that has already left the warehouse. */
+    /** Statuses a customer may cancel from - nothing that has already left the warehouse. */
     private static final Set<OrderStatus> CUSTOMER_CANCELLABLE =
             EnumSet.of(PENDING_PAYMENT, PAID, PROCESSING);
 

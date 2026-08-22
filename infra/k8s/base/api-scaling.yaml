@@ -40,7 +40,7 @@ spec:
         name: cpu
         target:
           type: Utilization
-          # 70%, not 90%: scaling up takes time — image pull, JVM start, Flyway, warm-up — and a
+          # 70%, not 90%: scaling up takes time - image pull, JVM start, Flyway, warm-up - and a
           # target that high means the decision is made only once latency is already climbing.
           averageUtilization: 70
 
@@ -79,7 +79,7 @@ kind: PodDisruptionBudget
 metadata:
   name: eshop-api
 spec:
-  # Caps how many pods a *voluntary* disruption may remove at once — a node drain, an Autopilot
+  # Caps how many pods a *voluntary* disruption may remove at once - a node drain, an Autopilot
   # upgrade, a cluster resize. Without it, GKE may evict every replica on one node simultaneously.
   minAvailable: 50%
   selector:

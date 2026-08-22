@@ -20,13 +20,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Placing an order, and placing it twice.
  *
  * <p>The retry case is the one that matters. A mobile client that loses its connection after the
- * request was received has no way to know whether the order exists, so it retries — and without a
+ * request was received has no way to know whether the order exists, so it retries - and without a
  * working idempotency record that second attempt is a second order and a second charge.
  *
  * <p>This is also a regression test. {@code IdempotencyKey.responseBody} was declared as a bare
  * {@code Object} with {@code @JdbcTypeCode(SqlTypes.JSON)}; Hibernate could not infer a serialiser
  * and fell back to {@code String}, so storing the response threw {@code ClassCastException} at
- * commit. Checkout failed outright — every order, not merely the retried ones.
+ * commit. Checkout failed outright - every order, not merely the retried ones.
  */
 class CheckoutIdempotencyTest extends IntegrationTest {
 

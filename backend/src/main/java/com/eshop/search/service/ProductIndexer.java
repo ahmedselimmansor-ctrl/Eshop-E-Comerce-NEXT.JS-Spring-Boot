@@ -29,7 +29,7 @@ import java.util.UUID;
  * and would index changes that later roll back. Instead the write records a
  * {@code product.updated} event, and the relay calls {@link #index} afterwards.
  *
- * <p>Every operation is idempotent — indexing the same product twice produces the same document —
+ * <p>Every operation is idempotent - indexing the same product twice produces the same document -
  * so at-least-once delivery from the outbox is safe.
  */
 @Slf4j
@@ -90,7 +90,7 @@ public class ProductIndexer {
     }
 
     private void indexProduct(Product product) {
-        // Draft and archived products are removed rather than indexed — leaving them with a status
+        // Draft and archived products are removed rather than indexed - leaving them with a status
         // filter would still let them surface if a query ever forgot the filter.
         if (!product.isPurchasable()) {
             delete(product.getId());

@@ -18,8 +18,8 @@ import java.util.UUID;
  * A domain event queued for publication, written in the same transaction as the change it describes.
  *
  * <p>This exists to close a gap that has no other safe solution. Publishing to Pub/Sub directly
- * from a service method means either publishing before the commit — and announcing an order that
- * then rolls back — or after it, and losing the event entirely if the process dies in between.
+ * from a service method means either publishing before the commit - and announcing an order that
+ * then rolls back - or after it, and losing the event entirely if the process dies in between.
  * Neither is acceptable for "payment captured".
  *
  * <p>Writing the event to this table is part of the business transaction, so it commits atomically
@@ -33,7 +33,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class OutboxEvent extends BaseEntity {
 
-    /** Event names. Also the Pub/Sub topic suffix — see {@code AppProperties.PubSub#topicFor}. */
+    /** Event names. Also the Pub/Sub topic suffix - see {@code AppProperties.PubSub#topicFor}. */
     public static final String ORDER_PLACED = "order.placed";
     public static final String ORDER_PAID = "order.paid";
     public static final String ORDER_CANCELLED = "order.cancelled";

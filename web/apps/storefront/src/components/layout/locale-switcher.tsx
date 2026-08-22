@@ -9,7 +9,7 @@ import { usePathname, useRouter } from '@/i18n/routing';
  * Switches between Arabic and English.
  *
  * Navigates to the *same page* in the other locale rather than sending the visitor to the home
- * page — the equivalent of a "translate this page" button, which is what someone reading a product
+ * page - the equivalent of a "translate this page" button, which is what someone reading a product
  * page actually wants.
  */
 export function LocaleSwitcher({ currentLocale }: { currentLocale: string }) {
@@ -23,10 +23,10 @@ export function LocaleSwitcher({ currentLocale }: { currentLocale: string }) {
   function switchLocale() {
     startTransition(() => {
       // `pathname` here is the *unlocalised* route pattern, and `params` carries its segments, so
-      // next-intl can rebuild the localised URL for the other language — including the translated
+      // next-intl can rebuild the localised URL for the other language - including the translated
       // path segments (`/ar/منتجات/[slug]` ↔ `/en/products/[slug]`).
       router.replace(
-        // @ts-expect-error — params are correct for the current route by construction, but the
+        // @ts-expect-error - params are correct for the current route by construction, but the
         // pathname is only known at runtime so the generic cannot be narrowed here.
         { pathname, params },
         { locale: target },

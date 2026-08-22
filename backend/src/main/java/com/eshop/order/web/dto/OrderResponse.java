@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * An order as the customer sees it.
  *
- * <p>{@code adminNote} is deliberately absent — internal remarks about a customer must never reach
+ * <p>{@code adminNote} is deliberately absent - internal remarks about a customer must never reach
  * a customer-facing endpoint by accident. The admin projection adds it explicitly.
  */
 @Schema(name = "OrderResponse")

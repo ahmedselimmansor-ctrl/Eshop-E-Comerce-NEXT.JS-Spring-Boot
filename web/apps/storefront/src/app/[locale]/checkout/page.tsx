@@ -19,7 +19,7 @@ export async function generateMetadata({
 /**
  * Checkout.
  *
- * A thin server shell. The flow itself is a client component that reads its own messages — it needs
+ * A thin server shell. The flow itself is a client component that reads its own messages - it needs
  * parameterised strings ("2–3 business days"), and a server component cannot pass a translation
  * function across the boundary.
  */

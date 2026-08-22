@@ -76,7 +76,7 @@ public class CheckoutController {
                     Creates the order from the caller's cart and starts its payment.
 
                     **Requires an `Idempotency-Key` header.** A retry with the same key returns the
-                    original order rather than creating a second one — which is what makes it safe
+                    original order rather than creating a second one - which is what makes it safe
                     for a mobile client to retry after a dropped connection.
 
                     Prices are re-read from the catalog inside the transaction. A price that moved

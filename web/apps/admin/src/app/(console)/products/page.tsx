@@ -39,7 +39,7 @@ export default function ProductsPage() {
 /**
  * The catalog.
  *
- * Selection drives a bulk status change — publishing twenty products one at a time is the single
+ * Selection drives a bulk status change - publishing twenty products one at a time is the single
  * most tedious thing in a console like this, and the endpoint already supports doing it in one call.
  */
 function ProductsList() {
@@ -274,7 +274,7 @@ function ProductsList() {
 
                     <Td>
                       {product.available === null || product.available === undefined ? (
-                        <span className="text-xs text-[var(--muted-foreground)]">—</span>
+                        <span className="text-xs text-[var(--muted-foreground)]">-</span>
                       ) : product.available <= 0 ? (
                         <Badge tone="danger">Out of stock</Badge>
                       ) : (

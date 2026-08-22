@@ -13,7 +13,7 @@ import java.util.UUID;
  * A row in the admin product list.
  *
  * <p>Separate from {@code ProductCardResponse} rather than an extension of it. The storefront card
- * describes a product a customer may buy, so it has no reason to carry a status — everything it
+ * describes a product a customer may buy, so it has no reason to carry a status - everything it
  * returns is published by definition. This list is the opposite: its whole job is to show drafts and
  * archived products alongside live ones, and folding {@code status} into the shared card would put
  * that field on every public listing response for the sake of one internal screen.

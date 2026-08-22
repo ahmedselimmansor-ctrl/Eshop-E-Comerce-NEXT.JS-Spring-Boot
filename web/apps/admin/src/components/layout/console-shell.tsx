@@ -25,7 +25,7 @@ import { cn } from '@/lib/utils';
  * Navigation, filtered by what the operator can actually do.
  *
  * `permission` mirrors the `@PreAuthorize` on the endpoints behind each section. Hiding a link the
- * operator cannot use is a courtesy, not a control — a support agent who types /products still gets
+ * operator cannot use is a courtesy, not a control - a support agent who types /products still gets
  * a 403 from the API.
  */
 const SECTIONS = [

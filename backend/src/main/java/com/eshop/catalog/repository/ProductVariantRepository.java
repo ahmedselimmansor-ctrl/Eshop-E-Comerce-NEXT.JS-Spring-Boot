@@ -24,7 +24,7 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
     List<ProductVariant> findByProductIdOrderByPositionAsc(UUID productId);
 
     /**
-     * Guards against a variant id from one product being submitted against another — the cart and
+     * Guards against a variant id from one product being submitted against another - the cart and
      * checkout both verify the pairing rather than trusting the client's association.
      */
     @Query("SELECT v FROM ProductVariant v WHERE v.id = :variantId AND v.product.id = :productId")

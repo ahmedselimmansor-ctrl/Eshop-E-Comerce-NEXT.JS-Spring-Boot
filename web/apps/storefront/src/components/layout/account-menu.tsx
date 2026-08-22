@@ -12,7 +12,7 @@ import { clearSessionId } from '@/lib/utils';
 /**
  * Account entry point: a sign-in link when signed out, a menu when signed in.
  *
- * While the session is still being restored it renders the signed-out state rather than a spinner —
+ * While the session is still being restored it renders the signed-out state rather than a spinner -
  * the restore takes a few hundred milliseconds, and a placeholder that swaps to a name is a more
  * jarring flash than a link that swaps to a name.
  */
@@ -34,7 +34,7 @@ export function AccountMenu() {
 
     clear();
     clearSessionId();
-    // Drops every cached response — cart, orders, addresses — so the next visitor on this device
+    // Drops every cached response - cart, orders, addresses - so the next visitor on this device
     // cannot read the previous one's data from the cache.
     queryClient.clear();
     router.push('/');

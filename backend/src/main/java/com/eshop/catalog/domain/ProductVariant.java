@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * One purchasable combination of a {@link ProductType#VARIABLE} product — "Red / Large".
+ * One purchasable combination of a {@link ProductType#VARIABLE} product - "Red / Large".
  *
  * <p>The variant, not the product, is what a cart line and an order line point at, because price,
  * SKU, barcode, weight, and stock all differ per combination. Its price is absolute rather than a
@@ -85,7 +85,7 @@ public class ProductVariant extends AuditableEntity {
     }
 
     /**
-     * Human-readable axis summary — "أحمر / كبير" — frozen onto order lines so the description
+     * Human-readable axis summary - "أحمر / كبير" - frozen onto order lines so the description
      * survives a later rename of the attribute value.
      */
     public String label(String locale) {

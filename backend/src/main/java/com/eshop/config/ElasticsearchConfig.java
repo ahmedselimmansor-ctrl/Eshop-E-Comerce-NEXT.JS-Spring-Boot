@@ -23,8 +23,8 @@ import java.util.List;
 /**
  * Elasticsearch client for the product search index.
  *
- * <p>Guarded by {@code eshop.elasticsearch.enabled} so the application still boots — with search
- * falling back to PostgreSQL trigram matching — when the cluster is unavailable or intentionally
+ * <p>Guarded by {@code eshop.elasticsearch.enabled} so the application still boots - with search
+ * falling back to PostgreSQL trigram matching - when the cluster is unavailable or intentionally
  * not deployed (small dev environments, CI).
  */
 @Slf4j

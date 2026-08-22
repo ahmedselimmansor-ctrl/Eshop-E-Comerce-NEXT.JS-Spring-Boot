@@ -16,7 +16,7 @@ COPY packages/api-client/package.json ./packages/api-client/
 COPY apps/storefront/package.json ./apps/storefront/
 COPY apps/admin/package.json ./apps/admin/
 
-# `npm ci` installs exactly the lockfile — a build that resolves a different version than the one
+# `npm ci` installs exactly the lockfile - a build that resolves a different version than the one
 # that was tested is not a reproducible build.
 RUN npm ci --no-audit --no-fund
 
@@ -58,7 +58,7 @@ RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 --ingroup nodejs nextjs
 
 # `output: 'standalone'` traces the actual import graph and emits a self-contained server with only
-# the modules it reaches — roughly 150 MB instead of the full node_modules tree.
+# the modules it reaches - roughly 150 MB instead of the full node_modules tree.
 COPY --from=build --chown=nextjs:nodejs /app/apps/${APP_NAME}/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/apps/${APP_NAME}/.next/static ./apps/${APP_NAME}/.next/static
 COPY --from=build --chown=nextjs:nodejs /app/apps/${APP_NAME}/public ./apps/${APP_NAME}/public

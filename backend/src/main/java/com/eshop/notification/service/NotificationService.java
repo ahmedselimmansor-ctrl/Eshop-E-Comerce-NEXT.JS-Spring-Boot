@@ -16,7 +16,7 @@ public interface NotificationService {
     /** Link-based email verification, sent at registration. */
     void sendEmailVerification(Recipient recipient, String token);
 
-    /** Password reset link. Sent even for unknown addresses is <em>not</em> the caller's concern —
+    /** Password reset link. Sent even for unknown addresses is <em>not</em> the caller's concern -
      *  {@code AuthService} decides that, so this is only ever called for a real account. */
     void sendPasswordReset(Recipient recipient, String token);
 

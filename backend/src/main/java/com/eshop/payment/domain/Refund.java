@@ -25,7 +25,7 @@ import java.util.UUID;
  * <p>Partial refunds are first-class: a customer keeps two of three items, or is compensated for a
  * late delivery. Several refunds can accumulate against one payment, and
  * {@code PaymentService.refund} checks their sum against the captured amount before calling the
- * provider — refunding more than was taken is not a mistake any gateway will let you undo cleanly.
+ * provider - refunding more than was taken is not a mistake any gateway will let you undo cleanly.
  */
 @Entity
 @Table(name = "refunds")
@@ -69,7 +69,7 @@ public class Refund extends AuditableEntity {
     @Column(name = "status", nullable = false, length = 20)
     private Status status = Status.PENDING;
 
-    /** The administrator who authorised it — always recorded, never nullable in practice. */
+    /** The administrator who authorised it - always recorded, never nullable in practice. */
     @Column(name = "created_by")
     private UUID createdBy;
 

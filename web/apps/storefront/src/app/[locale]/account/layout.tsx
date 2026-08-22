@@ -7,7 +7,7 @@ import { AccountNav } from '@/components/account/account-nav';
  *
  * The route is already gated by the middleware, which redirects an unauthenticated visitor to
  * sign-in. That check is a routing convenience based on the presence of the refresh cookie, not an
- * authorisation decision — every request the pages below make is authorised by the backend against
+ * authorisation decision - every request the pages below make is authorised by the backend against
  * the access token, so a forged cookie gets an empty account area rather than someone else's data.
  */
 export default async function AccountLayout({ children }: { children: ReactNode }) {

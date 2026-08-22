@@ -1,4 +1,4 @@
-# Eshop — Conventions & Pinned Versions
+# Eshop - Conventions & Pinned Versions
 
 Every agent/contributor MUST follow this file. Deviating breaks the build for everyone else.
 
@@ -9,7 +9,7 @@ Every agent/contributor MUST follow this file. Deviating breaks the build for ev
 | Java | **21** (LTS), toolchain enforced in `pom.xml` |
 | Spring Boot | **3.5.4** |
 | Spring Cloud GCP | **6.1.1** |
-| Hibernate JSONB | native `@JdbcTypeCode(SqlTypes.JSON)` — no third-party type mapper |
+| Hibernate JSONB | native `@JdbcTypeCode(SqlTypes.JSON)` - no third-party type mapper |
 | Maven | wrapper `./mvnw` (3.9.x) |
 | PostgreSQL | **16** |
 | Redis | **7.2** |
@@ -33,7 +33,7 @@ Every agent/contributor MUST follow this file. Deviating breaks the build for ev
 com.eshop.<domain>/
 ├── domain/        # JPA entities + enums + domain services (no Spring web types)
 ├── repository/    # Spring Data JPA interfaces (+ custom impl for complex queries)
-├── service/       # @Service — transactions live HERE, never in controllers
+├── service/       # @Service - transactions live HERE, never in controllers
 ├── web/           # @RestController + request/response records
 │   └── dto/       # records with static `from(entity, locale)` factories
 └── event/         # domain events published via ApplicationEventPublisher / outbox
@@ -42,13 +42,13 @@ com.eshop.<domain>/
 **Entity → DTO mapping** is a static factory on the DTO record (`ProductCardResponse.from(product, locale)`), not a MapStruct mapper. Nearly every response here has to resolve `_ar`/`_en` against the caller's locale and apply a fallback; expressing that in mapper annotations is more code than writing it, and it puts the rule somewhere a reader of the DTO cannot see it.
 
 **Hard rules**
-1. Controllers contain **zero** business logic — validate, delegate, map, return.
+1. Controllers contain **zero** business logic - validate, delegate, map, return.
 2. `@Transactional` only on `@Service` methods. Read paths use `@Transactional(readOnly = true)`.
 3. Entities never cross the HTTP boundary. Always map to a DTO record.
 4. A domain **never** injects another domain's `Repository`. Cross-domain access goes through the other domain's `Service` interface. (Enforced by an ArchUnit test in `ArchitectureTest.java`.)
 5. All DTOs are Java `record`s with `jakarta.validation` annotations.
 6. `Optional` for single lookups; throw `NotFoundException` from the service, never return null.
-7. No `@Autowired` on fields — constructor injection only (Lombok `@RequiredArgsConstructor`).
+7. No `@Autowired` on fields - constructor injection only (Lombok `@RequiredArgsConstructor`).
 8. Every list endpoint is paginated. No unbounded `findAll()`.
 9. `LAZY` on every `@ManyToOne`/`@OneToMany`; use `@EntityGraph` or a fetch-join query to avoid N+1.
 10. Money uses `com.eshop.common.money.Money` (a `BigDecimal` + `Currency` value object), never `double`.
@@ -68,13 +68,13 @@ com.eshop.<domain>/
 | `RateLimitExceededException` | 429 | `RATE_LIMITED` |
 | anything else | 500 | `INTERNAL_ERROR` (detail is generic; real cause logged with the `requestId`) |
 
-**Testing** — JUnit 5 + AssertJ + Mockito for units; **Testcontainers** (Postgres, Redis, Elasticsearch) for integration; `@SpringBootTest` + MockMvc for web slices; WireMock for Paymob/Fawry. Minimum: every service has unit tests, every controller has a slice test, checkout+payment have full integration tests.
+**Testing** - JUnit 5 + AssertJ + Mockito for units; **Testcontainers** (Postgres, Redis, Elasticsearch) for integration; `@SpringBootTest` + MockMvc for web slices; WireMock for Paymob/Fawry. Minimum: every service has unit tests, every controller has a slice test, checkout+payment have full integration tests.
 
-**Config profiles** — `local` (docker-compose), `dev`, `staging`, `prod`. `application.yml` holds defaults, `application-{profile}.yml` the overrides. **No secret values in any yml** — only `${ENV_VAR}` placeholders.
+**Config profiles** - `local` (docker-compose), `dev`, `staging`, `prod`. `application.yml` holds defaults, `application-{profile}.yml` the overrides. **No secret values in any yml** - only `${ENV_VAR}` placeholders.
 
 ## 3. Frontend (Next.js) conventions
 
-**Workspace** — `web/` is an npm workspaces root: `apps/storefront`, `apps/admin`, `packages/api-client`.
+**Workspace** - `web/` is an npm workspaces root: `apps/storefront`, `apps/admin`, `packages/api-client`.
 
 **App structure** (both apps)
 ```
@@ -102,16 +102,16 @@ src/
 4. Forms → `react-hook-form` + `@hookform/resolvers/zod`, sharing the same Zod schema the API expects.
 5. Mutations that need cookies/secrets → Next.js **Server Actions** or route handlers, so the access token never sits in `localStorage`.
 6. Access token lives in memory (Zustand, non-persisted); refresh token in an httpOnly cookie set by the BFF route handler.
-7. **RTL** — use logical CSS properties only (`ms-*`, `me-*`, `ps-*`, `pe-*`, `start-*`, `end-*`). Never `ml-*`/`mr-*`/`left-*`/`right-*`. Icons that imply direction get `rtl:rotate-180`.
+7. **RTL** - use logical CSS properties only (`ms-*`, `me-*`, `ps-*`, `pe-*`, `start-*`, `end-*`). Never `ml-*`/`mr-*`/`left-*`/`right-*`. Icons that imply direction get `rtl:rotate-180`.
 8. All user-facing strings come from `next-intl`. No hardcoded Arabic or English in components.
 9. Images via `next/image` with the GCS/CDN loader; always `sizes` + `alt`.
 10. Every page exports `generateMetadata` (title, description, OG, canonical, `hreflang` for ar/en).
 11. `loading.tsx` + `error.tsx` in every route segment; skeletons match final layout to avoid CLS.
 12. Accessibility: semantic landmarks, visible focus rings, `aria-label` on icon-only buttons, keyboard-navigable menus/dialogs, contrast ≥ 4.5:1.
 
-**Theming** — Tailwind v4 `@theme` in `src/app/globals.css`, shadcn CSS variables, light + dark via `next-themes`. Brand palette defined once and reused; storefront and admin have distinct but related looks.
+**Theming** - Tailwind v4 `@theme` in `src/app/globals.css`, shadcn CSS variables, light + dark via `next-themes`. Brand palette defined once and reused; storefront and admin have distinct but related looks.
 
-**Fonts** — `next/font/local` with **IBM Plex Sans Arabic** (ar) and **Inter** (en), swapped per locale.
+**Fonts** - `next/font/local` with **IBM Plex Sans Arabic** (ar) and **Inter** (en), swapped per locale.
 
 ## 4. Mobile (Flutter) conventions
 

@@ -28,7 +28,7 @@ import java.util.UUID;
  * A customer's rating and written review of a product.
  *
  * <p>Reviews are held for moderation by default. Publishing user-authored text straight to a public
- * page invites spam and abuse, and the store — not the reviewer — is the one whose page it appears
+ * page invites spam and abuse, and the store - not the reviewer - is the one whose page it appears
  * on. {@code catalog.reviews_auto_approve} can flip that for stores that would rather moderate
  * after the fact.
  *
@@ -97,7 +97,7 @@ public class Review extends AuditableEntity {
     private String rejectionReason;
 
     /*
-     * Left out of the paged entity graphs — Hibernate cannot page in SQL while a collection is
+     * Left out of the paged entity graphs - Hibernate cannot page in SQL while a collection is
      * join-fetched. @BatchSize loads a whole page's worth in one extra query instead of one per row.
      */
     @BatchSize(size = 50)
@@ -129,7 +129,7 @@ public class Review extends AuditableEntity {
      * Edits send the review back for moderation.
      *
      * <p>Without this, a reviewer could get an innocuous review approved and then rewrite it into
-     * anything — the approval would still stand.
+     * anything - the approval would still stand.
      */
     public void editContent(short newRating, String newTitle, String newBody) {
         rating = newRating;

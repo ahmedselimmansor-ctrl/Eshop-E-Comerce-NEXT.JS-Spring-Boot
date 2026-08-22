@@ -28,7 +28,7 @@ import java.util.List;
  * <p>Two chains: a permissive one for the payment webhook endpoints, which authenticate by HMAC
  * signature rather than by token, and the main API chain. Splitting them means the webhook path
  * never has to be listed as an exception inside a chain that also carries CSRF and authentication
- * rules — it simply is not subject to them.
+ * rules - it simply is not subject to them.
  */
 @Slf4j
 @Configuration
@@ -51,7 +51,7 @@ public class SecurityConfig {
      * or ASIC test candidates in parallel far more cheaply.
      *
      * <p>The encoder writes its parameters into the hash string, so raising the cost later does not
-     * invalidate existing hashes — old ones keep verifying and are upgraded on next successful login.
+     * invalidate existing hashes - old ones keep verifying and are upgraded on next successful login.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -65,7 +65,7 @@ public class SecurityConfig {
     }
 
     /**
-     * Webhook chain — first by order, matched only for the two provider callback paths.
+     * Webhook chain - first by order, matched only for the two provider callback paths.
      *
      * <p>No authentication, no CSRF, no session: the provider is a server that cannot present a
      * token or a cookie. Authenticity is established inside the controller by verifying the
@@ -93,7 +93,7 @@ public class SecurityConfig {
 
                 // The API authenticates with a Bearer token, which a browser does not attach
                 // automatically, so there is no cross-site request forgery to defend against. The
-                // one cookie in play — the refresh token — is SameSite=Strict and scoped to
+                // one cookie in play - the refresh token - is SameSite=Strict and scoped to
                 // /api/v1/auth, and the refresh endpoint additionally requires a POST with a
                 // matching body or header.
                 .csrf(csrf -> csrf.disable())

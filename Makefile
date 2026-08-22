@@ -1,7 +1,7 @@
-# Eshop — common tasks.
+# Eshop - common tasks.
 #
 # Everything here runs in Docker, so the only prerequisites are Docker and Make. No local JDK,
-# Maven, or Node install is required — `make dev` works on a clean machine.
+# Maven, or Node install is required - `make dev` works on a clean machine.
 
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
@@ -96,6 +96,11 @@ images: ## Build the container images
 
 .PHONY: test
 test: test-backend test-web test-mobile ## Run every test suite
+
+.PHONY: db-repair
+db-repair: ## Realign Flyway checksums after a migration comment changed (does not re-run any SQL)
+	$(MVN) flyway:repair -Dflyway.url=jdbc:postgresql://localhost:5432/eshop \
+		-Dflyway.user=eshop -Dflyway.password=eshop
 
 .PHONY: test-backend
 test-backend: ## Backend tests (needs `make infra` for Postgres and Redis)

@@ -27,7 +27,7 @@ const buttonVariants = cva(
       },
       size: {
         sm: 'h-9 px-3',
-        // 44px — the minimum comfortable tap target on a phone, which is where most of this
+        // 44px - the minimum comfortable tap target on a phone, which is where most of this
         // store's traffic comes from.
         md: 'h-11 px-5',
         lg: 'h-12 px-8 text-base',
@@ -44,7 +44,7 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  /** Renders the child element instead of a `<button>` — for links that look like buttons. */
+  /** Renders the child element instead of a `<button>` - for links that look like buttons. */
   asChild?: boolean;
   loading?: boolean;
 }
@@ -54,7 +54,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const classes = cn(buttonVariants({ variant, size, fullWidth }), className);
 
     /*
-     * `asChild` renders the caller's element — usually a Link — with the button's styling. Radix's
+     * `asChild` renders the caller's element - usually a Link - with the button's styling. Radix's
      * Slot requires exactly one child, so the spinner must not be emitted here: even a `null` from
      * a false branch counts as a second child and fails at render with "Slot failed to slot onto
      * its children".
@@ -73,7 +73,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={classes}
-        // A loading button stays disabled so a double tap cannot submit twice — which on checkout
+        // A loading button stays disabled so a double tap cannot submit twice - which on checkout
         // would mean a second order attempt.
         disabled={disabled || loading}
         aria-busy={loading || undefined}

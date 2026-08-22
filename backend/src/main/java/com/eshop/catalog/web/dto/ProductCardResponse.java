@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * The listing projection — everything a product card renders, and nothing else.
+ * The listing projection - everything a product card renders, and nothing else.
  *
  * <p>Kept deliberately small. A category page returns twenty of these, and shipping full
  * descriptions, variant lists, or specification tables that the card never displays would multiply

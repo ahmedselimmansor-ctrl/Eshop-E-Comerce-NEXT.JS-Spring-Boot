@@ -19,7 +19,7 @@ import java.util.Map;
  * Every callback a payment provider sends, recorded before it is acted on.
  *
  * <p>The unique constraint on {@code (provider, event_id)} <b>is</b> the idempotency mechanism.
- * Providers retry aggressively — a callback that times out on our side arrives again minutes later,
+ * Providers retry aggressively - a callback that times out on our side arrives again minutes later,
  * and a webhook that captures a payment twice would mark the order paid twice, commit the stock
  * reservation twice, and send two confirmation emails. Inserting first means a duplicate hits the
  * constraint and is answered {@code 200} without reprocessing.
@@ -72,7 +72,7 @@ public class PaymentWebhookEvent extends BaseEntity {
 
     /*
      * There is deliberately no separate `receivedAt`. A row here is created exactly once, at
-     * receipt, so `createdAt` from BaseEntity already is the arrival time — a second column would
+     * receipt, so `createdAt` from BaseEntity already is the arrival time - a second column would
      * only be a second thing to keep in sync.
      */
 

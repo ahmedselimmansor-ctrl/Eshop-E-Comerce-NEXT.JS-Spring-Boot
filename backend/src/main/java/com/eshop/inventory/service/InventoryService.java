@@ -205,7 +205,7 @@ public class InventoryService {
     public void commitReservations(UUID orderId) {
         List<StockReservation> held = reservations.findByOrderIdAndStatus(orderId, StockReservation.Status.HELD);
         if (held.isEmpty()) {
-            log.debug("stock_commit_noop order={} — no held reservations", orderId);
+            log.debug("stock_commit_noop order={} - no held reservations", orderId);
             return;
         }
 
@@ -288,7 +288,7 @@ public class InventoryService {
     /**
      * Sets an absolute on-hand count after a physical stock take.
      *
-     * <p>Absolute rather than a delta because that is how a stock take works — the counter reports
+     * <p>Absolute rather than a delta because that is how a stock take works - the counter reports
      * what is on the shelf, not how it differs from the system. The ledger still records the signed
      * difference so the correction is auditable.
      */

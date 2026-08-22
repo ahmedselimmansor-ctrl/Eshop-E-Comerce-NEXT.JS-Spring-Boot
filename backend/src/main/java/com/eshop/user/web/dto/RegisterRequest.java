@@ -22,7 +22,7 @@ public record RegisterRequest(
         String email,
 
         /*
-         * Egyptian mobile numbers, local or +20 form. Optional at registration — asking for a phone
+         * Egyptian mobile numbers, local or +20 form. Optional at registration - asking for a phone
          * up front measurably depresses sign-up, and checkout collects one anyway.
          */
         @Pattern(regexp = "^(\\+20|0)?1[0125][0-9]{8}$", message = "رقم الهاتف غير صحيح")

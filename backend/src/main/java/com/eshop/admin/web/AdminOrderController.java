@@ -66,7 +66,7 @@ public class AdminOrderController {
     @GetMapping
     @PreAuthorize("hasAuthority('order:read')")
     @Operation(summary = "Search orders",
-            description = "The free-text term matches the order number or the customer's email — "
+            description = "The free-text term matches the order number or the customer's email - "
                     + "the three things a support agent has when a customer calls.")
     public PageResponse<OrderResponse.Summary> search(
             @RequestParam(required = false) String q,
@@ -96,7 +96,7 @@ public class AdminOrderController {
     @PostMapping("/{orderId}/status")
     @PreAuthorize("hasAuthority('order:write')")
     @Operation(summary = "Move the order to a new status",
-            description = "Rejected with 409 INVALID_STATUS_TRANSITION if the move is not legal — "
+            description = "Rejected with 409 INVALID_STATUS_TRANSITION if the move is not legal - "
                     + "a delivered order cannot go back to processing.")
     public OrderResponse changeStatus(@AuthenticationPrincipal UserPrincipal caller,
                                       @PathVariable UUID orderId,
@@ -135,7 +135,7 @@ public class AdminOrderController {
     @PreAuthorize("hasAuthority('order:refund')")
     @Operation(summary = "Refund part or all of the order",
             description = """
-                    **Requires an `Idempotency-Key` header** — a double-clicked refund button must
+                    **Requires an `Idempotency-Key` header** - a double-clicked refund button must
                     not pay out twice.
 
                     The amount is checked against what has already been refunded before the provider
@@ -178,7 +178,7 @@ public class AdminOrderController {
     @PostMapping("/returns/{returnId}/resolve")
     @PreAuthorize("hasAuthority('order:write')")
     @Operation(summary = "Approve, reject, receive, or refund a return",
-            description = "Stock is credited on RECEIVED, not on APPROVED — approving a return the "
+            description = "Stock is credited on RECEIVED, not on APPROVED - approving a return the "
                     + "customer never posts would inflate available stock.")
     public ReturnSummary resolveReturn(@AuthenticationPrincipal UserPrincipal caller,
                                        @PathVariable UUID returnId,
@@ -198,7 +198,7 @@ public class AdminOrderController {
     // ----------------------------------------------------------- payload types --
 
     /**
-     * @param completedAt {@code null} while the provider has not yet confirmed — the refund exists
+     * @param completedAt {@code null} while the provider has not yet confirmed - the refund exists
      *                    and is counted against the refundable balance either way
      */
     public record RefundResponse(UUID id, Money amount, String status, Instant completedAt) {

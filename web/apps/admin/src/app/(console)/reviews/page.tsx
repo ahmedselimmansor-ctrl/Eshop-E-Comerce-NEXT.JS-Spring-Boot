@@ -36,7 +36,7 @@ export default function ReviewsPage() {
  * Review moderation.
  *
  * A queue, not a table. Each review needs to be *read* before it is approved, so the layout gives
- * the text room rather than truncating it into a cell — a moderator who cannot see the review
+ * the text room rather than truncating it into a cell - a moderator who cannot see the review
  * without clicking will approve without reading.
  */
 function ReviewQueue() {

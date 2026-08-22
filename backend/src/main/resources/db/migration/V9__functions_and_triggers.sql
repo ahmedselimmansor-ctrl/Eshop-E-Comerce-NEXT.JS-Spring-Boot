@@ -1,5 +1,5 @@
 -- ============================================================================
--- V9 — Functions, triggers, and generated identifiers
+-- V9 - Functions, triggers, and generated identifiers
 -- ============================================================================
 
 -- ----------------------------------------------------------- updated_at -----
@@ -112,7 +112,7 @@ $$ LANGUAGE plpgsql;
 
 -- `WHEN (NEW.path IS DISTINCT FROM OLD.path)`, not `AFTER UPDATE OF path`.
 --
--- `UPDATE OF path` fires only when `path` is named in the statement's SET list — but `path` is
+-- `UPDATE OF path` fires only when `path` is named in the statement's SET list - but `path` is
 -- never set by a statement, it is computed by the BEFORE trigger above. So the column-scoped form
 -- never fires, and renaming a parent leaves every descendant holding a stale path. The WHEN clause
 -- tests the value that actually changed, which is what was meant.

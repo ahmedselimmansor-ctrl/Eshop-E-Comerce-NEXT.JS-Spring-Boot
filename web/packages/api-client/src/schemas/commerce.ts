@@ -16,7 +16,7 @@ export const cartItemSchema = z.object({
   unitPrice: moneySchema,
   quantity: z.number().int(),
   lineTotal: moneySchema,
-  /** Sellable units right now — the cap for the quantity stepper. */
+  /** Sellable units right now - the cap for the quantity stepper. */
   availableQuantity: z.number().int(),
   inStock: z.boolean(),
   /** The catalog price moved since this was added; `currentPrice` is the new figure. */
@@ -64,7 +64,7 @@ export const cartSchema = z.object({
 
 export type Cart = z.infer<typeof cartSchema>;
 
-/** Note the absence of a price field — the server looks it up. A client price is a client discount. */
+/** Note the absence of a price field - the server looks it up. A client price is a client discount. */
 export const addCartItemSchema = z.object({
   productId: z.string().uuid(),
   variantId: z.string().uuid().optional(),
@@ -83,7 +83,7 @@ export const shippingOptionSchema = z.object({
   estimatedDaysMax: z.number().int().nullable().optional(),
   supportsCod: z.boolean(),
   free: z.boolean(),
-  /** Order value at which this method becomes free — drives the "spend X more" nudge. */
+  /** Order value at which this method becomes free - drives the "spend X more" nudge. */
   freeShippingThreshold: moneySchema.nullable().optional(),
 });
 
@@ -134,7 +134,7 @@ export type CheckoutRequest = z.infer<typeof checkoutRequestSchema>;
  * What the customer must do next, discriminated by `provider`.
  *
  * Paymob populates `iframeUrl`, Fawry populates `referenceCode` and `expiresAt`, and cash on
- * delivery populates neither — the UI switches on `provider` and renders the matching step.
+ * delivery populates neither - the UI switches on `provider` and renders the matching step.
  */
 export const paymentInstructionSchema = z.object({
   paymentId: z.string().uuid(),
@@ -228,7 +228,7 @@ export const orderSchema = z.object({
     grandTotal: moneySchema,
   }),
   couponCode: z.string().nullable().optional(),
-  /** Frozen at placement — not the customer's current address book entry. */
+  /** Frozen at placement - not the customer's current address book entry. */
   shippingAddress: z.record(z.unknown()),
   billingAddress: z.record(z.unknown()).nullable().optional(),
   shippingMethodName: z.string().nullable().optional(),
@@ -294,7 +294,7 @@ export const orderListSchema = z.object({
 /**
  * A saved item.
  *
- * Carries a full product card because that is what the page draws, plus live availability — for a
+ * Carries a full product card because that is what the page draws, plus live availability - for a
  * wishlist, "sold out since you saved it" is the normal case, not the edge case, and the move-to-cart
  * button has to reflect it.
  */

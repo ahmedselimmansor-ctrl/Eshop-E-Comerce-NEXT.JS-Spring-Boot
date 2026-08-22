@@ -5,7 +5,7 @@
  * are all decisions this project has no reason to make. Autopilot bills per pod request rather than
  * per node, which for a workload that scales between 3 and 50 pods is both cheaper and one fewer
  * dimension to get wrong. It also enforces Workload Identity, shielded nodes, and a restricted node
- * OS by default — controls that on Standard have to be configured and then kept configured.
+ * OS by default - controls that on Standard have to be configured and then kept configured.
  *
  * The trade-off is less control: no DaemonSets that need host access, no privileged pods, no custom
  * node images. Nothing here needs any of those.
@@ -101,7 +101,7 @@ resource "google_container_cluster" "main" {
     vulnerability_mode = "VULNERABILITY_BASIC"
   }
 
-  # A cluster is not something to recreate casually — the Gateway, the certificates, and every
+  # A cluster is not something to recreate casually - the Gateway, the certificates, and every
   # workload go with it.
   deletion_protection = var.environment == "prod"
 
@@ -123,7 +123,7 @@ resource "google_container_cluster" "main" {
  * Workload identity for the API.
  *
  * The Google service account below is what the API pods act as. Its role bindings are the complete
- * list of what a compromised API pod could reach — which is why they are narrow and why none of
+ * list of what a compromised API pod could reach - which is why they are narrow and why none of
  * them is a project-level admin role.
  */
 resource "google_service_account" "api" {

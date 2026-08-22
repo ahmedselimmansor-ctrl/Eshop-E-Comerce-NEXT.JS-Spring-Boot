@@ -1,7 +1,7 @@
 /**
  * Production environment.
  *
- * Composes the modules and holds nothing else — every environment is the same wiring with
+ * Composes the modules and holds nothing else - every environment is the same wiring with
  * different sizes, which is what makes staging a meaningful rehearsal for production.
  */
 
@@ -22,7 +22,7 @@ terraform {
   backend "gcs" {
     # State lives in a versioned bucket, not on anyone's laptop. GCS provides locking, so two
     # concurrent applies cannot corrupt it. The bucket is created once, by hand, outside Terraform
-    # — bootstrapping state storage with the tool that needs it is a chicken-and-egg problem.
+    # - bootstrapping state storage with the tool that needs it is a chicken-and-egg problem.
     bucket = "eshop-terraform-state"
     prefix = "envs/prod"
   }
@@ -47,7 +47,7 @@ locals {
 # ---------------------------------------------------------------------- KMS --
 
 # Key for etcd secret encryption. Kept in its own key ring with rotation, and deliberately not
-# destroyable — losing it makes every encrypted Secret unreadable.
+# destroyable - losing it makes every encrypted Secret unreadable.
 resource "google_kms_key_ring" "main" {
   name     = "${local.name_prefix}-keyring"
   location = var.region
@@ -125,7 +125,7 @@ module "gke" {
  * WAF and rate limiting at the edge.
  *
  * Rules run before a request reaches a pod, so an attack costs Google's capacity rather than ours.
- * The application's own rate limiter is still in place and is finer-grained — this is the coarse
+ * The application's own rate limiter is still in place and is finer-grained - this is the coarse
  * outer layer, sized to stop volumetric abuse rather than to enforce per-endpoint policy.
  */
 resource "google_compute_security_policy" "armor" {
@@ -213,7 +213,7 @@ resource "google_compute_security_policy" "armor" {
    * Payment webhooks bypass the WAF.
    *
    * Provider callbacks carry signed JSON that the CRS rules reliably misread as an injection
-   * attempt — and a blocked callback means a paid order stays unpaid, which is a far worse outcome
+   * attempt - and a blocked callback means a paid order stays unpaid, which is a far worse outcome
    * than the risk this rule waives. The endpoints verify an HMAC over the raw body and are
    * idempotent by construction, so an unauthenticated request reaching them achieves nothing.
    */
@@ -242,7 +242,7 @@ resource "google_compute_security_policy" "armor" {
 
   adaptive_protection_config {
     layer_7_ddos_defense_config {
-      # Learns normal traffic and flags anomalies rather than matching fixed signatures — the only
+      # Learns normal traffic and flags anomalies rather than matching fixed signatures - the only
       # thing that catches a distributed attack that stays under the per-IP threshold.
       enable          = true
       rule_visibility = "STANDARD"

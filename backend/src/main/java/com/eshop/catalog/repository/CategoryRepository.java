@@ -19,7 +19,7 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
     /**
      * Whole tree in one query, ordered so a client can rebuild the hierarchy in a single pass by
-     * appending each node to its parent — ancestors always precede descendants because {@code level}
+     * appending each node to its parent - ancestors always precede descendants because {@code level}
      * sorts first.
      */
     @Query("""

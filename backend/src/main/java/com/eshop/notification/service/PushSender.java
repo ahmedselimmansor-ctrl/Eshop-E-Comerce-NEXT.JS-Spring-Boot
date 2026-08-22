@@ -28,7 +28,7 @@ import java.util.Map;
  * Firebase Cloud Messaging delivery.
  *
  * <p>Disabled unless {@code eshop.notification.fcm.enabled} is set, so local development and CI
- * never attempt to reach Firebase. When disabled, {@link #send} logs and returns — callers do not
+ * never attempt to reach Firebase. When disabled, {@link #send} logs and returns - callers do not
  * branch on availability.
  *
  * <p>Tokens that Firebase reports as unregistered are deactivated immediately. Continuing to push
@@ -49,7 +49,7 @@ public class PushSender {
         AppProperties.Notification.Fcm config = properties.getNotification().getFcm();
 
         if (!config.isEnabled()) {
-            log.info("fcm_disabled — push notifications will be skipped");
+            log.info("fcm_disabled - push notifications will be skipped");
             return;
         }
 
@@ -73,7 +73,7 @@ public class PushSender {
         } catch (Exception e) {
             // Never fatal: push is a convenience, and a store that cannot boot because Firebase is
             // misconfigured is a worse outcome than a store with no push notifications.
-            log.error("fcm_init_failed error={} — push notifications disabled", e.toString());
+            log.error("fcm_init_failed error={} - push notifications disabled", e.toString());
         }
     }
 

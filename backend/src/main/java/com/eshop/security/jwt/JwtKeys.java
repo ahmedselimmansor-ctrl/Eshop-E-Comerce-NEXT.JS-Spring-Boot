@@ -29,8 +29,8 @@ import java.util.UUID;
  * RSA signing material for access tokens.
  *
  * <p>RS256 rather than HS256 so that verification requires only the public key. The API server holds
- * the private key; anything that merely needs to check a token — a future gateway, an internal
- * service, a partner — can be handed the JWKS endpoint instead of a shared secret that would also
+ * the private key; anything that merely needs to check a token - a future gateway, an internal
+ * service, a partner - can be handed the JWKS endpoint instead of a shared secret that would also
  * let it mint tokens.
  *
  * <p>In deployed environments the PEM pair arrives from Secret Manager. When the configuration is
@@ -49,7 +49,7 @@ public class JwtKeys {
         AppProperties.Jwt config = properties.getJwt();
 
         if (config.getPrivateKey().isBlank() || config.getPublicKey().isBlank()) {
-            log.warn("jwt_keys_generated_ephemeral — JWT_PRIVATE_KEY/JWT_PUBLIC_KEY are not set. "
+            log.warn("jwt_keys_generated_ephemeral - JWT_PRIVATE_KEY/JWT_PUBLIC_KEY are not set. "
                     + "Tokens will not survive a restart. This must never happen outside local development.");
             KeyPair pair = generateKeyPair();
             return new RSAKey.Builder((RSAPublicKey) pair.getPublic())

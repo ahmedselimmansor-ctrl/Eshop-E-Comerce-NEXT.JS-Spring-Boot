@@ -21,7 +21,7 @@ public interface PaymentWebhookEventRepository extends JpaRepository<PaymentWebh
 
     Optional<PaymentWebhookEvent> findByProviderAndEventId(PaymentProviderType provider, String eventId);
 
-    /** Callbacks that were stored but whose processing failed — retried by a scheduled job. */
+    /** Callbacks that were stored but whose processing failed - retried by a scheduled job. */
     @Query("""
             SELECT e FROM PaymentWebhookEvent e
              WHERE e.processed = FALSE AND e.signatureValid = TRUE AND e.attempts < :maxAttempts

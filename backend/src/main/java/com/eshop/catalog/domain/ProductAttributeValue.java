@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A descriptive specification on a product — screen size, warranty, material.
+ * A descriptive specification on a product - screen size, warranty, material.
  *
  * <p>Distinct from {@link VariantAttributeValue}, which selects a purchasable axis. This one only
  * populates the specification table and the filter facets.

@@ -22,7 +22,7 @@ import java.util.UUID;
  * Mutations for the ops console, each mapped to its response inside the transaction that made it.
  *
  * <p>This class exists to close one specific and repeatable mistake. The domain services return
- * managed entities; the response mappers read lazy associations off them — {@code Review.media},
+ * managed entities; the response mappers read lazy associations off them - {@code Review.media},
  * {@code User.roles}, an inventory item's product and warehouse. With {@code open-in-view} disabled,
  * a controller that maps a returned entity is reading proxies whose session has already closed. It
  * compiles cleanly and throws {@code LazyInitializationException} on every single call.
@@ -50,7 +50,7 @@ public class AdminOpsService {
      *
      * <p>The query lives here rather than in the controller so the rows are mapped while the session
      * is still open. Both repository methods declare an {@code @EntityGraph} over product, variant
-     * and warehouse, which would make mapping outside a transaction work today — but only until
+     * and warehouse, which would make mapping outside a transaction work today - but only until
      * someone trims the graph, and then it fails at request time rather than at compile time.
      */
     @Transactional(readOnly = true)

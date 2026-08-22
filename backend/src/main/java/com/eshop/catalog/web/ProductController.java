@@ -50,7 +50,7 @@ public class ProductController {
                     OR-ed; separate attributes are AND-ed.
 
                     `facets.searchIndexUsed=false` means the response came from the PostgreSQL
-                    fallback and the facet counts are incomplete — hide the affected filters rather
+                    fallback and the facet counts are incomplete - hide the affected filters rather
                     than showing numbers that do not add up.
                     """)
     public ResponseEntity<ProductListResponse> list(

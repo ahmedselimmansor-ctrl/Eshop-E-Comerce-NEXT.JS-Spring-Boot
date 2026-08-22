@@ -38,7 +38,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Create an account",
-            description = "Sends a verification email and returns a usable session immediately — "
+            description = "Sends a verification email and returns a usable session immediately - "
                     + "browsing and checkout do not require a verified address.")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request,
                                                  HttpServletRequest httpRequest) {

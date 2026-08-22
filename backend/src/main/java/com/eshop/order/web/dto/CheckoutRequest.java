@@ -52,11 +52,11 @@ public record CheckoutRequest(
         @Size(max = 500)
         String customerNote,
 
-        @Schema(description = "Required for guest checkout — where the confirmation is sent.")
+        @Schema(description = "Required for guest checkout - where the confirmation is sent.")
         @Email @Size(max = 191)
         String guestEmail,
 
-        @Schema(description = "Required for guest checkout — how the courier makes contact.")
+        @Schema(description = "Required for guest checkout - how the courier makes contact.")
         @Pattern(regexp = "^(\\+20|0)?1[0125][0-9]{8}$", message = "رقم الهاتف غير صحيح")
         String guestPhone
 ) {

@@ -23,7 +23,7 @@ import { hasPermission } from '@/stores/auth-store';
  *
  * Rendered from whatever the API returns rather than from a hard-coded form, so adding a setting on
  * the server does not need a matching release here. Values are edited as JSON text because that is
- * what they are — typing each one would mean a schema this screen has no way to know.
+ * what they are - typing each one would mean a schema this screen has no way to know.
  *
  * Only changed rows are submitted, so two operators editing different settings do not overwrite each
  * other's work.
@@ -123,7 +123,7 @@ export default function SettingsPage() {
                     className="flex flex-wrap items-center gap-2 text-xs font-medium"
                   >
                     <span className="numeric">{row.key}</span>
-                    {/* A public setting is served to every visitor — worth flagging before someone
+                    {/* A public setting is served to every visitor - worth flagging before someone
                         puts an internal note in one. */}
                     {row.publicSetting ? <Badge tone="brand">Public</Badge> : null}
                     {changed ? <Badge tone="warning">Modified</Badge> : null}

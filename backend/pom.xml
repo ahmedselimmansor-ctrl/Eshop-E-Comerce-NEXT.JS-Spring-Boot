@@ -15,7 +15,7 @@
   <artifactId>eshop-backend</artifactId>
   <version>1.0.0</version>
   <name>eshop-backend</name>
-  <description>Eshop e-commerce platform — modular monolith</description>
+  <description>Eshop e-commerce platform - modular monolith</description>
 
   <properties>
     <java.version>21</java.version>
@@ -123,7 +123,7 @@
       Deliberately NOT spring-boot-starter-oauth2-client. OAuthService drives the Google
       authorization-code flow itself with RestClient, because the result has to be an Eshop JWT pair
       rather than a servlet session. Adding the starter would contribute an auto-configuration that
-      refuses to start whenever GOOGLE_CLIENT_ID is unset — i.e. every environment that does not use
+      refuses to start whenever GOOGLE_CLIENT_ID is unset - i.e. every environment that does not use
       Google sign-in, including local development.
     -->
     <!-- Argon2id support for Spring Security's Argon2PasswordEncoder -->

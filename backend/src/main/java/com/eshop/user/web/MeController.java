@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * The signed-in customer's own account.
  *
  * <p>Every handler derives the user id from the authenticated principal. No endpoint here accepts a
- * user id as a parameter — that is the difference between "edit my profile" and "edit anyone's
+ * user id as a parameter - that is the difference between "edit my profile" and "edit anyone's
  * profile if you can guess a UUID".
  */
 @RestController
@@ -42,7 +42,7 @@ public class MeController {
 
     @PatchMapping
     @Operation(summary = "Update profile",
-            description = "Partial update — omitted fields are left unchanged. "
+            description = "Partial update - omitted fields are left unchanged. "
                     + "Email is not editable here; changing it runs through its own verification flow.")
     public UserResponse update(@AuthenticationPrincipal UserPrincipal caller,
                                @Valid @RequestBody UpdateProfileRequest request) {

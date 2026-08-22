@@ -9,7 +9,7 @@ import java.time.Instant;
  * <p>The important design choice here is that <b>uploads never pass through the API</b>. The client
  * asks for a signed URL and sends the bytes straight to Cloud Storage. Proxying a 10 MB image
  * through the application would consume a request thread and a pod's memory for the whole upload,
- * and image uploads are bursty — a merchandiser adding a product uploads a dozen at once.
+ * and image uploads are bursty - a merchandiser adding a product uploads a dozen at once.
  *
  * <p>Signed URLs are scoped: one object key, one HTTP method, one content type, and a short expiry.
  * A leaked URL grants exactly one upload of one file to one path, and only for the next few minutes.
@@ -27,7 +27,7 @@ public interface StorageService {
     UploadTarget createUploadUrl(String folder, String filename, String contentType);
 
     /**
-     * Time-limited read URL for a private object — an invoice PDF, a data export.
+     * Time-limited read URL for a private object - an invoice PDF, a data export.
      *
      * <p>Private buckets are not served through the CDN, so a link has to be signed each time
      * rather than handed out permanently.
@@ -37,7 +37,7 @@ public interface StorageService {
     /** Uploads bytes the server itself generated: a rendered invoice, a CSV export. */
     String upload(String objectKey, byte[] content, String contentType, boolean publicRead);
 
-    /** Removes an object. Missing objects are not an error — deletion is idempotent. */
+    /** Removes an object. Missing objects are not an error - deletion is idempotent. */
     void delete(String objectKey);
 
     boolean exists(String objectKey);
@@ -52,7 +52,7 @@ public interface StorageService {
 
     /**
      * @param uploadUrl the signed {@code PUT} target
-     * @param objectKey the key the client must not alter — the signature is bound to it
+     * @param objectKey the key the client must not alter - the signature is bound to it
      * @param publicUrl where the object will be readable once uploaded
      * @param expiresAt when the signed URL stops working
      * @param requiredContentType the exact {@code Content-Type} header the client must send

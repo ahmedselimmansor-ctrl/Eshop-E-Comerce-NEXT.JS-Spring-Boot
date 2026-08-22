@@ -53,7 +53,7 @@ public record ProductWriteRequest(
         @NotNull @DecimalMin("0.00")
         BigDecimal basePrice,
 
-        @Schema(description = "Struck-through price. Must be at least basePrice — enforced by a check constraint.")
+        @Schema(description = "Struck-through price. Must be at least basePrice - enforced by a check constraint.")
         @DecimalMin("0.00")
         BigDecimal compareAtPrice,
 
@@ -88,7 +88,7 @@ public record ProductWriteRequest(
         @Schema(description = "Ordered; the first is primary unless one is explicitly flagged")
         @Valid List<ImageSpec> images,
 
-        @Schema(description = "Descriptive specifications — not variant axes")
+        @Schema(description = "Descriptive specifications - not variant axes")
         List<UUID> attributeValueIds
 ) {
 

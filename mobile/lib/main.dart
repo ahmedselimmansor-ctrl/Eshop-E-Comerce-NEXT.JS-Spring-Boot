@@ -41,7 +41,7 @@ class EshopApp extends ConsumerWidget {
 
       /// Text direction follows the locale automatically through `Directionality`, which Flutter
       /// derives from `locale`. Everything below it must therefore use directional properties
-      /// (`EdgeInsetsDirectional`, `AlignmentDirectional`, `start`/`end`) rather than left/right —
+      /// (`EdgeInsetsDirectional`, `AlignmentDirectional`, `start`/`end`) rather than left/right -
       /// hard-coded sides are the single most common source of a broken Arabic layout.
       builder: (context, child) {
         return MediaQuery.withClampedTextScaling(

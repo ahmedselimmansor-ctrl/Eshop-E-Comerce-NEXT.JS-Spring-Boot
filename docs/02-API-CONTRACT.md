@@ -1,4 +1,4 @@
-# Eshop — API Contract
+# Eshop - API Contract
 
 Base URL: `/api/v1` · Content type: `application/json; charset=utf-8` · OpenAPI served at `/swagger-ui.html`, spec at `/v3/api-docs`.
 
@@ -13,9 +13,9 @@ Base URL: `/api/v1` · Content type: `application/json; charset=utf-8` · OpenAP
 | `Idempotency-Key: <uuid>` | **Required** on `POST /checkout/orders`, `POST /payments/intent`, `POST /admin/orders/{id}/refund`. |
 | `X-Request-Id` | Optional; echoed back and used as the correlation id in logs/traces. |
 
-**Headers (response)** — `X-Request-Id`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`, `Retry-After` (on 429).
+**Headers (response)** - `X-Request-Id`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`, `Retry-After` (on 429).
 
-**Pagination** — query `?page=0&size=20&sort=createdAt,desc`. `size` max 100.
+**Pagination** - query `?page=0&size=20&sort=createdAt,desc`. `size` max 100.
 ```json
 {
   "content": [ ... ],
@@ -23,7 +23,7 @@ Base URL: `/api/v1` · Content type: `application/json; charset=utf-8` · OpenAP
 }
 ```
 
-**Errors** — RFC 9457 `application/problem+json`:
+**Errors** - RFC 9457 `application/problem+json`:
 ```json
 {
   "type": "https://eshop.eg/errors/out-of-stock",
@@ -40,11 +40,11 @@ Base URL: `/api/v1` · Content type: `application/json; charset=utf-8` · OpenAP
 Stable `code` values (frontend switches on these, never on `detail`):
 `VALIDATION_ERROR` · `UNAUTHENTICATED` · `INVALID_CREDENTIALS` · `ACCOUNT_LOCKED` · `EMAIL_NOT_VERIFIED` · `TOKEN_EXPIRED` · `TOKEN_REUSE_DETECTED` · `FORBIDDEN` · `NOT_FOUND` · `CONFLICT` · `OUT_OF_STOCK` · `PRICE_CHANGED` · `CART_EMPTY` · `COUPON_INVALID` · `COUPON_EXPIRED` · `COUPON_USAGE_EXCEEDED` · `COUPON_MIN_ORDER` · `PAYMENT_FAILED` · `PAYMENT_ALREADY_PROCESSED` · `ORDER_NOT_CANCELLABLE` · `RATE_LIMITED` · `IDEMPOTENCY_CONFLICT` · `PAYLOAD_TOO_LARGE` · `UNSUPPORTED_MEDIA_TYPE` · `INTERNAL_ERROR` · `SERVICE_UNAVAILABLE`
 
-**Money in JSON** — always `{ "amount": "1299.00", "currency": "EGP" }` (string amount, never float).
+**Money in JSON** - always `{ "amount": "1299.00", "currency": "EGP" }` (string amount, never float).
 
 ---
 
-## 1. Auth — `/auth` (public, rate-limited)
+## 1. Auth - `/auth` (public, rate-limited)
 
 | Method | Path | Body → Response |
 |---|---|---|
@@ -63,7 +63,7 @@ Stable `code` values (frontend switches on these, never on `detail`):
 `tokens` = `{ accessToken, refreshToken, tokenType: "Bearer", expiresIn: 900 }`.
 Web clients additionally receive the refresh token as `Set-Cookie: refresh_token=...; HttpOnly; Secure; SameSite=Strict; Path=/api/v1/auth`.
 
-## 2. Account — `/me` (authenticated)
+## 2. Account - `/me` (authenticated)
 
 `GET /me` · `PATCH /me` `{firstName,lastName,phone,locale,avatarUrl,marketingOptIn}` · `POST /me/change-password` `{currentPassword,newPassword}` · `DELETE /me` (soft delete, GDPR) · `GET /me/export` (data export → private GCS signed URL)
 Addresses: `GET /me/addresses` · `POST /me/addresses` · `GET|PATCH|DELETE /me/addresses/{id}` · `POST /me/addresses/{id}/default?type=shipping|billing`
@@ -98,14 +98,14 @@ Response adds a `facets` block:
               "priceRange": {"min":"99.00","max":"54999.00"} } }
 ```
 
-## 4. Search — `/search` (Elasticsearch)
+## 4. Search - `/search` (Elasticsearch)
 
 `GET /search?q=&locale=&page=&size=` → same shape as `/products` with `highlights`
 `GET /search/suggest?q=&limit=8` → `{ products:[{id,slug,nameAr,nameEn,imageUrl,price}], categories:[...], brands:[...], queries:["..."] }`
 `GET /search/popular?limit=10` → trending queries
 `POST /search/click` `{query,productId}` → `204` (relevance feedback, fire-and-forget)
 
-## 5. Cart — `/cart` (guest via `X-Session-Id`, or authenticated)
+## 5. Cart - `/cart` (guest via `X-Session-Id`, or authenticated)
 
 `GET /cart` · `POST /cart/items` `{productId,variantId?,quantity}` · `PATCH /cart/items/{itemId}` `{quantity}` · `DELETE /cart/items/{itemId}` · `DELETE /cart` (clear) · `POST /cart/coupon` `{code}` · `DELETE /cart/coupon` · `POST /cart/merge` `{sessionId}` (called right after login) · `POST /cart/validate` (re-check stock+prices before checkout)
 
@@ -130,7 +130,7 @@ Cart response:
 | POST | `/checkout/orders` | **Idempotent.** `{shippingAddressId?|shippingAddress, billingAddressId?, shippingMethodId, paymentProvider: PAYMOB\|FAWRY\|COD, paymentMethod, couponCode?, customerNote?, guestEmail?, guestPhone?}` → `201 {order, payment}` |
 | GET | `/me/orders?status=&page=` | |
 | GET | `/me/orders/{orderNumber}` | |
-| POST | `/me/orders/{orderNumber}/cancel` | `{reason}` — allowed only in `PENDING_PAYMENT`/`PAID`/`PROCESSING` |
+| POST | `/me/orders/{orderNumber}/cancel` | `{reason}` - allowed only in `PENDING_PAYMENT`/`PAID`/`PROCESSING` |
 | GET | `/me/orders/{orderNumber}/invoice` | → signed GCS PDF URL |
 | POST | `/me/orders/{orderNumber}/reorder` | Rebuilds cart |
 | POST | `/me/orders/{orderNumber}/returns` | `{items:[{orderItemId,quantity}],reason,note}` |
@@ -145,17 +145,17 @@ Cart response:
 
 ## 7. Payments
 
-`GET /payments/{paymentId}/status` (owner only) — the frontend polls this after returning from the provider.
-`POST /payments/{paymentId}/retry` — new attempt for a `FAILED` payment.
-`POST /payments/webhooks/paymob` — HMAC verified, **no auth**, always returns `200` once persisted.
-`POST /payments/webhooks/fawry` — signature (SHA-256) verified, **no auth**.
+`GET /payments/{paymentId}/status` (owner only) - the frontend polls this after returning from the provider.
+`POST /payments/{paymentId}/retry` - new attempt for a `FAILED` payment.
+`POST /payments/webhooks/paymob` - HMAC verified, **no auth**, always returns `200` once persisted.
+`POST /payments/webhooks/fawry` - signature (SHA-256) verified, **no auth**.
 
 ## 8. Reviews
 
 `POST /products/{productId}/reviews` `{rating,title,body,mediaUrls?}` → `201` (status `PENDING`; verified-purchase auto-detected)
 `PATCH /reviews/{id}` · `DELETE /reviews/{id}` (owner) · `POST /reviews/{id}/helpful` `{helpful:true}`
 
-## 9. Admin — `/admin/**` (permission-guarded, every mutation audit-logged)
+## 9. Admin - `/admin/**` (permission-guarded, every mutation audit-logged)
 
 | Area | Endpoints |
 |---|---|

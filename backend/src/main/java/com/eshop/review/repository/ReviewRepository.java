@@ -44,7 +44,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     Page<Review> findByUserIdOrderByCreatedAtDesc(UUID userId, Pageable pageable);
 
     /**
-     * Rating histogram for the product page — "5★ 42, 4★ 11, …".
+     * Rating histogram for the product page - "5★ 42, 4★ 11, …".
      *
      * <p>One grouped query rather than five counts, and only over approved reviews so the
      * breakdown adds up to the displayed total.
@@ -62,7 +62,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
      * Whether this customer actually received this product.
      *
      * <p>Native, because the review domain does not map the order tables. Only {@code DELIVERED}
-     * counts — a placed-but-undelivered order is not evidence that anyone has used the item.
+     * counts - a placed-but-undelivered order is not evidence that anyone has used the item.
      */
     @Query(value = """
             SELECT oi.id

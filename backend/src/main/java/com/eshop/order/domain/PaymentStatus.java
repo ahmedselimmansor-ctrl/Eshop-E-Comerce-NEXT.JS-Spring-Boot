@@ -10,7 +10,7 @@ package com.eshop.order.domain;
  */
 public enum PaymentStatus {
 
-    /** No successful attempt yet — awaiting a card payment, a Fawry reference, or cash on delivery. */
+    /** No successful attempt yet - awaiting a card payment, a Fawry reference, or cash on delivery. */
     PENDING,
 
     /** Funds held but not yet captured. Used where a provider separates the two steps. */

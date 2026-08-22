@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * Eshop — modular monolith.
+ * Eshop - modular monolith.
  *
  * <p>One deployable, one database, and one transaction boundary around the operations that need
  * it (reserving stock while creating an order). Domains under {@code com.eshop.*} own their tables

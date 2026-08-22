@@ -69,7 +69,7 @@ spec:
             failureThreshold: 20
 
           livenessProbe:
-            # Checks only that the Node process answers. Deliberately not the API — restarting the
+            # Checks only that the Node process answers. Deliberately not the API - restarting the
             # storefront because the backend is briefly unavailable is exactly wrong: that is when
             # you most want it up, serving cached pages and a useful message.
             httpGet:

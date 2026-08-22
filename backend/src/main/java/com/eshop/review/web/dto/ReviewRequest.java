@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Submit or edit a review.
  *
- * <p>There is deliberately no {@code isVerifiedPurchase} field — that flag is derived server-side
+ * <p>There is deliberately no {@code isVerifiedPurchase} field - that flag is derived server-side
  * from a delivered order line. Media URLs must be ones the client obtained from
  * {@code POST /admin/media/upload-url}; arbitrary external URLs are rejected by the service.
  */

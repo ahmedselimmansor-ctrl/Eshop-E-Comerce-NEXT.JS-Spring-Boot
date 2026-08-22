@@ -12,7 +12,7 @@ import { browserApi } from '@/lib/api-browser';
  *
  * Two details make this behave correctly under real typing:
  *
- * 1. The query is **debounced** — one request per pause, not one per keystroke.
+ * 1. The query is **debounced** - one request per pause, not one per keystroke.
  * 2. Each request is **abortable**, and TanStack Query cancels the previous one when the term
  *    changes. Without that, a slow earlier request can resolve last and overwrite fresher
  *    suggestions with stale ones, which looks like the box ignoring what you typed.
@@ -120,7 +120,7 @@ export function SearchBox({ placeholder }: { placeholder: string }) {
               <button
                 type="button"
                 onClick={() => {
-                  // Relevance feedback, deliberately not awaited — the navigation should not wait
+                  // Relevance feedback, deliberately not awaited - the navigation should not wait
                   // for an analytics write.
                   void browserApi().search.recordClick(debounced, product.id);
                   setOpen(false);

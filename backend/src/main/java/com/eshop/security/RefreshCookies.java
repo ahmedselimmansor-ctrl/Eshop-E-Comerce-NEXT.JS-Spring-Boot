@@ -15,13 +15,13 @@ import java.util.Optional;
  *
  * <p>Every attribute here is load-bearing:
  * <ul>
- *   <li><b>HttpOnly</b> — script on the page cannot read it, so an XSS that steals the in-memory
+ *   <li><b>HttpOnly</b> - script on the page cannot read it, so an XSS that steals the in-memory
  *       access token still cannot walk away with a 30-day credential.</li>
- *   <li><b>Secure</b> — never sent over plain HTTP. Off only in local development, where there is
+ *   <li><b>Secure</b> - never sent over plain HTTP. Off only in local development, where there is
  *       no TLS to send it over.</li>
- *   <li><b>SameSite=Strict</b> — not attached to any cross-site request, which is what removes the
+ *   <li><b>SameSite=Strict</b> - not attached to any cross-site request, which is what removes the
  *       need for CSRF tokens on the refresh endpoint.</li>
- *   <li><b>Path=/api/v1/auth</b> — the cookie is not attached to catalog, cart, or checkout calls,
+ *   <li><b>Path=/api/v1/auth</b> - the cookie is not attached to catalog, cart, or checkout calls,
  *       so it is absent from the overwhelming majority of requests and from any log that records
  *       headers.</li>
  * </ul>

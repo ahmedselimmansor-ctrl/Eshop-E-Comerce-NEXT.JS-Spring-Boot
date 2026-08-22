@@ -19,7 +19,7 @@ export function OrderDetailView({
   orderNumber: string;
   locale: string;
 }) {
-  // Status is a lookup keyed by the order's state, which makes it a function — and functions do not
+  // Status is a lookup keyed by the order's state, which makes it a function - and functions do not
   // cross the server/client boundary. Reading the messages here sidesteps that entirely.
   const t = useTranslations('order');
   const cart = useTranslations('cart');
@@ -76,7 +76,7 @@ export function OrderDetailView({
           </Badge>
         </div>
 
-        {/* Cancellation is only offered while the API would actually allow it — the `cancellable`
+        {/* Cancellation is only offered while the API would actually allow it - the `cancellable`
             flag comes from the order state machine, so the button never appears for an order that
             has already shipped. */}
         {order.cancellable ? (
@@ -130,7 +130,7 @@ export function OrderDetailView({
             </div>
 
             <div className="min-w-0 flex-1">
-              {/* Links back to the product when it still exists — an archived product has no slug,
+              {/* Links back to the product when it still exists - an archived product has no slug,
                   and the order line keeps its own frozen copy of the name either way. */}
               {item.slug ? (
                 <Link
@@ -179,7 +179,7 @@ export function OrderDetailView({
         </div>
       </Card>
 
-      {/* Address — the frozen snapshot from placement, not the current address book entry. */}
+      {/* Address - the frozen snapshot from placement, not the current address book entry. */}
       <Card className="p-5">
         <h3 className="mb-2 font-semibold">{checkout('shippingAddress')}</h3>
         <p className="text-sm">{address.recipientName}</p>
@@ -232,7 +232,7 @@ export function OrderDetailView({
         </Card>
       ) : null}
 
-      {/* Timeline, oldest first — it reads as a progression rather than a log. */}
+      {/* Timeline, oldest first - it reads as a progression rather than a log. */}
       <Card className="p-5">
         <h3 className="mb-4 font-semibold">{t('timeline')}</h3>
         <ol className="space-y-4">

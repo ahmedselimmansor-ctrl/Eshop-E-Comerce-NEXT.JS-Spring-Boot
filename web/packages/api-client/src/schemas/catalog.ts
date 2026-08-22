@@ -201,7 +201,7 @@ export type Facets = z.infer<typeof facetsSchema>;
  * A product listing.
  *
  * `searchIndexUsed === false` means the response came from the PostgreSQL fallback and the facet
- * counts are incomplete — the UI hides the affected filters rather than showing numbers that do not
+ * counts are incomplete - the UI hides the affected filters rather than showing numbers that do not
  * add up.
  */
 export const productListSchema = z.object({

@@ -100,7 +100,7 @@ public class Cart extends AuditableEntity {
     private long version;
 
     /*
-     * Left out of the paged entity graphs — Hibernate cannot page in SQL while a collection is
+     * Left out of the paged entity graphs - Hibernate cannot page in SQL while a collection is
      * join-fetched. @BatchSize loads a whole page's worth in one extra query instead of one per row.
      */
     @BatchSize(size = 50)
@@ -127,7 +127,7 @@ public class Cart extends AuditableEntity {
 
     /**
      * Whether the caller may act on this cart: the signed-in owner, or the holder of the guest
-     * session id. Checked on every cart operation — a cart id alone must not grant access.
+     * session id. Checked on every cart operation - a cart id alone must not grant access.
      */
     public boolean isOwnedBy(UUID userId, String sessionId) {
         if (user != null && userId != null) {

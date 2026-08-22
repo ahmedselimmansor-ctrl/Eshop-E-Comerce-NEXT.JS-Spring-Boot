@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * The console's order screen and the actions on it.
  *
  * <p>{@code OrderResponse} walks items, their product references, the status timeline and the
- * shipment list. All four are lazy, so mapping the response in the controller — after the service
- * transaction had committed — threw {@code LazyInitializationException} on every call. These tests
+ * shipment list. All four are lazy, so mapping the response in the controller - after the service
+ * transaction had committed - threw {@code LazyInitializationException} on every call. These tests
  * exercise each action through the real HTTP stack, which is the only place that shows up.
  */
 class AdminOrderApiTest extends IntegrationTest {

@@ -65,7 +65,7 @@ public class CategoryService {
         return categories.findByParentIdOrderByPositionAsc(categoryId);
     }
 
-    /** Breadcrumb ancestors, root first. Derived from the materialised path — no recursion. */
+    /** Breadcrumb ancestors, root first. Derived from the materialised path - no recursion. */
     @Transactional(readOnly = true)
     public List<Category> ancestorsOf(Category category) {
         return categories.findAncestors(category.getPath());

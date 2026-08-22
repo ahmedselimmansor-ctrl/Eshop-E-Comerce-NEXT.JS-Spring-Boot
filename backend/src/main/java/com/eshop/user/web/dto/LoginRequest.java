@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 @Schema(name = "LoginRequest")
 public record LoginRequest(
 
-        /** Email address or Egyptian mobile number — the login form has one field for both. */
+        /** Email address or Egyptian mobile number - the login form has one field for both. */
         @NotBlank
         @Size(max = 191)
         String emailOrPhone,

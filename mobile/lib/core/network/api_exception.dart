@@ -1,6 +1,6 @@
 /// A failed API call, carrying the RFC 9457 problem document the backend returned.
 ///
-/// Callers switch on [code] — the stable machine value from `docs/02-API-CONTRACT.md` — never on
+/// Callers switch on [code] - the stable machine value from `docs/02-API-CONTRACT.md` - never on
 /// [detail], which is prose the backend rewords and translates freely. Matching on a message is a
 /// bug waiting for the next copy change.
 class ApiException implements Exception {
@@ -12,7 +12,7 @@ class ApiException implements Exception {
     this.requestId,
   });
 
-  /// Builds from a problem document, tolerating a response that is not one — a gateway timeout or
+  /// Builds from a problem document, tolerating a response that is not one - a gateway timeout or
   /// a proxy error page is HTML, and it still has to arrive as the same exception type.
   factory ApiException.fromProblem(int status, dynamic body) {
     if (body is! Map<String, dynamic>) {
@@ -45,7 +45,7 @@ class ApiException implements Exception {
   final String detail;
   final List<FieldViolation> violations;
 
-  /// Echoed from the response. Worth showing in a support screen — it is what turns a customer's
+  /// Echoed from the response. Worth showing in a support screen - it is what turns a customer's
   /// screenshot into a single log query.
   final String? requestId;
 

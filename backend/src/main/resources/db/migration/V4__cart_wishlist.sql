@@ -1,5 +1,5 @@
 -- ============================================================================
--- V4 — Cart (guest + authenticated) and wishlists
+-- V4 - Cart (guest + authenticated) and wishlists
 -- ============================================================================
 
 CREATE TABLE carts (
@@ -47,7 +47,7 @@ CREATE UNIQUE INDEX uq_cart_items
 CREATE INDEX idx_cart_items_product ON cart_items (product_id);
 
 COMMENT ON COLUMN cart_items.unit_price IS
-    'Price captured when the item was added. Re-validated against the catalog at checkout — a change surfaces as PRICE_CHANGED.';
+    'Price captured when the item was added. Re-validated against the catalog at checkout - a change surfaces as PRICE_CHANGED.';
 COMMENT ON COLUMN cart_items.snapshot IS 'Display fields {nameAr,nameEn,imageUrl,sku,slug,variantLabelAr,variantLabelEn}.';
 
 -- --------------------------------------------------------------- wishlist ---

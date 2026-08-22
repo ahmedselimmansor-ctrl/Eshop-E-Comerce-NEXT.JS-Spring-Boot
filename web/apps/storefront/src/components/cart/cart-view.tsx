@@ -46,7 +46,7 @@ export function CartView({ locale, labels }: { locale: string; labels: Labels })
   /**
    * Every mutation writes the returned cart straight into the cache.
    *
-   * The API returns the whole recalculated cart, so there is no reason to invalidate and refetch —
+   * The API returns the whole recalculated cart, so there is no reason to invalidate and refetch -
    * that would show stale totals for a round trip and make the line items flicker.
    */
   function seedCart(next: Cart) {
@@ -241,7 +241,7 @@ export function CartView({ locale, labels }: { locale: string; labels: Labels })
         ))}
       </div>
 
-      {/* Summary — sticky on desktop so the checkout button stays reachable in a long cart. */}
+      {/* Summary - sticky on desktop so the checkout button stays reachable in a long cart. */}
       <Card className="lg:sticky lg:top-[calc(var(--spacing-header)+1rem)]">
         <div className="space-y-3 p-5">
           {cart.coupon ? (
@@ -298,7 +298,7 @@ export function CartView({ locale, labels }: { locale: string; labels: Labels })
           <Row label={labels.tax} value={formatMoney(cart.totals.tax, locale)} />
 
           {/*
-           * Shipping is not shown as a number here — it depends on a destination the cart does not
+           * Shipping is not shown as a number here - it depends on a destination the cart does not
            * have. Showing "0.00" would read as free delivery and make the checkout total look like
            * a surprise increase.
            */}

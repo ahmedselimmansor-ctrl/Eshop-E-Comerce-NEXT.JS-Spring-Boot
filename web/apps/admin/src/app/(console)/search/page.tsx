@@ -29,7 +29,7 @@ const RANGES = [7, 30, 90];
  * Search health.
  *
  * Two questions an operator has about search: is the index up to date, and what are customers
- * failing to find. The second is the more valuable of the two — every zero-result query is either a
+ * failing to find. The second is the more valuable of the two - every zero-result query is either a
  * product the store should stock or a word the index should recognise.
  */
 export default function SearchPage() {
@@ -76,7 +76,7 @@ export default function SearchPage() {
 
       {reindex.isSuccess ? (
         <p className="rounded-md bg-success-500/10 p-3 text-xs">
-          Reindex started. It runs in the background — the counters below catch up as it progresses.
+          Reindex started. It runs in the background - the counters below catch up as it progresses.
         </p>
       ) : null}
 
@@ -106,7 +106,7 @@ export default function SearchPage() {
                     ) : typeof value === 'number' ? (
                       formatNumber(value)
                     ) : (
-                      String(value ?? '—')
+                      String(value ?? '-')
                     )}
                   </dd>
                 </div>

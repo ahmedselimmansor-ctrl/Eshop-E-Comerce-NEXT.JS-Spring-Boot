@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>Query shape, and why:
  * <ul>
  *   <li><b>Text goes in {@code must}, filters go in {@code filter}.</b> Filter clauses skip scoring
- *       and are cached by Elasticsearch — a category page with no search term costs almost nothing
+ *       and are cached by Elasticsearch - a category page with no search term costs almost nothing
  *       to re-run.</li>
  *   <li><b>Attribute facets are {@code nested} queries.</b> A flat object mapping would match
  *       "colour = red" on one attribute and "size = large" on another and call it a hit.</li>
@@ -50,7 +50,7 @@ public class ElasticsearchProductSearch implements ProductSearchPort {
 
     /**
      * Cached health flag. A cluster that has gone away must not cost every request a connection
-     * timeout before falling back — the first failure flips this and the fallback is immediate.
+     * timeout before falling back - the first failure flips this and the fallback is immediate.
      */
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
@@ -106,7 +106,7 @@ public class ElasticsearchProductSearch implements ProductSearchPort {
 
         } catch (Exception e) {
             healthy.set(false);
-            log.warn("elasticsearch_search_failed error={} — catalog will fall back to PostgreSQL",
+            log.warn("elasticsearch_search_failed error={} - catalog will fall back to PostgreSQL",
                     e.toString());
             throw new IllegalStateException("Elasticsearch query failed", e);
         }
@@ -194,7 +194,7 @@ public class ElasticsearchProductSearch implements ProductSearchPort {
             case BEST_SELLING -> List.of(fieldSort("soldCount", SortOrder.Desc));
             case RATING -> List.of(fieldSort("ratingAvg", SortOrder.Desc),
                     fieldSort("ratingCount", SortOrder.Desc));
-            // Relevance first, then sales as the tiebreaker — of two equally relevant products,
+            // Relevance first, then sales as the tiebreaker - of two equally relevant products,
             // the one people actually buy is the better answer.
             case RELEVANCE -> List.of(
                     co.elastic.clients.elasticsearch._types.SortOptions.of(s -> s.score(score -> score
@@ -227,7 +227,7 @@ public class ElasticsearchProductSearch implements ProductSearchPort {
         aggregations.put("priceRange", co.elastic.clients.elasticsearch._types.aggregations.Aggregation.of(
                 agg -> agg.stats(stats -> stats.field("price"))));
 
-        // Nested aggregation so attribute code and value stay paired — a flat terms aggregation on
+        // Nested aggregation so attribute code and value stay paired - a flat terms aggregation on
         // valueCode alone would produce "red: 12" with no way to know which attribute it belongs to.
         aggregations.put("attributes", co.elastic.clients.elasticsearch._types.aggregations.Aggregation.of(
                 agg -> agg.nested(nested -> nested.path("attributes"))
@@ -323,7 +323,7 @@ public class ElasticsearchProductSearch implements ProductSearchPort {
                                     .must(must -> must.multiMatch(match -> match
                                             .query(term)
                                             .fields(primary + "^3", secondary, "searchKeywords")))))
-                            // Only the fields the dropdown renders — no descriptions.
+                            // Only the fields the dropdown renders - no descriptions.
                             .source(source -> source.filter(filter -> filter
                                     .includes("id", "slug", "nameAr", "nameEn", "imageUrl", "price"))),
                     ProductDocument.class);

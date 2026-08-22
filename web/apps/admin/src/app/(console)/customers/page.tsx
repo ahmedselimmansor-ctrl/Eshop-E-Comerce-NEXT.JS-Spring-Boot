@@ -142,12 +142,12 @@ function CustomersList() {
                 {rows.map((customer) => (
                   <tr key={customer.id} className="hover:bg-[var(--muted)]">
                     <Td>
-                      <p className="font-medium">{customer.fullName || '—'}</p>
+                      <p className="font-medium">{customer.fullName || '-'}</p>
                       <p className="text-xs text-[var(--muted-foreground)]">{customer.email}</p>
                     </Td>
 
                     <Td className="numeric text-xs text-[var(--muted-foreground)]">
-                      {customer.phone ?? '—'}
+                      {customer.phone ?? '-'}
                       <div className="mt-0.5 flex gap-1">
                         {customer.emailVerified ? (
                           <Badge tone="success">Email ✓</Badge>

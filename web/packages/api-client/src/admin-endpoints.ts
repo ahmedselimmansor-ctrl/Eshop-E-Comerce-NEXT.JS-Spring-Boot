@@ -36,7 +36,7 @@ import {
  * The admin API.
  *
  * A separate facade from {@link EshopApi} rather than another group on it. The storefront never
- * calls any of this, and keeping the two apart means its bundle never carries the admin schemas —
+ * calls any of this, and keeping the two apart means its bundle never carries the admin schemas -
  * nor gives anyone reading the client a map of the privileged endpoints.
  */
 export class EshopAdminApi {
@@ -91,7 +91,7 @@ export class EshopAdminApi {
         { query: { rangeDays }, cache: 'no-store' },
       ),
 
-    /** Searches that returned nothing — the shortest path to finding a hole in the catalog. */
+    /** Searches that returned nothing - the shortest path to finding a hole in the catalog. */
     zeroResultSearches: (rangeDays = 30, limit = 20) =>
       this.client.request(
         `${this.base}/dashboard/zero-result-searches`,
@@ -130,7 +130,7 @@ export class EshopAdminApi {
         body,
       }),
 
-    /** Soft delete — order history keeps pointing at the product, and the slug stays claimed. */
+    /** Soft delete - order history keeps pointing at the product, and the slug stays claimed. */
     remove: (productId: string) =>
       this.client.requestVoid(`${this.base}/products/${productId}`, { method: 'DELETE' }),
 
@@ -225,7 +225,7 @@ export class EshopAdminApi {
         cache: 'no-store',
       }),
 
-    /** Absolute, not a delta — a stock take reports what is on the shelf. */
+    /** Absolute, not a delta - a stock take reports what is on the shelf. */
     adjust: (itemId: string, quantityOnHand: number, reason: string) =>
       this.client.request(`${this.base}/inventory/${itemId}/adjust`, stockRowSchema, {
         method: 'POST',

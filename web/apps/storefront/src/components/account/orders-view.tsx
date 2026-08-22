@@ -35,7 +35,7 @@ export function OrdersView({ locale }: { locale: string }) {
   /*
    * Read here rather than passed down from the page.
    *
-   * `item` is pluralised and `status` is a lookup — both are functions, and a server component
+   * `item` is pluralised and `status` is a lookup - both are functions, and a server component
    * cannot hand a function to a client component. next-intl's client hook works during prerender
    * because the locale layout puts the messages in context.
    */

@@ -8,7 +8,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
  *
  * The URL is the single source of truth for filter state. Keeping it there rather than in React
  * state means a filtered view is shareable, survives a reload, and works with the browser's back
- * button — all of which a client-side filter store gives up, and all of which shoppers use.
+ * button - all of which a client-side filter store gives up, and all of which shoppers use.
  *
  * Uses the plain `next/navigation` router rather than the locale-aware one: these are query-string
  * updates on the current path, so there is no route to localise.
@@ -35,7 +35,7 @@ export function useListingParams() {
    * Applies a set of changes.
    *
    * `null` removes a parameter; an array replaces every occurrence. Any change resets `page` to the
-   * first — leaving a shopper on page 7 of a result set that now has two pages shows them an empty
+   * first - leaving a shopper on page 7 of a result set that now has two pages shows them an empty
    * grid and reads as a broken filter.
    */
   const update = useCallback(
@@ -80,7 +80,7 @@ export function useListingParams() {
     [searchParams, update],
   );
 
-  /** Clears every filter, keeping the sort order and search term — preferences, not filters. */
+  /** Clears every filter, keeping the sort order and search term - preferences, not filters. */
   const clearFilters = useCallback(() => {
     const sort = searchParams.get('sort');
     const query = searchParams.get('q');

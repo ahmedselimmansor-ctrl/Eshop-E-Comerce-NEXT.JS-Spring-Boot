@@ -43,7 +43,7 @@ public class Warehouse extends AuditableEntity {
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
-    /** Allocation order — lower is preferred. Ties are broken by warehouse code. */
+    /** Allocation order - lower is preferred. Ties are broken by warehouse code. */
     @Column(name = "priority", nullable = false)
     private int priority = 0;
 

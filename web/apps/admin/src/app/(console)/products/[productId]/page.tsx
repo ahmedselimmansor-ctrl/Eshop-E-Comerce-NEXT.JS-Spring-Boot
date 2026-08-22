@@ -12,7 +12,7 @@ import { ProductForm } from '@/components/products/product-form';
  * Edit a product.
  *
  * Loads through the admin endpoint rather than the storefront one, which is what makes drafts and
- * archived products reachable — the public detail endpoint would 404 on both.
+ * archived products reachable - the public detail endpoint would 404 on both.
  */
 export default function EditProductPage({ params }: { params: Promise<{ productId: string }> }) {
   const { productId } = use(params);

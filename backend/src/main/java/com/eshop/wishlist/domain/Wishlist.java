@@ -29,7 +29,7 @@ import java.util.UUID;
  *
  * <p>Sharing is opt-in and capability-based: making a list public mints a {@code shareToken}, and
  * that token is the only way to read it anonymously. Turning sharing off clears the token, so a link
- * that was already sent stops working — which is what "unshare" has to mean.
+ * that was already sent stops working - which is what "unshare" has to mean.
  */
 @Entity
 @Table(name = "wishlists")
@@ -55,7 +55,7 @@ public class Wishlist extends AuditableEntity {
     private String shareToken;
 
     /**
-     * Newest first — a wishlist is read far more often than written, and the item just saved is the
+     * Newest first - a wishlist is read far more often than written, and the item just saved is the
      * one the customer expects at the top.
      */
     @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true,

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * Runs product listings, preferring Elasticsearch and falling back to PostgreSQL.
  *
  * <p>The fallback is not a nicety. Search is the one dependency whose loss would otherwise take the
- * whole storefront down — category pages, brand pages, and the home page all go through here. A
+ * whole storefront down - category pages, brand pages, and the home page all go through here. A
  * degraded listing (no attribute facets, simpler relevance) is a far better outcome than a 503 on
  * every page.
  *
@@ -122,7 +122,7 @@ public class ProductQueryService {
      *
      * <p>Brand counts and the price range are scoped to the category but ignore the other active
      * filters, and attribute facets are omitted entirely. Computing them correctly means one
-     * aggregate query per facet with that facet's own filter removed — six or more round trips per
+     * aggregate query per facet with that facet's own filter removed - six or more round trips per
      * listing, on the path that is already running because the fast path is down. The response
      * carries {@code searchIndexUsed=false} so the frontend can hide filters whose counts it cannot
      * trust rather than display numbers that do not add up.

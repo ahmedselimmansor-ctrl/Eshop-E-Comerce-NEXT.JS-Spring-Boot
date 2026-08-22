@@ -14,7 +14,7 @@ import java.util.UUID;
  * A product as the editor sees it: raw, per-language, and unresolved.
  *
  * <p>The storefront's {@code ProductDetailResponse} returns one {@code name} and one
- * {@code description}, already resolved for the visitor's locale — which is exactly right for a
+ * {@code description}, already resolved for the visitor's locale - which is exactly right for a
  * product page and exactly wrong for an edit form. Prefilling both language fields from a single
  * resolved string would silently copy Arabic over English (or the reverse) the first time anyone
  * pressed save. This returns every field as it is stored, so the form round-trips losslessly.

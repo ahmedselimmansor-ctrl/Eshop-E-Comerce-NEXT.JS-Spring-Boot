@@ -11,7 +11,7 @@ import { Button, Card, Field, Input } from '@/components/ui/primitives';
 /**
  * Operator sign-in.
  *
- * Uses the same endpoint as the storefront — there is one identity system, and staff are users with
+ * Uses the same endpoint as the storefront - there is one identity system, and staff are users with
  * roles. What differs is what happens next: an account with no staff permission is signed out again
  * rather than dropped into a console it cannot use.
  */
@@ -24,7 +24,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [rejected, setRejected] = useState(false);
 
-  // A signed-in operator who lands here — usually by using the back button — belongs in the console.
+  // A signed-in operator who lands here - usually by using the back button - belongs in the console.
   const user = useAuthStore((state) => state.user);
   useEffect(() => {
     if (user) router.replace('/dashboard');
@@ -38,7 +38,7 @@ export default function LoginPage() {
        * Staff-only gate.
        *
        * Every customer can authenticate against this endpoint, so a successful login proves
-       * identity, not authorisation. Without any staff permission there is nothing here to show —
+       * identity, not authorisation. Without any staff permission there is nothing here to show -
        * and letting them in to meet a wall of 403s would be worse than a clear refusal.
        */
       if (response.user.permissions.length === 0) {

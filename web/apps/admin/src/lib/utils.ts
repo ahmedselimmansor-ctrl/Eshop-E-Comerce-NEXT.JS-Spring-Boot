@@ -13,7 +13,7 @@ export function cn(...inputs: ClassValue[]) {
  * table and a screenshot pasted into a ticket reads the same for everyone.
  */
 export function formatMoney(money: Money | null | undefined): string {
-  if (!money) return '—';
+  if (!money) return '-';
   return new Intl.NumberFormat('en-EG', {
     style: 'currency',
     currency: money.currency,
@@ -23,7 +23,7 @@ export function formatMoney(money: Money | null | undefined): string {
 
 /** Compact form for chart axes and tiles, where the full figure would not fit. */
 export function formatMoneyCompact(money: Money | null | undefined): string {
-  if (!money) return '—';
+  if (!money) return '-';
   return new Intl.NumberFormat('en-EG', {
     style: 'currency',
     currency: money.currency,
@@ -33,7 +33,7 @@ export function formatMoneyCompact(money: Money | null | undefined): string {
 }
 
 export function formatNumber(value: number | null | undefined): string {
-  if (value === null || value === undefined) return '—';
+  if (value === null || value === undefined) return '-';
   return new Intl.NumberFormat('en-EG').format(value);
 }
 
@@ -50,7 +50,7 @@ export function formatChange(percent: number | null | undefined): string | null 
 }
 
 export function formatDateTime(iso: string | null | undefined): string {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Intl.DateTimeFormat('en-GB', {
     dateStyle: 'medium',
     timeStyle: 'short',
@@ -58,13 +58,13 @@ export function formatDateTime(iso: string | null | undefined): string {
 }
 
 export function formatDate(iso: string | null | undefined): string {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(iso));
 }
 
-/** "3 minutes ago" — for feeds, where the gap matters more than the wall-clock time. */
+/** "3 minutes ago" - for feeds, where the gap matters more than the wall-clock time. */
 export function formatRelative(iso: string | null | undefined): string {
-  if (!iso) return '—';
+  if (!iso) return '-';
 
   const seconds = (Date.now() - new Date(iso).getTime()) / 1000;
   const formatter = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });

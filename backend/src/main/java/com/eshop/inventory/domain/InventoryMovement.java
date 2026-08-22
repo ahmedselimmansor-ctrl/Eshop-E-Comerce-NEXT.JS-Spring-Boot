@@ -19,7 +19,7 @@ import java.util.UUID;
  * One entry in the append-only stock ledger.
  *
  * <p>Every change to an {@link InventoryItem} writes a row here. The current balance is therefore
- * always explainable — "why does this SKU show 3 units when we received 50?" is answered by reading
+ * always explainable - "why does this SKU show 3 units when we received 50?" is answered by reading
  * the ledger rather than guessing. Rows are never updated or deleted; a mistake is corrected with a
  * compensating {@code ADJUSTMENT}, and a database trigger enforces that.
  */
@@ -33,7 +33,7 @@ public class InventoryMovement extends BaseEntity {
     public enum Type {
         /** Goods received from a supplier. */
         RECEIPT,
-        /** A reservation committed after payment — stock genuinely left the building. */
+        /** A reservation committed after payment - stock genuinely left the building. */
         SALE,
         /** A customer return restocked. */
         RETURN,

@@ -21,7 +21,7 @@ variable "kms_key_id" {
 }
 
 variable "authorized_networks" {
-  description = "Who may reach the control plane. Keep this to office egress and the CI runner — an open control plane is an open door."
+  description = "Who may reach the control plane. Keep this to office egress and the CI runner - an open control plane is an open door."
   type        = list(object({ cidr = string, name = string }))
   default     = []
 }

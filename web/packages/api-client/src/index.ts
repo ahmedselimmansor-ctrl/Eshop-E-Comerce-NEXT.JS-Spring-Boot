@@ -2,7 +2,7 @@
  * The Eshop API client.
  *
  * Shared by the storefront and the admin dashboard so both speak to the same contract. Every
- * response is validated against a Zod schema at the boundary — see `http.ts` for why that matters
+ * response is validated against a Zod schema at the boundary - see `http.ts` for why that matters
  * more than it might appear.
  */
 export * from './schemas';

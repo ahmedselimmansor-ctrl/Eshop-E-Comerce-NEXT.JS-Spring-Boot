@@ -49,7 +49,7 @@ import java.util.UUID;
  * search maintenance.
  *
  * <p>Grouped because each is a handful of endpoints that would otherwise be five thin controllers.
- * Permissions are still per-endpoint — this file is an organisational convenience, not a shared
+ * Permissions are still per-endpoint - this file is an organisational convenience, not a shared
  * authorisation boundary.
  */
 @RestController
@@ -70,7 +70,7 @@ public class AdminOpsController {
     @GetMapping("/inventory")
     @PreAuthorize("hasAuthority('inventory:read')")
     @Operation(summary = "Stock levels",
-            description = "`available` is on-hand minus reserved — the figure that decides whether "
+            description = "`available` is on-hand minus reserved - the figure that decides whether "
                     + "a customer can buy, and the one the low-stock filter uses.")
     public PageResponse<StockRow> inventory(@RequestParam(required = false) String q,
                                             @RequestParam(required = false) UUID warehouseId,
@@ -85,7 +85,7 @@ public class AdminOpsController {
     @PostMapping("/inventory/{itemId}/adjust")
     @PreAuthorize("hasAuthority('inventory:write')")
     @Operation(summary = "Set an absolute on-hand count after a stock take",
-            description = "Absolute, not a delta — a counter reports what is on the shelf. "
+            description = "Absolute, not a delta - a counter reports what is on the shelf. "
                     + "Refused with 409 if it would drop below what is already reserved.")
     public StockRow adjust(@AuthenticationPrincipal UserPrincipal caller,
                            @PathVariable UUID itemId,
@@ -199,8 +199,8 @@ public class AdminOpsController {
     @PutMapping("/settings")
     @PreAuthorize("hasAuthority('settings:write')")
     @Operation(summary = "Update settings",
-            description = "Only business configuration lives here. Infrastructure values — database "
-                    + "hosts, API keys, bucket names — are environment configuration and are "
+            description = "Only business configuration lives here. Infrastructure values - database "
+                    + "hosts, API keys, bucket names - are environment configuration and are "
                     + "deliberately not editable, so a database row can never redirect traffic or "
                     + "leak a credential.")
     public ResponseEntity<Void> updateSettings(@AuthenticationPrincipal UserPrincipal caller,
@@ -214,7 +214,7 @@ public class AdminOpsController {
     @PostMapping("/search/reindex")
     @PreAuthorize("hasAuthority('settings:write')")
     @Operation(summary = "Rebuild the product search index",
-            description = "Safe to run at any time — indexing is idempotent and the storefront falls "
+            description = "Safe to run at any time - indexing is idempotent and the storefront falls "
                     + "back to PostgreSQL while it runs.")
     public Map<String, Object> reindex() {
         ProductSearchPort port = searchPort.getIfAvailable();

@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
  *
  * <p>Validation happens twice, on purpose:
  * <ol>
- *   <li>When the shopper applies the code to their cart — cheap, unlocked, purely advisory, so the
+ *   <li>When the shopper applies the code to their cart - cheap, unlocked, purely advisory, so the
  *       UI can show the discount immediately.</li>
- *   <li>Again inside the checkout transaction, with the coupon row locked — authoritative.</li>
+ *   <li>Again inside the checkout transaction, with the coupon row locked - authoritative.</li>
  * </ol>
  * Only the second one counts. Between the two, another customer can exhaust the last use, the code
  * can be deactivated, or the cart contents can change. Trusting the first would let a coupon exceed
@@ -44,7 +44,7 @@ public class CouponService {
     private final CouponRedemptionRepository redemptions;
 
     /**
-     * Advisory check for the cart screen. Never throws for a rejected coupon — it returns the
+     * Advisory check for the cart screen. Never throws for a rejected coupon - it returns the
      * reason so the UI can explain it rather than showing a generic error.
      */
     @Transactional(readOnly = true)
@@ -165,7 +165,7 @@ public class CouponService {
      * The subset of lines a scoped coupon covers.
      *
      * <p>A category-scoped coupon matches against the line's full ancestor set, which the caller
-     * supplies — otherwise a coupon for "Electronics" would silently miss every product filed only
+     * supplies - otherwise a coupon for "Electronics" would silently miss every product filed only
      * under a sub-category.
      */
     private List<PriceableLine> eligibleLines(Coupon coupon, List<PriceableLine> lines) {
@@ -179,7 +179,7 @@ public class CouponService {
                 .collect(Collectors.toSet());
 
         if (targets.isEmpty()) {
-            // A scoped coupon with no targets matches nothing — safer than falling back to "all".
+            // A scoped coupon with no targets matches nothing - safer than falling back to "all".
             return List.of();
         }
 

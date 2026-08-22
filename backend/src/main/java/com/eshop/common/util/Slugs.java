@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
  * <p>Arabic is kept as Arabic rather than transliterated: {@code /هواتف-محمولة} is a valid,
  * indexable path once percent-encoded, and it is what an Arabic-speaking shopper recognises in a
  * shared link. What <em>is</em> stripped is the part of Arabic orthography that makes two visually
- * identical strings compare differently — tashkeel (diacritics), tatweel (ـ), and the alef/yaa/taa
- * marbuta variants — so that "مُحَمَّد" and "محمد" cannot produce two competing slugs.
+ * identical strings compare differently - tashkeel (diacritics), tatweel (ـ), and the alef/yaa/taa
+ * marbuta variants - so that "مُحَمَّد" and "محمد" cannot produce two competing slugs.
  */
 public final class Slugs {
 

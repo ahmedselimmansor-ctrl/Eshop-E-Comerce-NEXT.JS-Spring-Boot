@@ -1,7 +1,7 @@
 /**
  * VPC and private connectivity.
  *
- * Everything that stores data — Cloud SQL, Memorystore — is reachable only over private IP. No
+ * Everything that stores data - Cloud SQL, Memorystore - is reachable only over private IP. No
  * managed database in this project has a public address, so a leaked password is not on its own
  * enough to reach the data.
  */
@@ -67,7 +67,7 @@ resource "google_service_networking_connection" "private_vpc" {
   reserved_peering_ranges = [google_compute_global_address.private_service_range.name]
 
   # Without this, destroying the connection can leave orphaned peering that blocks the range from
-  # being reused — a painful state to recover from by hand.
+  # being reused - a painful state to recover from by hand.
   deletion_policy = "ABANDON"
 }
 
@@ -118,7 +118,7 @@ resource "google_compute_router_nat" "main" {
  * Firewall.
  *
  * The VPC's implied rules already deny all ingress; these add back only what is needed, and the
- * health-check rule is the one whose absence is hardest to diagnose — backends simply never turn
+ * health-check rule is the one whose absence is hardest to diagnose - backends simply never turn
  * healthy, with no error anywhere.
  */
 resource "google_compute_firewall" "allow_health_checks" {
@@ -128,7 +128,7 @@ resource "google_compute_firewall" "allow_health_checks" {
   direction   = "INGRESS"
   priority    = 1000
 
-  # Fixed, documented Google ranges — not arbitrary.
+  # Fixed, documented Google ranges - not arbitrary.
   source_ranges = ["35.191.0.0/16", "130.211.0.0/22"]
 
   allow {
@@ -161,7 +161,7 @@ resource "google_compute_firewall" "deny_all_ingress" {
   description = "Explicit default deny, logged"
   direction   = "INGRESS"
   # Lowest priority: every allow rule above wins. Stated explicitly rather than relying on the
-  # implied rule, because the implied one produces no logs — and an unexplained connection failure
+  # implied rule, because the implied one produces no logs - and an unexplained connection failure
   # with no log entry is a bad afternoon.
   priority = 65534
 

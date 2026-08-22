@@ -35,7 +35,7 @@ spec:
     spec:
       serviceAccountName: eshop-api
       # Cloud SQL, Memorystore, and Cloud Storage are all reached with the pod's Google identity via
-      # Workload Identity — there is no service-account key anywhere in the image or in a Secret.
+      # Workload Identity - there is no service-account key anywhere in the image or in a Secret.
 
       securityContext:
         runAsNonRoot: true
@@ -62,7 +62,7 @@ spec:
             - configMapRef:
                 name: eshop-api-config
             - secretRef:
-                # Projected from Secret Manager by the External Secrets Operator — see
+                # Projected from Secret Manager by the External Secrets Operator - see
                 # external-secrets.yaml. Never created by hand, never committed.
                 name: eshop-api-secrets
 
@@ -79,7 +79,7 @@ spec:
           resources:
             requests:
               # The request is what the scheduler packs against and what Autopilot bills. Set to
-              # steady-state usage, not to peak — over-requesting wastes a node's worth of capacity
+              # steady-state usage, not to peak - over-requesting wastes a node's worth of capacity
               # per few pods.
               cpu: 500m
               memory: 1Gi
@@ -102,7 +102,7 @@ spec:
 
           livenessProbe:
             # Liveness answers one question: is this JVM wedged? It deliberately does not check the
-            # database — restarting every pod because Cloud SQL failed over turns a 60-second blip
+            # database - restarting every pod because Cloud SQL failed over turns a 60-second blip
             # into a full outage.
             httpGet:
               path: /actuator/health/liveness

@@ -1,6 +1,6 @@
 # The full local stack: `docker compose up -d` and everything the application needs is running.
 #
-# No GCP project, no credentials, and no network egress are required — Cloud Storage is replaced by
+# No GCP project, no credentials, and no network egress are required - Cloud Storage is replaced by
 # fake-gcs-server, outbound mail by Mailpit, and Cloud Trace by Jaeger. That matters because a new
 # engineer's first hour should be spent reading code, not requesting IAM roles.
 #
@@ -21,7 +21,7 @@ services:
       POSTGRES_USER: eshop
       POSTGRES_PASSWORD: eshop
       # Matches the collation Cloud SQL is created with, so index ordering and LIKE behaviour are
-      # identical locally and in production — a difference here surfaces as tests that pass on a
+      # identical locally and in production - a difference here surfaces as tests that pass on a
       # laptop and fail in staging.
       POSTGRES_INITDB_ARGS: '--encoding=UTF8 --locale=C'
     ports:
@@ -64,7 +64,7 @@ services:
     container_name: eshop-elasticsearch
     environment:
       discovery.type: single-node
-      # Security off locally only. Production runs ECK with TLS and credentials — see
+      # Security off locally only. Production runs ECK with TLS and credentials - see
       # infra/terraform and the ELASTICSEARCH_* variables.
       xpack.security.enabled: 'false'
       ES_JAVA_OPTS: '-Xms512m -Xmx512m'
@@ -85,7 +85,7 @@ services:
           memory: 1.5g
 
   # Catches every outbound email instead of sending it. Open http://localhost:8025 to read what the
-  # application would have delivered — order confirmations, password resets, verification links.
+  # application would have delivered - order confirmations, password resets, verification links.
   mailpit:
     image: axllent/mailpit:latest
     container_name: eshop-mailpit
@@ -123,7 +123,7 @@ services:
       COLLECTOR_OTLP_ENABLED: 'true'
     ports:
       - '16686:16686'  # UI
-      - '4318:4318'    # OTLP/HTTP — matches OTEL_EXPORTER_OTLP_ENDPOINT
+      - '4318:4318'    # OTLP/HTTP - matches OTEL_EXPORTER_OTLP_ENDPOINT
     healthcheck:
       test: ['CMD-SHELL', 'wget -q -O- http://localhost:16686 || exit 1']
       interval: 10s
@@ -132,7 +132,7 @@ services:
 
   # ---------------------------------------------------------------------------
   # Application services. Behind a profile so `docker compose up -d` gives you
-  # just the infrastructure — the usual case, where the API and the storefront
+  # just the infrastructure - the usual case, where the API and the storefront
   # run from an IDE with hot reload.
   # ---------------------------------------------------------------------------
 
@@ -181,7 +181,7 @@ services:
       dockerfile: ../infra/docker/web.Dockerfile
       args:
         APP_NAME: storefront
-        # Baked in at build time — NEXT_PUBLIC_* values are inlined into the client bundle and
+        # Baked in at build time - NEXT_PUBLIC_* values are inlined into the client bundle and
         # cannot be changed at runtime.
         NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
         NEXT_PUBLIC_SITE_URL: http://localhost:3000

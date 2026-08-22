@@ -68,7 +68,7 @@ public class SearchController {
 
         ProductQueryService.Result result = productQuery.list(query);
 
-        // Recorded asynchronously — the "popular searches" list and future relevance tuning both
+        // Recorded asynchronously - the "popular searches" list and future relevance tuning both
         // depend on this, but nothing about the response should wait for a write.
         analytics.recordQuery(q, locale, result.page().page().totalElements());
 
@@ -87,7 +87,7 @@ public class SearchController {
     @Operation(summary = "Type-ahead suggestions",
             description = "Edge-n-gram matched, Arabic letter forms normalised so "
                     + "'احمد' and 'أحمد' behave identically. Returns an empty list rather than an "
-                    + "error when search is unavailable — a dead dropdown is better than a broken page.")
+                    + "error when search is unavailable - a dead dropdown is better than a broken page.")
     public ResponseEntity<ProductSearchPort.Suggestions> suggest(
             @RequestParam @NotBlank @Size(max = 100) String q,
             @RequestParam(defaultValue = "8") int limit) {
@@ -112,7 +112,7 @@ public class SearchController {
 
     @PostMapping("/click")
     @Operation(summary = "Report which result was clicked",
-            description = "Fire-and-forget relevance feedback. Always 204, even for unknown ids — "
+            description = "Fire-and-forget relevance feedback. Always 204, even for unknown ids - "
                     + "analytics must never surface an error to a shopper.")
     public ResponseEntity<Void> recordClick(@RequestBody ClickRequest request) {
         analytics.recordClick(request.query(), request.productId());

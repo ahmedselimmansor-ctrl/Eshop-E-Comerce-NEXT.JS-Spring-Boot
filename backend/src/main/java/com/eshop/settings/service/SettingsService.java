@@ -66,11 +66,11 @@ public class SettingsService {
     }
 
     /**
-     * The stored JSON as an ordinary Java value — {@code String}, {@code Boolean}, {@code Number},
+     * The stored JSON as an ordinary Java value - {@code String}, {@code Boolean}, {@code Number},
      * {@code List}, or {@code Map}.
      *
-     * <p>Conversion happens here, once, so that everything downstream — the typed accessors below,
-     * the storefront's public settings payload, every caller of {@link #all()} — keeps working with
+     * <p>Conversion happens here, once, so that everything downstream - the typed accessors below,
+     * the storefront's public settings payload, every caller of {@link #all()} - keeps working with
      * plain values and never has to know that the column is a Jackson tree underneath.
      */
     private Object plain(JsonNode node) {

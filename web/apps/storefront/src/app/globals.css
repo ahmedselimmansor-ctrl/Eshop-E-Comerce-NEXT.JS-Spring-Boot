@@ -11,7 +11,7 @@
    *
    * A deep teal rather than the default e-commerce orange or blue: it reads as trustworthy next to
    * the payment step, holds up against the warm product photography that dominates this catalog,
-   * and leaves orange free to mean one thing only — a sale badge.
+   * and leaves orange free to mean one thing only - a sale badge.
    */
   --color-brand-50: oklch(0.977 0.013 195);
   --color-brand-100: oklch(0.947 0.03 195);
@@ -40,7 +40,7 @@
    *
    * IBM Plex Sans Arabic is one of the few Arabic families with a genuine range of weights, which
    * matters because Arabic carries far less of a typographic hierarchy through case than Latin
-   * does — weight has to do that work instead.
+   * does - weight has to do that work instead.
    */
   --font-arabic: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', system-ui, sans-serif;
   --font-latin: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -56,8 +56,8 @@
 }
 
 /*
- * Semantic tokens, resolved per colour scheme. Components reference these — never a raw palette
- * step — so dark mode is a variable swap rather than a `dark:` prefix on every element.
+ * Semantic tokens, resolved per colour scheme. Components reference these - never a raw palette
+ * step - so dark mode is a variable swap rather than a `dark:` prefix on every element.
  */
 :root {
   --background: oklch(1 0 0);
@@ -176,7 +176,7 @@
     }
   }
 
-  /* Visible only to screen readers — used for form labels the design shows as placeholders. */
+  /* Visible only to screen readers - used for form labels the design shows as placeholders. */
   .sr-only-focusable:not(:focus):not(:focus-within) {
     position: absolute;
     width: 1px;

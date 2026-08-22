@@ -3,7 +3,7 @@ name: Deploy
 # Builds images, runs migrations, then rolls the deployments.
 #
 # The ordering is the important part: migrations complete before any new pod starts, and the schema
-# change must be backward-compatible with the code currently running — see the expand/contract rules
+# change must be backward-compatible with the code currently running - see the expand/contract rules
 # in docs/05-DEPLOYMENT.md. Getting that wrong is how a deploy takes the site down while every
 # individual step reports success.
 
@@ -23,7 +23,7 @@ on:
 permissions:
   contents: read
   # Required for Workload Identity Federation. GitHub mints a short-lived OIDC token that Google
-  # exchanges for credentials — so there is no service-account key stored as a repository secret,
+  # exchanges for credentials - so there is no service-account key stored as a repository secret,
   # which is the single most commonly leaked credential in a CI setup.
   id-token: write
 
@@ -46,7 +46,7 @@ jobs:
       - id: meta
         name: Resolve image tag
         run: |
-          # The git SHA, always — never `latest`. A tag that moves makes a rollback ambiguous and
+          # The git SHA, always - never `latest`. A tag that moves makes a rollback ambiguous and
           # makes "which build is running in production?" unanswerable.
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
@@ -111,7 +111,7 @@ jobs:
           sbom: true
 
       # Blocks a deploy on a vulnerability that has a fix available. Unfixed CVEs are reported but
-      # not blocking — there is nothing to do about them, and failing on them trains people to skip
+      # not blocking - there is nothing to do about them, and failing on them trains people to skip
       # the check.
       - name: Scan images
         uses: aquasecurity/trivy-action@master
@@ -128,7 +128,7 @@ jobs:
     timeout-minutes: 30
 
     # Production requires a reviewer's approval, configured on the GitHub environment. Staging
-    # deploys automatically — that is what makes it useful.
+    # deploys automatically - that is what makes it useful.
     environment:
       name: ${{ github.event.inputs.environment || (startsWith(github.ref, 'refs/tags/v') && 'prod' || 'staging') }}
       url: ${{ vars.PUBLIC_SITE_URL }}
@@ -171,7 +171,7 @@ jobs:
 
           echo "Waiting for migrations…"
           if ! kubectl wait --for=condition=complete --timeout=600s "job/${job_name}" -n eshop; then
-            echo "::error::Migration job failed — deployment aborted, nothing was rolled out"
+            echo "::error::Migration job failed - deployment aborted, nothing was rolled out"
             kubectl logs "job/${job_name}" -n eshop --tail=200
             exit 1
           fi
@@ -195,7 +195,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Hits the real load balancer, not a cluster-internal address — this is the path a
+          # Hits the real load balancer, not a cluster-internal address - this is the path a
           # customer takes, including TLS, Cloud Armor, and the CDN.
           for attempt in $(seq 1 10); do
             if curl -fsS --max-time 10 "${{ vars.PUBLIC_SITE_URL }}/api/v1/categories/tree" > /dev/null; then
@@ -212,9 +212,9 @@ jobs:
       - name: Roll back on failure
         if: failure()
         run: |
-          echo "::warning::Deployment failed — rolling back to the previous revision"
+          echo "::warning::Deployment failed - rolling back to the previous revision"
           for deployment in eshop-api eshop-web eshop-admin; do
             kubectl rollout undo "deployment/$deployment" -n eshop || true
           done
           # Note: this reverts the *code*, not the schema. Migrations are written to be
-          # backward-compatible for exactly this reason — see docs/05-DEPLOYMENT.md.
+          # backward-compatible for exactly this reason - see docs/05-DEPLOYMENT.md.

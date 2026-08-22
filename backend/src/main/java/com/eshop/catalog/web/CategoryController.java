@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Public taxonomy endpoints.
  *
- * <p>Responses carry {@code s-maxage} so Cloud CDN serves the navigation tree at the edge —
+ * <p>Responses carry {@code s-maxage} so Cloud CDN serves the navigation tree at the edge -
  * it is requested on every page load and changes rarely. {@code stale-while-revalidate} lets the
  * CDN keep serving the previous copy while it refreshes, so a slow origin never blocks a render.
  */

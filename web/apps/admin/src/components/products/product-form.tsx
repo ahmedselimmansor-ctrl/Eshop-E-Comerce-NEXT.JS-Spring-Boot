@@ -32,7 +32,7 @@ import { hasPermission } from '@/stores/auth-store';
  * Validated against the same Zod schema the API client uses for the request body, so the rules the
  * form enforces and the rules the request must satisfy cannot drift apart.
  *
- * Arabic is the required name; English is optional. That is the storefront's fallback order — a
+ * Arabic is the required name; English is optional. That is the storefront's fallback order - a
  * product with only an English name would render as a blank tile to an Arabic visitor, which is the
  * default audience.
  */
@@ -44,7 +44,7 @@ export function ProductForm({ product }: { product?: AdminProductDetail }) {
   const [images, setImages] = useState<string[]>(product?.images.map((image) => image.url) ?? []);
   const [imageUrl, setImageUrl] = useState('');
 
-  // Reference data for the two selects. Cached generously — a taxonomy changes rarely.
+  // Reference data for the two selects. Cached generously - a taxonomy changes rarely.
   const brands = useQuery({
     queryKey: ['reference', 'brands'],
     queryFn: () => api().catalog.brands(),
@@ -209,7 +209,7 @@ export function ProductForm({ product }: { product?: AdminProductDetail }) {
           <Field
             id="costPrice"
             label="Cost"
-            hint="Internal — never shown to customers."
+            hint="Internal - never shown to customers."
             error={errors.costPrice?.message}
           >
             <Input
@@ -271,7 +271,7 @@ export function ProductForm({ product }: { product?: AdminProductDetail }) {
           <CardTitle>Images</CardTitle>
         </CardHeader>
         <CardBody className="space-y-3">
-          {/* The first image is the primary one — stated rather than left to be discovered. */}
+          {/* The first image is the primary one - stated rather than left to be discovered. */}
           {images.length > 0 ? (
             <ol className="space-y-1.5">
               {images.map((url, index) => (
@@ -365,7 +365,7 @@ export function ProductForm({ product }: { product?: AdminProductDetail }) {
               className="ms-auto text-danger-500"
               loading={remove.isPending}
               onClick={() => {
-                // Soft delete on the server, but irreversible from this screen — worth a confirm.
+                // Soft delete on the server, but irreversible from this screen - worth a confirm.
                 if (window.confirm('Archive and delist this product?')) remove.mutate();
               }}
             >

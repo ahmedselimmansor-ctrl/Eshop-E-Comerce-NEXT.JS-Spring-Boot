@@ -27,7 +27,7 @@ import java.util.Map;
  *
  * <h2>PCI scope</h2>
  * No card data ever reaches this system. Paymob's iframe and Fawry's hosted flow collect the PAN
- * directly, and what lands here is a provider identifier, the brand, and the last four digits —
+ * directly, and what lands here is a provider identifier, the brand, and the last four digits -
  * enough to show "Visa ···· 4242" on a receipt and to reconcile with the provider, and nothing that
  * would put this database in PCI scope. There is deliberately no field for a PAN, a CVV, or an
  * expiry date, and {@code rawResponse} is redacted before it is written.
@@ -110,7 +110,7 @@ public class Payment extends AuditableEntity {
     @Column(name = "failure_reason")
     private String failureReason;
 
-    /** Provider payload with sensitive keys stripped — see {@code PaymentPayloadRedactor}. */
+    /** Provider payload with sensitive keys stripped - see {@code PaymentPayloadRedactor}. */
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "raw_response", columnDefinition = "jsonb")
     private Map<String, Object> rawResponse;

@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 /**
  * Brand listing.
  *
- * Resolved from the cached brand list rather than a dedicated fetch — there are dozens of brands,
+ * Resolved from the cached brand list rather than a dedicated fetch - there are dozens of brands,
  * the list is already revalidated on a timer for the navigation, and a second round trip to read
  * one row from it would be wasteful.
  */

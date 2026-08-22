@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Fawry integration — reference-code payments settled in cash.
+ * Fawry integration - reference-code payments settled in cash.
  *
  * <p>Fawry matters here because most online shoppers in this market do not use a card. The customer
  * checks out, receives a numeric reference, and pays it at any Fawry outlet, ATM, or through a
@@ -33,7 +33,7 @@ import java.util.Optional;
  *
  * <p>Both the request and the callback are authenticated by a SHA-256 digest over a specific
  * concatenation ending in the merchant secret. The field order is dictated by Fawry and is not
- * negotiable — see {@link #chargeSignature} and {@link #callbackSignature}.
+ * negotiable - see {@link #chargeSignature} and {@link #callbackSignature}.
  *
  * <p>Amounts are sent as decimal strings with exactly two places. Fawry rejects {@code 1299} where
  * {@code 1299.00} was expected, and the signature is computed over the formatted string, so any
@@ -242,7 +242,7 @@ public class FawryPaymentProvider implements PaymentProvider {
      * {@code SHA-256(fawryRefNumber + merchantRefNumber + paymentAmount + orderAmount + orderStatus
      * + paymentMethod + paymentRefrenceNumber + secureKey)}
      *
-     * <p>The misspelling of {@code paymentRefrenceNumber} is Fawry's, not a typo here — correcting
+     * <p>The misspelling of {@code paymentRefrenceNumber} is Fawry's, not a typo here - correcting
      * it produces a digest that never matches.
      */
     private String callbackSignature(Map<String, Object> payload) {
@@ -294,7 +294,7 @@ public class FawryPaymentProvider implements PaymentProvider {
      * Maps Fawry's order status onto the provider-neutral vocabulary.
      *
      * <p>{@code NEW} and {@code UNPAID} both mean "reference issued, nobody has paid yet" and must
-     * not be mistaken for a failure — the customer may simply not have reached an outlet.
+     * not be mistaken for a failure - the customer may simply not have reached an outlet.
      */
     private static Status toStatus(String orderStatus) {
         return switch (orderStatus == null ? "" : orderStatus.toUpperCase()) {
@@ -323,7 +323,7 @@ public class FawryPaymentProvider implements PaymentProvider {
         return response;
     }
 
-    /** Exactly two decimal places — the format Fawry both expects and signs over. */
+    /** Exactly two decimal places - the format Fawry both expects and signs over. */
     private static String formatAmount(BigDecimal amount) {
         return amount == null
                 ? "0.00"

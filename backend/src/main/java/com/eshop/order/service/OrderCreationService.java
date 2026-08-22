@@ -59,7 +59,7 @@ import java.util.UUID;
  *       fires for an order that rolled back.</li>
  * </ol>
  *
- * <p>The payment provider is deliberately <em>not</em> called here — see
+ * <p>The payment provider is deliberately <em>not</em> called here - see
  * {@link CheckoutService#placeOrder}.
  */
 @Slf4j
@@ -289,7 +289,7 @@ public class OrderCreationService {
      *
      * <p>Needed because a partial refund reverses specific lines, and an invoice has to show a
      * per-line tax figure that sums to the order total. The last line absorbs the rounding
-     * remainder so the parts always add up to the whole — apportioning each line independently
+     * remainder so the parts always add up to the whole - apportioning each line independently
      * leaves a piastre unaccounted for often enough to matter.
      */
     private void apportion(List<RepricedLine> lines, Money discount, Money tax, String currency) {
@@ -351,7 +351,7 @@ public class OrderCreationService {
     private Map<String, Object> resolveBillingAddress(UUID userId, CheckoutRequest request,
                                                       Map<String, Object> shippingSnapshot) {
         if (request.billingAddressId() == null || userId == null) {
-            // Same as shipping unless the customer explicitly chose otherwise — the common case.
+            // Same as shipping unless the customer explicitly chose otherwise - the common case.
             return shippingSnapshot;
         }
         return addresses.findByIdForUser(request.billingAddressId(), userId)

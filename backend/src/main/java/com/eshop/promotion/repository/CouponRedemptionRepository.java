@@ -14,7 +14,7 @@ import java.util.UUID;
 @Repository
 public interface CouponRedemptionRepository extends JpaRepository<CouponRedemption, UUID> {
 
-    /** Authoritative per-user usage count — see {@link CouponRedemption}. */
+    /** Authoritative per-user usage count - see {@link CouponRedemption}. */
     @Query("SELECT COUNT(r) FROM CouponRedemption r WHERE r.coupon.id = :couponId AND r.userId = :userId")
     long countForUser(@Param("couponId") UUID couponId, @Param("userId") UUID userId);
 
@@ -25,7 +25,7 @@ public interface CouponRedemptionRepository extends JpaRepository<CouponRedempti
 
     List<CouponRedemption> findByOrderId(UUID orderId);
 
-    /** True when this customer has never completed an order — gates {@code firstOrderOnly} coupons. */
+    /** True when this customer has never completed an order - gates {@code firstOrderOnly} coupons. */
     @Query(value = """
             SELECT NOT EXISTS (
                 SELECT 1 FROM orders

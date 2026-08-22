@@ -31,7 +31,7 @@ public class AttributeController {
     @GetMapping
     @Operation(summary = "Attribute definitions",
             description = "Used to render the filter sidebar and the variant selector. "
-                    + "Counts are not included here — those come from the listing response's facets.")
+                    + "Counts are not included here - those come from the listing response's facets.")
     public ResponseEntity<List<AttributeResponse>> list(
             @RequestParam(defaultValue = "true") boolean filterable) {
 

@@ -1,5 +1,5 @@
 -- ============================================================================
--- V6 — Shipping, orders, fulfilment, returns
+-- V6 - Shipping, orders, fulfilment, returns
 -- ============================================================================
 
 CREATE TABLE shipping_zones (
@@ -118,7 +118,7 @@ CREATE TABLE order_items (
 CREATE INDEX idx_order_items_order ON order_items (order_id);
 CREATE INDEX idx_order_items_product ON order_items (product_id);
 
-COMMENT ON TABLE order_items IS 'All descriptive columns are frozen snapshots — catalog edits must not alter order history.';
+COMMENT ON TABLE order_items IS 'All descriptive columns are frozen snapshots - catalog edits must not alter order history.';
 
 CREATE TABLE order_status_history (
     id               UUID PRIMARY KEY,

@@ -25,7 +25,7 @@ import { EGYPT_GOVERNORATES, cn } from '@/lib/utils';
  *
  * The component looks each one up itself. Passing labels in from the page was the original design
  * and does not work: several of them are parameterised, and a server component cannot hand a client
- * component a function — React refuses to serialise it across the boundary.
+ * component a function - React refuses to serialise it across the boundary.
  */
 interface PaymentOption {
   provider: PaymentProviderType;
@@ -144,7 +144,7 @@ export function CheckoutFlow({ locale }: { locale: string }) {
         couponCode: cart?.coupon?.code,
         paymentProvider: payment.provider,
       }),
-    // Nothing to quote until a destination is known — shipping cost is the whole point of the call.
+    // Nothing to quote until a destination is known - shipping cost is the whole point of the call.
     enabled: governorate.length > 0 && Boolean(cart) && cart!.items.length > 0,
   });
 
@@ -163,7 +163,7 @@ export function CheckoutFlow({ locale }: { locale: string }) {
 
   const selectedShipping = shippingOptions.find((option) => option.id === shippingMethodId);
 
-  // Cash on delivery depends on the courier, not just the store — a same-day bike courier will not
+  // Cash on delivery depends on the courier, not just the store - a same-day bike courier will not
   // carry cash. Falls back to card if the current choice becomes invalid.
   const codAvailable = selectedShipping?.supportsCod ?? false;
 
@@ -198,7 +198,7 @@ export function CheckoutFlow({ locale }: { locale: string }) {
 
     onSuccess: (placed) => {
       // Routed to the callback screen rather than showing the result inline: Paymob needs to load
-      // an iframe, Fawry needs to show a reference code, and COD needs a confirmation — all three
+      // an iframe, Fawry needs to show a reference code, and COD needs a confirmation - all three
       // are a different screen, and all three must survive a refresh.
       router.push({
         pathname: '/checkout/callback',
@@ -510,7 +510,7 @@ export function CheckoutFlow({ locale }: { locale: string }) {
                 ? Number.parseFloat(quote.shipping.amount) === 0
                   ? t('free')
                   : formatMoney(quote.shipping, locale)
-                : '—'
+                : '-'
             }
           />
 
@@ -532,7 +532,7 @@ export function CheckoutFlow({ locale }: { locale: string }) {
               <p>{error.detail}</p>
               {/*
                * A stock or price conflict is recoverable from the cart, and saying so is more useful
-               * than a generic failure — the shopper knows exactly what to do next.
+               * than a generic failure - the shopper knows exactly what to do next.
                */}
               {error.is('OUT_OF_STOCK', 'PRICE_CHANGED') ? (
                 <Button

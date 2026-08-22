@@ -1,7 +1,7 @@
 # Network policy: default deny, then allow only what is actually needed.
 #
 # Without this, every pod in the cluster can reach every other pod and any external address. That
-# turns a single compromised container — a dependency with a supply-chain problem, say — into
+# turns a single compromised container - a dependency with a supply-chain problem, say - into
 # lateral movement across the whole namespace and unrestricted egress.
 
 apiVersion: networking.k8s.io/v1
@@ -96,7 +96,7 @@ spec:
 
     # Outbound HTTPS: payment gateways, Google APIs, SMTP relay, Firebase.
     #
-    # Not narrowed to specific IPs on purpose — Paymob, Fawry, and Google all sit behind CDNs whose
+    # Not narrowed to specific IPs on purpose - Paymob, Fawry, and Google all sit behind CDNs whose
     # address ranges change without notice, and a policy that breaks payments during a provider's
     # infrastructure change is worse than the marginal containment it buys. Egress is instead
     # constrained by port and audited through VPC flow logs.

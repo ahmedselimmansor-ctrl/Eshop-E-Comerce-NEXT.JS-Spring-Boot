@@ -38,7 +38,7 @@ import java.util.UUID;
  * Wishlist endpoints.
  *
  * <p>Everything except the share link requires a signed-in caller: the list belongs to a person,
- * not to a browser. Responses are {@code no-store} for the same reason the cart's are — a shared
+ * not to a browser. Responses are {@code no-store} for the same reason the cart's are - a shared
  * cache entry here would show one customer another's saved items.
  */
 @RestController
@@ -101,7 +101,7 @@ public class WishlistController {
     @PostMapping("/items/{itemId}/move-to-cart")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Move a saved item into the cart",
-            description = "The item leaves the wishlist only if the cart accepted it — an "
+            description = "The item leaves the wishlist only if the cart accepted it - an "
                     + "out-of-stock product fails the call and stays saved.")
     public ResponseEntity<MoveToCartResponse> moveToCart(
             @AuthenticationPrincipal UserPrincipal caller,

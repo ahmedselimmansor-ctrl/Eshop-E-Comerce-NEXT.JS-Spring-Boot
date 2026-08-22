@@ -24,7 +24,7 @@ export async function generateMetadata({
 /**
  * The product listing.
  *
- * Filters live entirely in the URL — no client state. That means a filtered view is shareable,
+ * Filters live entirely in the URL - no client state. That means a filtered view is shareable,
  * survives a reload, works with the back button, and can be rendered on the server without
  * hydration. It is also why the filter panel is a client island that only rewrites the query string
  * rather than owning the data.
@@ -84,7 +84,7 @@ export default async function ProductsPage({
           /*
            * When the search index is down the listing comes from the PostgreSQL fallback and the
            * facet counts are incomplete. Telling the panel that lets it hide the filters it cannot
-           * count rather than displaying numbers that do not add up — a wrong count is worse than
+           * count rather than displaying numbers that do not add up - a wrong count is worse than
            * an absent filter, because the shopper acts on it.
            */
           countsReliable={listing.searchIndexUsed}

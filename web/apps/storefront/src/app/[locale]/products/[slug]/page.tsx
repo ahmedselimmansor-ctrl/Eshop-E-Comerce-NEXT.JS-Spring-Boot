@@ -57,7 +57,7 @@ export default async function ProductPage({ params }: PageProps) {
   try {
     product = await api.catalog.product(slug);
   } catch (error) {
-    // A missing slug is a 404, not an error page — the difference matters for crawlers and for the
+    // A missing slug is a 404, not an error page - the difference matters for crawlers and for the
     // visitor who followed an old link.
     if (error instanceof ApiError && error.status === 404) {
       notFound();
@@ -75,7 +75,7 @@ export default async function ProductPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
-      {/* Breadcrumb — also the structured trail search engines read. */}
+      {/* Breadcrumb - also the structured trail search engines read. */}
       <nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
         <Link href="/" className="hover:text-brand-700">
           {common('home')}
@@ -148,7 +148,7 @@ export default async function ProductPage({ params }: PageProps) {
           <Separator className="my-5" />
 
           {/*
-           * Everything interactive — variant choice, quantity, add to cart — lives in this one
+           * Everything interactive - variant choice, quantity, add to cart - lives in this one
            * client island. The rest of the page stays a server component, so the JavaScript that
            * ships is the purchase panel and nothing else.
            */}
@@ -258,7 +258,7 @@ export default async function ProductPage({ params }: PageProps) {
       {/*
        * Product structured data.
        *
-       * Feeds the rich result in search — price, availability, and rating stars beside the listing.
+       * Feeds the rich result in search - price, availability, and rating stars beside the listing.
        * Built from the same values the page displays, so the two cannot disagree, which is what
        * Google penalises.
        */}

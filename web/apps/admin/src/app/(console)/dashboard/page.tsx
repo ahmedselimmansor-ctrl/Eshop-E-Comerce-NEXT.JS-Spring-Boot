@@ -49,7 +49,7 @@ const RANGES = [
 /**
  * The operations dashboard.
  *
- * Two halves, deliberately. The top is *trends* — figures against the equivalent preceding period,
+ * Two halves, deliberately. The top is *trends* - figures against the equivalent preceding period,
  * which is the only way an absolute number means anything. The bottom is *queues*: things that need
  * a person today. An operator opening this at 9am should be able to tell within a second whether
  * anything is on fire.
@@ -356,7 +356,7 @@ export default function DashboardPage() {
               <CardBody className="pb-0">
                 <p className="flex items-start gap-2 text-xs text-[var(--muted-foreground)]">
                   <SearchX className="mt-0.5 size-4 shrink-0" aria-hidden />
-                  Customers looked for these and found nothing — each one is either a gap in the
+                  Customers looked for these and found nothing - each one is either a gap in the
                   catalog or a missing synonym.
                 </p>
               </CardBody>
@@ -406,7 +406,7 @@ function MetricTile({
         <Skeleton className="mt-2 h-7 w-24" />
       ) : (
         <p className="numeric mt-1 text-2xl font-semibold">
-          {metric ? format(metric.current as never) : '—'}
+          {metric ? format(metric.current as never) : '-'}
         </p>
       )}
 
@@ -433,7 +433,7 @@ function MetricTile({
 /**
  * A count that is also a link to the work.
  *
- * `urgent` turns the tile red only when the count is non-zero — a permanently red zero teaches
+ * `urgent` turns the tile red only when the count is non-zero - a permanently red zero teaches
  * operators to ignore the colour.
  */
 function QueueTile({

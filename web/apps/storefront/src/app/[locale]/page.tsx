@@ -13,7 +13,7 @@ import { ProductCard, ProductCardSkeleton } from '@/components/product/product-c
  *
  * Each shelf is wrapped in its own `<Suspense>` boundary so they stream independently: the hero and
  * the header paint immediately, and a slow "best sellers" query cannot hold up the rest of the
- * page. That is also why the shelves are separate async components rather than one `Promise.all` —
+ * page. That is also why the shelves are separate async components rather than one `Promise.all` -
  * the whole point is that they do not wait for each other.
  */
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -96,7 +96,7 @@ async function Shelf({
   locale: string;
   priorityImages?: boolean;
 }) {
-  // A shelf whose query failed renders nothing rather than an empty box with a heading — a heading
+  // A shelf whose query failed renders nothing rather than an empty box with a heading - a heading
   // over emptiness reads as "we have none of these", which is not what happened.
   if (products.length === 0) return null;
 
@@ -118,7 +118,7 @@ async function Shelf({
             key={item.id}
             product={item}
             locale={locale}
-            // Only the first row of the first shelf — that is the LCP candidate. Marking every
+            // Only the first row of the first shelf - that is the LCP candidate. Marking every
             // image priority tells the browser nothing.
             priority={priorityImages && index < 4}
             labels={{

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * An automatic discount that needs no code — a flash sale, a buy-two-get-one, a spend-more-save-more
+ * An automatic discount that needs no code - a flash sale, a buy-two-get-one, a spend-more-save-more
  * tier.
  *
  * <p>The rule payload lives in a JSONB {@code config} column rather than in per-type tables. Each
@@ -35,7 +35,7 @@ import java.util.UUID;
 public class Promotion extends AuditableEntity {
 
     public enum Type {
-        /** {@code {"buyQuantity":2,"getQuantity":1,"productIds":[...]}} — cheapest item free. */
+        /** {@code {"buyQuantity":2,"getQuantity":1,"productIds":[...]}} - cheapest item free. */
         BUY_X_GET_Y,
         /** {@code {"tiers":[{"minAmount":1000,"percent":5},{"minAmount":3000,"percent":10}]}} */
         TIERED_DISCOUNT,

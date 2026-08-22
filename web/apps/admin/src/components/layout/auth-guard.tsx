@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/primitives';
  * Restores the session, then gates everything behind it.
  *
  * The access token is deliberately not persisted, so every reload starts signed out. This exchanges
- * the `HttpOnly` refresh cookie for a fresh token before anything renders — without it a reload
+ * the `HttpOnly` refresh cookie for a fresh token before anything renders - without it a reload
  * would bounce the operator to the login screen mid-task.
  *
  * This is presentation, not security. Every endpoint behind it authenticates and authorises on its
@@ -25,7 +25,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const clear = useAuthStore((state) => state.clear);
 
   useEffect(() => {
-    // Already restored — a client-side navigation, not a reload.
+    // Already restored - a client-side navigation, not a reload.
     if (useAuthStore.getState().user) {
       useAuthStore.getState().finishInitialising();
       return;

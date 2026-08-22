@@ -23,7 +23,7 @@ import java.util.UUID;
  *
  * <p>Refresh tokens are deliberately <em>not</em> JWTs. A JWT refresh token cannot be revoked
  * without keeping a denylist, which reintroduces the server-side state the JWT was supposed to
- * avoid — and refresh tokens are exactly the credential that must be revocable. They are opaque
+ * avoid - and refresh tokens are exactly the credential that must be revocable. They are opaque
  * random strings stored hashed in {@code refresh_tokens}; see {@code RefreshTokenService}.
  */
 @Service

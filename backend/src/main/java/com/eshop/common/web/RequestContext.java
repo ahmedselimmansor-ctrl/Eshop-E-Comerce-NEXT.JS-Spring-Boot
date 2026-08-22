@@ -54,8 +54,8 @@ public final class RequestContext {
      * Best-effort originating IP.
      *
      * <p>Behind the GCP global load balancer the left-most {@code X-Forwarded-For} entry is the real
-     * client. This is only used for logging, abuse counters, and audit rows — never for
-     * authorisation — because the header is client-supplied and the LB only appends to it.
+     * client. This is only used for logging, abuse counters, and audit rows - never for
+     * authorisation - because the header is client-supplied and the LB only appends to it.
      */
     public static String resolveClientIp(HttpServletRequest request) {
         String forwarded = request.getHeader("X-Forwarded-For");

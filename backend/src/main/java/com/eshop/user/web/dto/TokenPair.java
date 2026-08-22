@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * Credentials returned after a successful authentication or refresh.
  *
- * <p>Web clients receive {@code refreshToken} as {@code null} here — the value is delivered instead
+ * <p>Web clients receive {@code refreshToken} as {@code null} here - the value is delivered instead
  * as an {@code HttpOnly; Secure; SameSite=Strict} cookie scoped to {@code /api/v1/auth}, so no
  * JavaScript on the page can read it and XSS cannot exfiltrate a long-lived credential. Mobile
  * clients, which have no cookie jar and store the value in the platform keychain, receive it in the

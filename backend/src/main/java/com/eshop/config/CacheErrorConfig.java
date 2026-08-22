@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Makes the cache a genuine optimisation rather than a hard dependency.
  *
- * <p>Without this, a Redis outage turns every {@code @Cacheable} method into a 500 — the site goes
+ * <p>Without this, a Redis outage turns every {@code @Cacheable} method into a 500 - the site goes
  * down because a *cache* is unavailable. Here a failed get, put, or evict is logged and swallowed,
  * so the call proceeds to the database. The trade-off is deliberate: an evict that fails leaves a
  * stale entry until its TTL expires, which is why every cache in {@link RedisConfig} has a bounded

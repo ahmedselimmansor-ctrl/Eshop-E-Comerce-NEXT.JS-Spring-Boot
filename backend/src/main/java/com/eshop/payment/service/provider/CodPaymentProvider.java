@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * <p>Deliberately <em>not</em> marked {@code immediatelySettled}. Treating COD as paid at checkout
  * would commit the stock reservation and recognise revenue for an order that may well be refused at
- * the door — a routine outcome for COD, not an edge case.
+ * the door - a routine outcome for COD, not an edge case.
  */
 @Slf4j
 @Component
@@ -83,7 +83,7 @@ public class CodPaymentProvider implements PaymentProvider {
      */
     @Override
     public RefundResult refund(String providerPaymentId, Money amount, String reason) {
-        log.info("cod_refund_recorded amount={} reason={} — settle manually", amount, reason);
+        log.info("cod_refund_recorded amount={} reason={} - settle manually", amount, reason);
         return new RefundResult(true, null, null,
                 Map.of("provider", "COD", "manualSettlement", true, "amount", amount.amount().toPlainString()));
     }

@@ -1,5 +1,5 @@
 -- ============================================================================
--- V3 — Inventory: warehouses, stock levels, append-only movement ledger,
+-- V3 - Inventory: warehouses, stock levels, append-only movement ledger,
 --      and time-bounded reservations that back the checkout flow.
 -- ============================================================================
 
@@ -64,7 +64,7 @@ CREATE TABLE inventory_movements (
 CREATE INDEX idx_inventory_movements_item ON inventory_movements (inventory_item_id, created_at DESC);
 CREATE INDEX idx_inventory_movements_reference ON inventory_movements (reference_type, reference_id);
 
-COMMENT ON TABLE inventory_movements IS 'Append-only ledger. Rows are never updated or deleted — corrections are new ADJUSTMENT rows.';
+COMMENT ON TABLE inventory_movements IS 'Append-only ledger. Rows are never updated or deleted - corrections are new ADJUSTMENT rows.';
 
 CREATE TABLE stock_reservations (
     id                 UUID PRIMARY KEY,

@@ -113,7 +113,7 @@ public class RedisConfig {
         return template;
     }
 
-    /** Plain string template — what the rate-limit and lock Lua scripts operate on. */
+    /** Plain string template - what the rate-limit and lock Lua scripts operate on. */
     @Bean
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
         return new StringRedisTemplate(connectionFactory);

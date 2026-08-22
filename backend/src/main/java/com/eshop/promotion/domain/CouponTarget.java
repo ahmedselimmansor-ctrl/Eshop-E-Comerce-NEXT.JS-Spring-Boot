@@ -20,7 +20,7 @@ import java.util.UUID;
  *
  * <p>The target is a bare id plus a type rather than three nullable foreign keys, so adding a new
  * scope later does not require a schema change. Referential integrity is traded for that
- * flexibility deliberately — a deleted target simply stops matching, which is the desired behaviour
+ * flexibility deliberately - a deleted target simply stops matching, which is the desired behaviour
  * anyway.
  */
 @Entity

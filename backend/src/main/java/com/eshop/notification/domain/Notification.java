@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * <p>Both titles and both bodies are stored rather than one rendered string, because a customer can
  * change their language after the notification was created and the inbox should follow. The
- * alternative — rendering at read time from a template key — was rejected: template wording changes
+ * alternative - rendering at read time from a template key - was rejected: template wording changes
  * over time, and an old notification should keep saying what it originally said.
  */
 @Entity

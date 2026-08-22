@@ -16,7 +16,7 @@ abstract final class AppConfig {
 
   static const cdnBaseUrl = String.fromEnvironment('CDN_BASE_URL', defaultValue: '');
 
-  /// Arabic first — it is the default, and the order here is what `supportedLocales` resolves
+  /// Arabic first - it is the default, and the order here is what `supportedLocales` resolves
   /// against when the device asks for a language neither entry matches exactly.
   static const supportedLocales = [Locale('ar'), Locale('en')];
 

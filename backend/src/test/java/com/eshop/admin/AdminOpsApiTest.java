@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * <p>Both once mapped their response in the controller, from an entity whose session had already
  * closed. The stock row reads the product and warehouse; the review response reads its media
  * collection. Every call to adjust, receive, approve, reject and reply threw
- * {@code LazyInitializationException} — and the stock mutations had already been applied by then, so
+ * {@code LazyInitializationException} - and the stock mutations had already been applied by then, so
  * the operator saw a 500 for an operation that had in fact succeeded.
  */
 class AdminOpsApiTest extends IntegrationTest {
@@ -45,7 +45,7 @@ class AdminOpsApiTest extends IntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.onHand").value(42))
                 .andExpect(jsonPath("$.available").value(42))
-                // Reads the lazily-associated product and warehouse — the exact fields that threw.
+                // Reads the lazily-associated product and warehouse - the exact fields that threw.
                 .andExpect(jsonPath("$.productName").value("منتج"))
                 .andExpect(jsonPath("$.warehouse").value("TST"));
     }

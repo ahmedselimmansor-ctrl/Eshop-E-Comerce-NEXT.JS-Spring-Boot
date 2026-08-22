@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Link between a local {@link User} and an external identity provider.
  *
- * <p>Kept in its own table so one account can accumulate several sign-in methods over time — a
+ * <p>Kept in its own table so one account can accumulate several sign-in methods over time - a
  * customer who registered with a password can later attach Google without losing their order
  * history, and the provider's subject id is matched rather than the email, because an email
  * address can be reassigned by the provider while the subject id cannot.
@@ -46,7 +46,7 @@ public class OAuthAccount extends AuditableEntity {
     @Column(name = "provider", nullable = false, length = 20)
     private Provider provider;
 
-    /** The provider's stable subject identifier — never the email. */
+    /** The provider's stable subject identifier - never the email. */
     @Column(name = "provider_user_id", nullable = false, length = 191)
     private String providerUserId;
 

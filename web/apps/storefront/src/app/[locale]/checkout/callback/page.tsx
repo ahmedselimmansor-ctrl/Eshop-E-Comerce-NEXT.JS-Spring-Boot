@@ -21,7 +21,7 @@ export async function generateMetadata({
 /**
  * Where checkout lands, and where the payment provider returns the customer.
  *
- * The order already exists by the time this renders — it was committed before the provider was
+ * The order already exists by the time this renders - it was committed before the provider was
  * called. What is still open is whether the payment settled, and that is genuinely uncertain here:
  * the provider's webhook and the browser redirect race each other, and the redirect usually wins.
  * So this screen polls rather than assuming.

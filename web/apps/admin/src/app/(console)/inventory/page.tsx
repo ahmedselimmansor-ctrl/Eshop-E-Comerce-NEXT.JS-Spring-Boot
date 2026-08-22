@@ -35,7 +35,7 @@ export default function InventoryPage() {
  * Stock levels.
  *
  * Three numbers per row, and the distinction between them matters: on-hand is what is physically
- * there, reserved is what unpaid orders are holding, and available is the difference — the only one
+ * there, reserved is what unpaid orders are holding, and available is the difference - the only one
  * that decides whether a customer can buy. Showing on-hand alone is how a store oversells.
  */
 function InventoryList() {
@@ -147,7 +147,7 @@ function InventoryList() {
                       <p className="line-clamp-1 font-medium">{row.productName}</p>
                       <p className="numeric text-xs text-[var(--muted-foreground)]">{row.sku}</p>
                     </Td>
-                    <Td className="text-[var(--muted-foreground)]">{row.warehouse ?? '—'}</Td>
+                    <Td className="text-[var(--muted-foreground)]">{row.warehouse ?? '-'}</Td>
                     <Td className="numeric text-end">{formatNumber(row.onHand)}</Td>
                     <Td className="numeric text-end text-[var(--muted-foreground)]">
                       {formatNumber(row.reserved)}
@@ -205,7 +205,7 @@ function InventoryList() {
  * Adjust or receive stock.
  *
  * Two genuinely different operations, so they are two forms rather than one with a sign. An
- * adjustment is a stock take — an absolute count, and a reason is mandatory because someone will ask
+ * adjustment is a stock take - an absolute count, and a reason is mandatory because someone will ask
  * why the number changed. Receiving is a delta from a supplier delivery.
  */
 function StockDialog({
@@ -292,7 +292,7 @@ function StockDialog({
 
               {Number(onHand) < row.reserved ? (
                 <p className="text-xs text-warning-500">
-                  This is below the {row.reserved} units already reserved by unpaid orders — the API
+                  This is below the {row.reserved} units already reserved by unpaid orders - the API
                   will refuse it.
                 </p>
               ) : null}

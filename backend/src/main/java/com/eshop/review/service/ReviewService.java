@@ -40,7 +40,7 @@ public class ReviewService {
 
     /*
      * `media` is left out of the paged entity graphs so Hibernate can page in SQL, which means it
-     * has to be touched here — the response is built after this transaction closes and
+     * has to be touched here - the response is built after this transaction closes and
      * `open-in-view` is off. @BatchSize keeps it to one extra query per page.
      */
     @Transactional(readOnly = true)
@@ -79,7 +79,7 @@ public class ReviewService {
      * Submits a review.
      *
      * <p>{@code isVerifiedPurchase} is derived from a delivered order line, never taken from the
-     * request — it is a trust signal displayed to other shoppers, so a client that could set it
+     * request - it is a trust signal displayed to other shoppers, so a client that could set it
      * would be able to fabricate credibility. When
      * {@code catalog.reviews_require_purchase} is on, the absence of that order line is a hard
      * rejection rather than merely a missing badge.
@@ -123,7 +123,7 @@ public class ReviewService {
         return saved;
     }
 
-    /** Edits are re-moderated — see {@link Review#editContent}. */
+    /** Edits are re-moderated - see {@link Review#editContent}. */
     @Transactional
     public Review edit(UUID reviewId, UUID userId, ReviewRequest request) {
         Review review = requireOwned(reviewId, userId);

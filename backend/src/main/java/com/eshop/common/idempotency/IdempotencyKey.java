@@ -50,7 +50,7 @@ public class IdempotencyKey {
     /**
      * SHA-256 of the canonical request body.
      *
-     * <p>Reusing a key with a <em>different</em> body is a client bug, not a retry — replaying the
+     * <p>Reusing a key with a <em>different</em> body is a client bug, not a retry - replaying the
      * first response would silently discard the second request. That case returns 409.
      */
     @Column(name = "request_hash", nullable = false, length = 64)
@@ -64,7 +64,7 @@ public class IdempotencyKey {
      *
      * <p>Typed as {@link JsonNode} rather than {@code Object}: Hibernate cannot infer a JSON
      * serialiser for a bare {@code Object} field and falls back to treating it as a {@code String},
-     * which throws {@code ClassCastException} at commit for every response that is not one — that is,
+     * which throws {@code ClassCastException} at commit for every response that is not one - that is,
      * all of them. A concrete node type gives the Jackson format mapper something to work with.
      */
     @JdbcTypeCode(SqlTypes.JSON)

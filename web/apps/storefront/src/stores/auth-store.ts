@@ -19,7 +19,7 @@ interface AuthState {
 /**
  * Authentication state.
  *
- * **The access token is held in memory only** — deliberately not persisted to `localStorage` or a
+ * **The access token is held in memory only** - deliberately not persisted to `localStorage` or a
  * readable cookie. Anything a script on the page can read, an XSS can exfiltrate. The refresh token
  * lives in an `HttpOnly; SameSite=Strict` cookie the page cannot see, so a successful XSS gets at
  * most a 15-minute access token rather than a 30-day session.
@@ -54,7 +54,7 @@ export function isSignedIn(): boolean {
   return useAuthStore.getState().user !== null;
 }
 
-/** Whether the signed-in customer holds a permission — used to reveal staff-only shortcuts. */
+/** Whether the signed-in customer holds a permission - used to reveal staff-only shortcuts. */
 export function hasPermission(permission: string): boolean {
   return useAuthStore.getState().user?.permissions.includes(permission) ?? false;
 }

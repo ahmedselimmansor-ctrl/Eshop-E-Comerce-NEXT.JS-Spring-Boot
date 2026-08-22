@@ -30,7 +30,7 @@ import java.util.UUID;
  *
  * <p><b>Why these are two steps.</b> {@link OrderCreationService#create} runs in a database
  * transaction that holds row locks on inventory. Calling a payment gateway from inside it would
- * keep those locks — and a pooled connection — open for the gateway's entire round trip, so one
+ * keep those locks - and a pooled connection - open for the gateway's entire round trip, so one
  * slow provider would serialise every checkout for the same SKU and eventually drain the pool.
  *
  * <p>The cost of splitting them is a window where an order exists with no payment. That is handled
@@ -56,7 +56,7 @@ public class CheckoutService {
     /**
      * Places an order and starts its payment.
      *
-     * <p>Not annotated {@code @Transactional} on purpose — see the class comment.
+     * <p>Not annotated {@code @Transactional} on purpose - see the class comment.
      */
     public Placed placeOrder(UUID userId, String sessionId, CheckoutRequest request,
                              String idempotencyKey, String clientIp, String userAgent, String locale) {
@@ -77,7 +77,7 @@ public class CheckoutService {
         } catch (RuntimeException e) {
             // The order is already committed. Roll it back explicitly so held stock is returned
             // now rather than thirty minutes from now, and the customer can retry immediately.
-            log.error("payment_initiation_failed order={} provider={} — cancelling order",
+            log.error("payment_initiation_failed order={} provider={} - cancelling order",
                     order.getOrderNumber(), request.paymentProvider(), e);
             abandon(order.getId(), "Payment could not be started");
             throw e;
@@ -109,7 +109,7 @@ public class CheckoutService {
      * Prices a prospective order without creating anything.
      *
      * <p>Drives the checkout summary as the customer picks an address and a delivery method. Uses
-     * the same arithmetic as the real thing, but reserves no stock and redeems no coupon — so the
+     * the same arithmetic as the real thing, but reserves no stock and redeems no coupon - so the
      * figures here are indicative, and the authoritative totals are the ones the order is created
      * with.
      */

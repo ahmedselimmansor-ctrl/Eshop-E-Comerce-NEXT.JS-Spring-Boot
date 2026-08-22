@@ -32,11 +32,11 @@ import java.util.function.Supplier;
  *       concurrent duplicate loses this insert rather than proceeding in parallel.</li>
  *   <li>Run the operation, then store its response and mark the key {@code COMPLETED}.</li>
  *   <li>A later request with the same key and the same body gets the stored response back.</li>
- *   <li>The same key with a <em>different</em> body is a client error — 409, not a silent replay.</li>
+ *   <li>The same key with a <em>different</em> body is a client error - 409, not a silent replay.</li>
  * </ol>
  *
  * <p>The claim and the completion each run in their own transaction so the key survives even when
- * the business transaction rolls back — a failed attempt must not free the key for an immediate
+ * the business transaction rolls back - a failed attempt must not free the key for an immediate
  * retry that could race the first one's cleanup. They go through an explicit
  * {@link TransactionTemplate} rather than {@code @Transactional(REQUIRES_NEW)}: these methods are
  * called from {@link #execute} on the same bean, and a self-invocation never passes through the
@@ -131,7 +131,7 @@ public class IdempotencyService {
                     properties.getCheckout().getIdempotencyTtlHours() * 3600L));
 
             // Flushed immediately so a concurrent duplicate trips the primary-key constraint here,
-            // rather than at commit — after the operation has already run.
+            // rather than at commit - after the operation has already run.
             keys.saveAndFlush(record);
         });
     }
@@ -147,7 +147,7 @@ public class IdempotencyService {
     /**
      * Releases a key after a failed attempt so the client can retry with a corrected request.
      *
-     * <p>Only safe for failures that produced no side effects — a validation rejection, an
+     * <p>Only safe for failures that produced no side effects - a validation rejection, an
      * out-of-stock check. A failure <em>after</em> an order was created must keep the key.
      */
     public void release(String key) {

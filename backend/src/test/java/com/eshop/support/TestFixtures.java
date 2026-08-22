@@ -37,7 +37,7 @@ import java.util.Set;
  * Builds the small amount of data a test needs, and clears it again afterwards.
  *
  * <p>{@link #reset()} truncates the transactional tables but deliberately leaves the reference data
- * the migrations seed — roles, permissions, shipping zones. Those are part of the schema's contract,
+ * the migrations seed - roles, permissions, shipping zones. Those are part of the schema's contract,
  * not test fixtures, and a test that had to recreate them would be asserting against its own
  * fixture rather than against what the application actually ships.
  */
@@ -63,7 +63,7 @@ public class TestFixtures {
      *
      * <p>Roles, permissions, settings, shipping zones and the attribute vocabulary are seeded by
      * {@code R__seed_reference_data.sql}. They are part of what the application ships, not fixture
-     * data — a test that recreated them would be asserting against its own copy rather than against
+     * data - a test that recreated them would be asserting against its own copy rather than against
      * the real thing.
      */
     private static final Set<String> PRESERVED = Set.of(
@@ -114,7 +114,7 @@ public class TestFixtures {
         user.setEmailVerified(true);
         user.getRoles().add(roles.findByName(roleName)
                 .orElseThrow(() -> new IllegalStateException(
-                        "Role " + roleName + " is missing — the reference-data migration did not run")));
+                        "Role " + roleName + " is missing - the reference-data migration did not run")));
         return users.save(user);
     }
 
@@ -198,7 +198,7 @@ public class TestFixtures {
     /**
      * A Cairo address.
      *
-     * <p>The governorate is written in Arabic because that is how the shipping zones store it — the
+     * <p>The governorate is written in Arabic because that is how the shipping zones store it - the
      * seeded "Greater Cairo" zone matches on {@code القاهرة}, and an English spelling silently
      * matches no zone at all, leaving checkout with no shipping method to offer.
      */
@@ -221,7 +221,7 @@ public class TestFixtures {
         return shippingMethods.findAll().stream()
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException(
-                        "No shipping methods — the reference-data migration did not run"));
+                        "No shipping methods - the reference-data migration did not run"));
     }
 
     // ------------------------------------------------------------ taxonomy --

@@ -12,7 +12,7 @@ import type { Category } from '@eshop/api-client';
  * The site header.
  *
  * A server component that fetches the navigation once per render and passes it down. The
- * interactive pieces — search suggestions, the cart badge, the account menu — are separate client
+ * interactive pieces - search suggestions, the cart badge, the account menu - are separate client
  * islands, so the header itself ships no JavaScript.
  */
 export async function SiteHeader({ locale }: { locale: string }) {

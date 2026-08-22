@@ -164,7 +164,7 @@ export function ProfileForm({ labels }: { labels: Labels }) {
           <div className="flex items-center gap-3">
             <Button
               type="submit"
-              // Disabled until something actually changed — a save button that is always live
+              // Disabled until something actually changed - a save button that is always live
               // invites pointless writes.
               disabled={!form.formState.isDirty}
               loading={save.isPending}

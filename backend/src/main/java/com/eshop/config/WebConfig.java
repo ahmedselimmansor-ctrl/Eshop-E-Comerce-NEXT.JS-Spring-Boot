@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final AppProperties properties;
 
     /**
-     * Locale comes from {@code Accept-Language} and nothing else — no cookie, no session.
+     * Locale comes from {@code Accept-Language} and nothing else - no cookie, no session.
      *
      * <p>The API is stateless and cached at the CDN, so a locale stored server-side would either be
      * ignored or, worse, poison a shared cache entry with the wrong language. Arabic is the default

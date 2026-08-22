@@ -38,7 +38,7 @@ export function ProductGallery({
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-contain"
-            // The hero image of the page — always eager, never lazy.
+            // The hero image of the page - always eager, never lazy.
             priority
             placeholder={active.blurhash ? 'blur' : 'empty'}
             blurDataURL={active.blurhash ?? undefined}

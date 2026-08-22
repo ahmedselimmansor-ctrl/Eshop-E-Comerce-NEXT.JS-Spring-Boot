@@ -20,7 +20,7 @@ public interface RefundRepository extends JpaRepository<Refund, UUID> {
     List<Refund> findByOrderIdOrderByCreatedAtDesc(UUID orderId);
 
     /**
-     * Total already refunded against a payment. Only completed and in-flight refunds count —
+     * Total already refunded against a payment. Only completed and in-flight refunds count -
      * a failed attempt must not reduce what can still be returned.
      */
     @Query("""

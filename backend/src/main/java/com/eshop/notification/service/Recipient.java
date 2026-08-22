@@ -6,7 +6,7 @@ import java.util.UUID;
  * Who a notification is for, as a value rather than an entity.
  *
  * <p>Passing a {@code User} across the domain boundary would let the notification code navigate
- * into orders, addresses, and roles — and would tie it to a JPA session it has no business holding
+ * into orders, addresses, and roles - and would tie it to a JPA session it has no business holding
  * while sending an email. Four fields is everything a template needs.
  *
  * @param userId {@code null} for a guest (order confirmations sent to a checkout email)

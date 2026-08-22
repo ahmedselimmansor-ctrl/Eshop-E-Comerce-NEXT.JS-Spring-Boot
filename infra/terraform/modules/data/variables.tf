@@ -15,7 +15,7 @@ variable "db_tier" {
 }
 
 variable "db_replica_tier" {
-  description = "Read replica tier. Usually smaller than the primary — it serves reporting, not checkout."
+  description = "Read replica tier. Usually smaller than the primary - it serves reporting, not checkout."
   type        = string
   default     = "db-custom-2-7680"
 }
@@ -43,6 +43,6 @@ variable "redis_memory_gb" {
 }
 
 variable "cors_origins" {
-  description = "Origins allowed to read from the media bucket. Never wildcard — that invites hotlinking billed to us."
+  description = "Origins allowed to read from the media bucket. Never wildcard - that invites hotlinking billed to us."
   type        = list(string)
 }

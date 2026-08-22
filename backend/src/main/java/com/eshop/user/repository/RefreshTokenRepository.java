@@ -28,7 +28,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
 
     List<RefreshToken> findByFamilyId(UUID familyId);
 
-    /** Revokes an entire rotation family — the response to a detected token replay. */
+    /** Revokes an entire rotation family - the response to a detected token replay. */
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE RefreshToken t SET t.revokedAt = :now WHERE t.familyId = :familyId AND t.revokedAt IS NULL")
     int revokeFamily(@Param("familyId") UUID familyId, @Param("now") Instant now);

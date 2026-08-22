@@ -22,7 +22,7 @@ export async function generateMetadata({
  * The cart page.
  *
  * A thin server shell around a client component. The cart is per-visitor, changes on every
- * interaction, and must never be cached or prerendered — so there is nothing for the server to
+ * interaction, and must never be cached or prerendered - so there is nothing for the server to
  * render beyond the frame.
  */
 export default async function CartPage({ params }: { params: Promise<{ locale: string }> }) {

@@ -16,7 +16,7 @@ public enum PaymentMethod {
 
     COD;
 
-    /** Whether the method is settled before dispatch. COD is not — it settles at the door. */
+    /** Whether the method is settled before dispatch. COD is not - it settles at the door. */
     public boolean isPrepaid() {
         return this != COD;
     }

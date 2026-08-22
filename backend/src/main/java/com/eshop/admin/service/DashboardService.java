@@ -31,7 +31,7 @@ import java.util.UUID;
  * Aggregates for the admin dashboard.
  *
  * <p>Every figure is compared against the equivalent preceding window, because an absolute number
- * on its own tells an operator nothing — "EGP 420,000 this week" only means something next to last
+ * on its own tells an operator nothing - "EGP 420,000 this week" only means something next to last
  * week's.
  *
  * <p>Cached for a minute. These are several aggregate scans, the dashboard auto-refreshes, and a
@@ -55,7 +55,7 @@ public class DashboardService {
     public Summary summary(int rangeDays) {
         Instant now = Instant.now();
         Instant from = now.minus(rangeDays, ChronoUnit.DAYS);
-        // The immediately preceding window of the same length — the only fair comparison.
+        // The immediately preceding window of the same length - the only fair comparison.
         Instant previousFrom = from.minus(rangeDays, ChronoUnit.DAYS);
 
         BigDecimal revenue = orders.revenueBetween(from, now);
@@ -129,7 +129,7 @@ public class DashboardService {
         Instant now = Instant.now();
 
         Map<OrderStatus, Long> breakdown = new LinkedHashMap<>();
-        // Every status is present, including the zeroes — a chart that silently omits "CANCELLED"
+        // Every status is present, including the zeroes - a chart that silently omits "CANCELLED"
         // reads as "no cancellations" rather than "no data".
         for (OrderStatus status : OrderStatus.values()) {
             breakdown.put(status, 0L);
@@ -158,7 +158,7 @@ public class DashboardService {
     /**
      * Percentage change, with the two awkward cases handled explicitly.
      *
-     * <p>Growth from zero is not "infinite percent" — it is reported as {@code null} so the UI can
+     * <p>Growth from zero is not "infinite percent" - it is reported as {@code null} so the UI can
      * show "new" instead of a meaningless number.
      */
     private static Double percentChange(BigDecimal current, BigDecimal previous) {
@@ -176,7 +176,7 @@ public class DashboardService {
     }
 
     /**
-     * @param changePercent {@code null} when the previous period was zero — render as "new"
+     * @param changePercent {@code null} when the previous period was zero - render as "new"
      */
     public record Metric(Money current, Money previous, Double changePercent) {
     }

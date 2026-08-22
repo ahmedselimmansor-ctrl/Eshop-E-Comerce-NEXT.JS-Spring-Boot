@@ -28,7 +28,7 @@ import java.util.UUID;
  * transactional outbox actually deliver.
  *
  * <p>Delivery is <b>at-least-once</b>. A crash between "handler ran" and "row marked published"
- * replays the event, so every handler is idempotent — committing an already-committed reservation
+ * replays the event, so every handler is idempotent - committing an already-committed reservation
  * is a no-op, and reindexing a product twice produces the same document. A duplicate confirmation
  * email is the worst realistic outcome, which is a far better failure mode than a paid order whose
  * stock was never committed.
@@ -120,7 +120,7 @@ public class OutboxRelay {
      * Routes an event to its handlers.
      *
      * <p>Deliberately in-process rather than through Pub/Sub. At this scale a topic per event type
-     * would add operational surface — subscriptions, dead-letter topics, IAM — for no benefit,
+     * would add operational surface - subscriptions, dead-letter topics, IAM - for no benefit,
      * since every consumer is this same application. The outbox table remains the durability
      * mechanism either way, so moving a handler to Pub/Sub later means changing this method and
      * nothing else.
@@ -169,7 +169,7 @@ public class OutboxRelay {
      * The most consequential handler.
      *
      * <p>Committing the stock reservation happens <b>first</b>. If the email fails afterwards the
-     * event is retried, and the commit is a no-op the second time — whereas emailing first and then
+     * event is retried, and the commit is a no-op the second time - whereas emailing first and then
      * failing to commit would leave paid goods still merely reserved.
      */
     private void onPaymentCaptured(UUID orderId, Map<String, Object> payload) {
@@ -196,7 +196,7 @@ public class OutboxRelay {
                 Notification.PAYMENT_FAILED,
                 "فشلت عملية الدفع", "Payment failed",
                 "لم تتم عملية الدفع لطلبك رقم " + payload.get("orderNumber") + "، يمكنك المحاولة مرة أخرى",
-                "Payment for order " + payload.get("orderNumber") + " did not go through — you can try again",
+                "Payment for order " + payload.get("orderNumber") + " did not go through - you can try again",
                 Map.of("orderNumber", payload.get("orderNumber"))));
     }
 
@@ -223,8 +223,8 @@ public class OutboxRelay {
         userId(payload).ifPresent(userId -> notifications.notifyUser(userId,
                 Notification.ORDER_DELIVERED,
                 "تم توصيل طلبك", "Order delivered",
-                "نتمنى أن ينال إعجابك — شاركنا رأيك",
-                "We hope you like it — tell us what you think",
+                "نتمنى أن ينال إعجابك - شاركنا رأيك",
+                "We hope you like it - tell us what you think",
                 Map.of("orderNumber", payload.get("orderNumber"))));
     }
 

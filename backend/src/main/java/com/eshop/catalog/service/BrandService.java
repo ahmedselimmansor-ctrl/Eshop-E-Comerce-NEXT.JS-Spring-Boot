@@ -100,8 +100,8 @@ public class BrandService {
     }
 
     /**
-     * Brand slugs prefer the English name — "samsung" reads better in a URL and is what customers
-     * type — falling back to the Arabic name when no English name is set.
+     * Brand slugs prefer the English name - "samsung" reads better in a URL and is what customers
+     * type - falling back to the Arabic name when no English name is set.
      */
     private String resolveSlug(String requested, String nameEn, String nameAr, UUID selfId) {
         String base = requested != null && !requested.isBlank()

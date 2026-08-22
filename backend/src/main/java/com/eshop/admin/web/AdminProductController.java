@@ -88,7 +88,7 @@ public class AdminProductController {
     @PutMapping("/{productId}")
     @PreAuthorize("hasAuthority('product:write')")
     @Operation(summary = "Replace a product",
-            description = "A full replacement — the admin form always submits the whole product.")
+            description = "A full replacement - the admin form always submits the whole product.")
     public AdminProductDetail update(@AuthenticationPrincipal UserPrincipal caller,
                                      @PathVariable UUID productId,
                                      @Valid @RequestBody ProductWriteRequest request) {
@@ -134,7 +134,7 @@ public class AdminProductController {
     @DeleteMapping("/variants/{variantId}")
     @PreAuthorize("hasAuthority('product:write')")
     @Operation(summary = "Deactivate a variant",
-            description = "Not deleted — order items reference it and the SKU stays reserved.")
+            description = "Not deleted - order items reference it and the SKU stays reserved.")
     public ResponseEntity<Void> deleteVariant(@AuthenticationPrincipal UserPrincipal caller,
                                               @PathVariable UUID variantId) {
         adminProducts.deleteVariant(variantId, caller.id());

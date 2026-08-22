@@ -15,7 +15,7 @@ variable "region" {
 }
 
 variable "authorized_networks" {
-  description = "CIDRs allowed to reach the GKE control plane — office egress and the CI runner."
+  description = "CIDRs allowed to reach the GKE control plane - office egress and the CI runner."
   type        = list(object({ cidr = string, name = string }))
   default     = []
 }

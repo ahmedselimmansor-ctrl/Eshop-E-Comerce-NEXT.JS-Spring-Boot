@@ -110,7 +110,7 @@ public final class ProductSpecifications {
      * attributes are AND-ed (red or blue, <b>and</b> size large). Selecting two colours should widen
      * the result set; adding a size should narrow it.
      *
-     * <p>Implemented as one correlated EXISTS per attribute rather than one join per attribute — a
+     * <p>Implemented as one correlated EXISTS per attribute rather than one join per attribute - a
      * join chain would multiply rows and force a DISTINCT over the whole result set.
      */
     public static Specification<Product> withAttributes(Map<String, List<String>> attributeFilters) {
@@ -154,7 +154,7 @@ public final class ProductSpecifications {
      * catalog oversells during a flash sale.
      *
      * <p>This reads the inventory table from a catalog query. That is a deliberate read-model
-     * exception to the domain-isolation rule — the alternative is materialising every in-stock
+     * exception to the domain-isolation rule - the alternative is materialising every in-stock
      * product id in memory. Writes to inventory still go exclusively through {@code InventoryService}.
      */
     public static Specification<Product> inStock(Boolean inStock) {

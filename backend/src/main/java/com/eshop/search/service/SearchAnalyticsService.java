@@ -17,7 +17,7 @@ import java.util.UUID;
  * Records what shoppers search for.
  *
  * <p>Two things depend on this: the "popular searches" list on the empty search screen, and the
- * zero-result report that tells merchandisers what the catalog is missing — "خلاط" returning nothing
+ * zero-result report that tells merchandisers what the catalog is missing - "خلاط" returning nothing
  * two hundred times a week is a buying decision, not a search bug.
  *
  * <p>Every method is {@code @Async} and swallows its own failures. Search analytics must never slow
@@ -83,7 +83,7 @@ public class SearchAnalyticsService {
     /**
      * Trending terms from the last week.
      *
-     * <p>Only queries that returned something are offered as suggestions — proposing a term the
+     * <p>Only queries that returned something are offered as suggestions - proposing a term the
      * catalog cannot answer wastes the shopper's time.
      */
     @Transactional(readOnly = true)
@@ -107,7 +107,7 @@ public class SearchAnalyticsService {
         }
     }
 
-    /** Searches that found nothing — the merchandising gap report. */
+    /** Searches that found nothing - the merchandising gap report. */
     @Transactional(readOnly = true)
     public List<ZeroResultQuery> zeroResultQueries(int days, int limit) {
         try {

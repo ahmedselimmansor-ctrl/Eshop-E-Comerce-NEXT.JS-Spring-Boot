@@ -20,7 +20,7 @@ import java.time.Instant;
  * A registered device for push notifications.
  *
  * <p>One user has many: a phone, a tablet, a browser. Tokens rotate whenever an app is reinstalled
- * or its data cleared, so stale rows accumulate — {@code isActive} is cleared when Firebase reports
+ * or its data cleared, so stale rows accumulate - {@code isActive} is cleared when Firebase reports
  * a token as unregistered, which is the only reliable signal that a device is gone.
  */
 @Entity
@@ -40,7 +40,7 @@ public class DeviceToken extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    /** The FCM registration token. Unique across the table — a device belongs to one account. */
+    /** The FCM registration token. Unique across the table - a device belongs to one account. */
     @Column(name = "token", nullable = false, unique = true)
     private String token;
 
@@ -63,7 +63,7 @@ public class DeviceToken extends BaseEntity {
         active = true;
     }
 
-    /** Called when FCM reports the token as unregistered — the app was uninstalled. */
+    /** Called when FCM reports the token as unregistered - the app was uninstalled. */
     public void deactivate() {
         active = false;
     }

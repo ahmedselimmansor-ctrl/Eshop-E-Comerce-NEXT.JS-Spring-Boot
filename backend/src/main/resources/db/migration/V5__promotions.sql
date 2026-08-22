@@ -1,5 +1,5 @@
 -- ============================================================================
--- V5 — Coupons and rule-driven promotions
+-- V5 - Coupons and rule-driven promotions
 -- ============================================================================
 
 CREATE TABLE coupons (

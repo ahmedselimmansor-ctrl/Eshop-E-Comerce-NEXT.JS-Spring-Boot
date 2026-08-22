@@ -19,8 +19,8 @@ import java.util.UUID;
  * One saved product, optionally pinned to a specific variant.
  *
  * <p>Unlike a cart line this keeps no price or display snapshot. A wishlist is precisely where the
- * customer <em>wants</em> to see today's price — a stale one would hide the sale they were waiting
- * for — so everything is read live from the catalog at render time.
+ * customer <em>wants</em> to see today's price - a stale one would hide the sale they were waiting
+ * for - so everything is read live from the catalog at render time.
  */
 @Entity
 @Table(name = "wishlist_items")

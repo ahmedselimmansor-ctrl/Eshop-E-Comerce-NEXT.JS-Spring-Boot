@@ -39,7 +39,7 @@ import java.util.Map;
  * <p>Two rules govern what reaches the client:
  * <ol>
  *   <li><b>Deliberate failures</b> ({@link BusinessException}) carry their own code and status and
- *       are logged at WARN without a stack trace — they are expected outcomes, not incidents.</li>
+ *       are logged at WARN without a stack trace - they are expected outcomes, not incidents.</li>
  *   <li><b>Everything else</b> is a defect. The real cause is logged at ERROR with the request id,
  *       and the client receives a generic {@link ErrorCode#INTERNAL_ERROR}. Exception messages,
  *       SQL fragments, and stack traces never cross the boundary.</li>
@@ -142,7 +142,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ProblemDetail> handleBadCredentials(BadCredentialsException ex,
                                                               HttpServletRequest request) {
-        // Deliberately identical for "no such user" and "wrong password" — the distinction would
+        // Deliberately identical for "no such user" and "wrong password" - the distinction would
         // turn the login endpoint into an account-enumeration oracle.
         log.warn("authentication_failed path={} ip={}", request.getRequestURI(), RequestContext.clientIp());
         return status(ErrorCode.INVALID_CREDENTIALS, request);

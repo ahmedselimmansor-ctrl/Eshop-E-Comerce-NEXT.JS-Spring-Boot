@@ -1,5 +1,5 @@
 -- ============================================================================
--- V1 — Extensions, identity, access control
+-- V1 - Extensions, identity, access control
 -- ============================================================================
 
 CREATE EXTENSION IF NOT EXISTS citext;

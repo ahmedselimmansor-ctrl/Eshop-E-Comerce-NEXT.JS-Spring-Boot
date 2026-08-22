@@ -96,7 +96,7 @@
     "writeReview": "Write a review",
     "verifiedPurchase": "Verified purchase",
     "helpful": "Helpful",
-    "noReviews": "No reviews yet — be the first to review this product",
+    "noReviews": "No reviews yet - be the first to review this product",
     "ratingBreakdown": "Rating breakdown",
     "stars": "{count} stars"
   },
@@ -145,7 +145,7 @@
     "removeCoupon": "Remove code",
     "couponApplied": "Discount code applied",
     "priceChanged": "This item's price changed to {price}",
-    "quantityReduced": "Only {count} left — quantity adjusted",
+    "quantityReduced": "Only {count} left - quantity adjusted",
     "itemUnavailable": "This item is no longer available",
     "reviewIssues": "Some items in your cart need attention",
     "fixIssues": "Update cart"
@@ -248,7 +248,7 @@
     "forgotSubtitle": "We'll email you a reset link",
     "forgotSent": "If that address is registered, a link is on its way",
     "resetTitle": "Set a new password",
-    "resetSuccess": "Password changed — you can sign in now",
+    "resetSuccess": "Password changed - you can sign in now",
     "verifyEmailTitle": "Verify your email",
     "verifyEmailSuccess": "Your email is verified",
     "verifyEmailFailed": "That link is invalid or has expired"
@@ -280,7 +280,7 @@
     "moveToCart": "Move to cart",
     "moving": "Moving…",
     "movedToCart": "Moved to your cart",
-    "soldOut": "Sold out — we'll keep it saved",
+    "soldOut": "Sold out - we'll keep it saved",
     "clearAll": "Clear wishlist",
     "clearConfirm": "Remove every saved item? This cannot be undone.",
     "share": "Share",
@@ -312,7 +312,7 @@
   },
   "errors": {
     "OUT_OF_STOCK": "Not enough stock available",
-    "PRICE_CHANGED": "A price changed — please review your cart",
+    "PRICE_CHANGED": "A price changed - please review your cart",
     "CART_EMPTY": "Your cart is empty",
     "COUPON_INVALID": "That discount code isn't valid",
     "COUPON_EXPIRED": "That discount code has expired",
@@ -322,7 +322,7 @@
     "INVALID_CREDENTIALS": "Email or password is incorrect",
     "ACCOUNT_LOCKED": "Account temporarily locked after repeated sign-in attempts",
     "EMAIL_ALREADY_REGISTERED": "That email is already registered",
-    "RATE_LIMITED": "Too many attempts — please wait a moment",
+    "RATE_LIMITED": "Too many attempts - please wait a moment",
     "SHIPPING_UNAVAILABLE": "We don't deliver to that area yet",
     "COD_NOT_SUPPORTED": "Cash on delivery isn't available for this order",
     "PAYMENT_FAILED": "Payment didn't go through",

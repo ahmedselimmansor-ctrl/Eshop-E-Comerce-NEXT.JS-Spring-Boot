@@ -10,7 +10,7 @@ import java.util.UUID;
  *
  * <p>The implementation ({@code ElasticsearchProductSearch}) lives in {@code com.eshop.search} and
  * depends on catalog entities in order to build documents. Declaring the port here rather than
- * importing the search service directly keeps that dependency pointing one way — without it the two
+ * importing the search service directly keeps that dependency pointing one way - without it the two
  * packages would import each other, which is the point at which "modular monolith" stops meaning
  * anything.
  *

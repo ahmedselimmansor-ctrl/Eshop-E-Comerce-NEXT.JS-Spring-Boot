@@ -24,7 +24,7 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, UU
      * Loads the rows a checkout is about to reserve, holding a row-level write lock on each.
      *
      * <p>This is the oversell guard. Without {@code FOR UPDATE}, two concurrent checkouts both read
-     * "1 available", both pass the check, and both reserve — the classic lost update. With it, the
+     * "1 available", both pass the check, and both reserve - the classic lost update. With it, the
      * second transaction blocks until the first commits and then re-reads the true remaining count.
      *
      * <p>Ordered by id so that two checkouts containing the same two SKUs always take the locks in

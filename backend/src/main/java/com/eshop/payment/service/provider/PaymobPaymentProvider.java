@@ -22,14 +22,14 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Paymob Accept integration — cards, mobile wallets, and bank instalments.
+ * Paymob Accept integration - cards, mobile wallets, and bank instalments.
  *
  * <p>Paymob's classic flow is three calls, in order:
  * <ol>
- *   <li><b>Authenticate</b> — exchange the API key for a short-lived token.</li>
- *   <li><b>Register order</b> — create Paymob's own order, quoting ours as
+ *   <li><b>Authenticate</b> - exchange the API key for a short-lived token.</li>
+ *   <li><b>Register order</b> - create Paymob's own order, quoting ours as
  *       {@code merchant_order_id} so callbacks can be matched back.</li>
- *   <li><b>Payment key</b> — mint a token scoped to one integration (card / wallet / instalment)
+ *   <li><b>Payment key</b> - mint a token scoped to one integration (card / wallet / instalment)
  *       and load it into a hosted iframe.</li>
  * </ol>
  *
@@ -38,7 +38,7 @@ import java.util.Optional;
  * being formatted by hand.
  *
  * <p>Callbacks are authenticated with an HMAC-SHA512 over a fixed, alphabetically ordered
- * concatenation of specific fields. The field list and its order are dictated by Paymob — changing
+ * concatenation of specific fields. The field list and its order are dictated by Paymob - changing
  * either silently breaks verification, so {@link #HMAC_FIELDS} is written out explicitly.
  */
 @Slf4j
@@ -139,7 +139,7 @@ public class PaymobPaymentProvider implements PaymentProvider {
         body.put("delivery_needed", false);
         body.put("amount_cents", request.amount().toMinorUnits());
         body.put("currency", request.amount().currency());
-        // Our order number, echoed back on every callback — this is the join key.
+        // Our order number, echoed back on every callback - this is the join key.
         body.put("merchant_order_id", request.orderNumber());
         body.put("items", List.of());
 
@@ -166,7 +166,7 @@ public class PaymobPaymentProvider implements PaymentProvider {
 
     /**
      * Paymob rejects the request if any billing field is missing, and it accepts the literal string
-     * {@code "NA"} as a placeholder — which is what the optional fields fall back to.
+     * {@code "NA"} as a placeholder - which is what the optional fields fall back to.
      */
     private Map<String, Object> billingData(PaymentRequest request) {
         Map<String, Object> supplied = request.billingData() == null ? Map.of() : request.billingData();

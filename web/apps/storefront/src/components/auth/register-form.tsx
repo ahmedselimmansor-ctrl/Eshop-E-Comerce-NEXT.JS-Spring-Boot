@@ -59,7 +59,7 @@ export function RegisterForm({ labels }: { labels: Labels }) {
       }),
 
     onSuccess: async (response) => {
-      // Registration returns a usable session immediately — browsing and checkout do not require a
+      // Registration returns a usable session immediately - browsing and checkout do not require a
       // verified address, and blocking on the verification email would abandon most sign-ups.
       setSession(response.user, response.tokens.accessToken);
 

@@ -5,7 +5,7 @@ import { createNavigation } from 'next-intl/navigation';
  * Locale routing.
  *
  * Arabic is the default and is **not** hidden from the URL (`localePrefix: 'always'`). An
- * unprefixed default locale looks tidier but makes `/products/iphone-15` ambiguous — is it Arabic,
+ * unprefixed default locale looks tidier but makes `/products/iphone-15` ambiguous - is it Arabic,
  * or a language-neutral canonical? Being explicit means every page has exactly one URL per
  * language, which is what `hreflang`, sitemaps, and shared links all depend on.
  */

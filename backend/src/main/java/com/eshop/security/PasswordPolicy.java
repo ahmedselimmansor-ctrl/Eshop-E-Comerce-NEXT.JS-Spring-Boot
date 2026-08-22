@@ -14,12 +14,12 @@ import java.util.Set;
  *
  * <p>Follows NIST SP 800-63B: enforce length, screen against known-weak values, and drop composition
  * requirements. Mandating "one uppercase, one digit, one symbol" reliably produces {@code
- * Password1!} — it raises the floor barely at all while pushing users toward patterns an attacker's
+ * Password1!} - it raises the floor barely at all while pushing users toward patterns an attacker's
  * rule set already covers, and it blocks long passphrases that are genuinely stronger.
  *
  * <p>The blocklist here is a compact set of the values that dominate credential-stuffing lists. A
  * production deployment should additionally screen against a breach corpus (Have I Been Pwned's
- * k-anonymity range API, or a local Bloom filter built from it) — that integration point is
+ * k-anonymity range API, or a local Bloom filter built from it) - that integration point is
  * {@link #isBreached}.
  */
 @Component

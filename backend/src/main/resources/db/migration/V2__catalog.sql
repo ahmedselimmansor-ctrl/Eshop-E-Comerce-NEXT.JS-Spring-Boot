@@ -1,5 +1,5 @@
 -- ============================================================================
--- V2 — Catalog: categories, brands, attributes, products, variants, images
+-- V2 - Catalog: categories, brands, attributes, products, variants, images
 -- ============================================================================
 
 CREATE TABLE categories (
@@ -29,7 +29,7 @@ CREATE INDEX idx_categories_parent_position ON categories (parent_id, position);
 CREATE INDEX idx_categories_path ON categories (path text_pattern_ops);
 CREATE INDEX idx_categories_active ON categories (is_active) WHERE is_active;
 
-COMMENT ON COLUMN categories.path IS 'Materialised ancestry, e.g. /electronics/phones/smartphones — enables descendant queries with a LIKE prefix.';
+COMMENT ON COLUMN categories.path IS 'Materialised ancestry, e.g. /electronics/phones/smartphones - enables descendant queries with a LIKE prefix.';
 
 CREATE TABLE brands (
     id              UUID PRIMARY KEY,

@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * A named bundle of {@link Permission}s.
  *
- * <p>System roles ({@code is_system}) are seeded and cannot be deleted through the admin API — a
+ * <p>System roles ({@code is_system}) are seeded and cannot be deleted through the admin API - a
  * missing {@code CUSTOMER} role would break registration for everyone. Custom roles may be created
  * freely by anyone holding {@code role:write}.
  */
@@ -49,7 +49,7 @@ public class Role extends AuditableEntity {
     private boolean system = false;
 
     /**
-     * Eagerly fetched because a role is only ever loaded in order to read its permissions — during
+     * Eagerly fetched because a role is only ever loaded in order to read its permissions - during
      * authentication, to build the authority list. Lazy loading here would guarantee an N+1 on the
      * hottest path in the application.
      */

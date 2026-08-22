@@ -20,7 +20,7 @@ import java.util.Optional;
  * <p>The order of operations is the security and correctness boundary:
  *
  * <ol>
- *   <li><b>Parse and verify the signature.</b> An unverified callback is never acted on — anyone
+ *   <li><b>Parse and verify the signature.</b> An unverified callback is never acted on - anyone
  *       can POST to a webhook URL, and "payment captured" is the most valuable message an attacker
  *       could forge.</li>
  *   <li><b>Persist the event first.</b> The unique {@code (provider, event_id)} constraint turns a
@@ -118,7 +118,7 @@ public class PaymentWebhookService {
                     callback.payload());
 
             case PENDING, AUTHORIZED ->
-                // Fawry sends a NEW/UNPAID callback when the reference is issued. Nothing to do —
+                // Fawry sends a NEW/UNPAID callback when the reference is issued. Nothing to do -
                 // the customer has not paid yet, and treating this as a failure would cancel an
                 // order that is proceeding normally.
                     log.debug("webhook_non_terminal provider={} status={} payment={}",
@@ -130,7 +130,7 @@ public class PaymentWebhookService {
     }
 
     /**
-     * Retries callbacks that were stored but whose processing failed — a transient database error,
+     * Retries callbacks that were stored but whose processing failed - a transient database error,
      * or a deploy that landed mid-request.
      */
     @Transactional
@@ -172,7 +172,7 @@ public class PaymentWebhookService {
 
     public enum Outcome {
         PROCESSED,
-        /** Already seen — the idempotency constraint did its job. */
+        /** Already seen - the idempotency constraint did its job. */
         DUPLICATE,
         INVALID_SIGNATURE,
         /** Stored; will be retried by the scheduled job. */

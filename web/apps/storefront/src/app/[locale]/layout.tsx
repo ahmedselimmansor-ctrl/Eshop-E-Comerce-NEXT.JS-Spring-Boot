@@ -30,7 +30,7 @@ export async function generateMetadata({
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: `${t('storeName')} — ${t('tagline')}`,
+      default: `${t('storeName')} - ${t('tagline')}`,
       template: `%s | ${t('storeName')}`,
     },
     description: t('tagline'),
@@ -97,7 +97,7 @@ export default async function LocaleLayout({
    * Messages are passed explicitly rather than left to be inherited.
    *
    * Client components that call `useTranslations` are rendered on the server during prerendering,
-   * where there is no request context to inherit from — without this they throw MISSING_MESSAGE at
+   * where there is no request context to inherit from - without this they throw MISSING_MESSAGE at
    * build time, which is exactly when it is least obvious what went wrong.
    */
   const messages = await getMessages();
@@ -110,7 +110,7 @@ export default async function LocaleLayout({
      * That makes every logical CSS property (ms-*, pe-*, start-*, end-*) resolve correctly
      * throughout the tree, and it is what browsers and assistive technology read to decide text
      * direction, caret movement, and reading order. Setting it lower down leaves the scrollbar and
-     * any portal content — dialogs, toasts, dropdowns rendered outside the wrapper — pointing the
+     * any portal content - dialogs, toasts, dropdowns rendered outside the wrapper - pointing the
      * wrong way.
      */
     <html lang={locale} dir={direction} suppressHydrationWarning>

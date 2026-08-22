@@ -7,7 +7,7 @@ import '../../features/settings/locale_controller.dart';
 
 /// The single [ApiClient] for the process.
 ///
-/// One instance, because it owns the access token and the lock that serialises refreshes — two
+/// One instance, because it owns the access token and the lock that serialises refreshes - two
 /// clients would each hold their own, and the second would present a token the first had already
 /// rotated, which the backend treats as replay and answers by revoking the session.
 final apiClientProvider = Provider<ApiClient>((ref) {

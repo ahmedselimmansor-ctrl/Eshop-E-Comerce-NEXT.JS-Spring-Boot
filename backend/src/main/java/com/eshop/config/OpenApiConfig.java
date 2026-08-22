@@ -30,15 +30,15 @@ public class OpenApiConfig {
                         .description("""
                                 E-commerce platform API.
 
-                                **Localisation** — send `Accept-Language: ar` or `en`. Arabic is the default.
+                                **Localisation** - send `Accept-Language: ar` or `en`. Arabic is the default.
 
-                                **Errors** — every failure is an RFC 9457 problem document. Branch on the
+                                **Errors** - every failure is an RFC 9457 problem document. Branch on the
                                 stable `code` member, never on `detail`, which is prose and may be reworded.
 
-                                **Money** — always `{ "amount": "1299.00", "currency": "EGP" }`. The amount is a
+                                **Money** - always `{ "amount": "1299.00", "currency": "EGP" }`. The amount is a
                                 string so it survives JavaScript's number type intact.
 
-                                **Idempotency** — `POST /checkout/orders`, `POST /payments/intent`, and
+                                **Idempotency** - `POST /checkout/orders`, `POST /payments/intent`, and
                                 `POST /admin/orders/{id}/refund` require an `Idempotency-Key` header. Replaying a
                                 key with the same body returns the original response; replaying it with a
                                 different body returns 409 `IDEMPOTENCY_CONFLICT`.
@@ -57,7 +57,7 @@ public class OpenApiConfig {
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
     }
 
-    /** Storefront surface — what the web and mobile clients consume. */
+    /** Storefront surface - what the web and mobile clients consume. */
     @Bean
     public GroupedOpenApi storefrontApi() {
         return GroupedOpenApi.builder()
@@ -67,7 +67,7 @@ public class OpenApiConfig {
                 .build();
     }
 
-    /** Admin surface — every path here is permission-guarded and audit-logged. */
+    /** Admin surface - every path here is permission-guarded and audit-logged. */
     @Bean
     public GroupedOpenApi adminApi() {
         return GroupedOpenApi.builder()

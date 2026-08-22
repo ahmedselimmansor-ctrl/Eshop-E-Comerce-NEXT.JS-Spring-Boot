@@ -84,8 +84,8 @@ public class OrderService {
     /**
      * The customer's order history.
      *
-     * <p>{@code items} is not in the query's entity graph — a join-fetched collection would stop
-     * Hibernate paging in SQL — so it is initialised here, inside the transaction, before the
+     * <p>{@code items} is not in the query's entity graph - a join-fetched collection would stop
+     * Hibernate paging in SQL - so it is initialised here, inside the transaction, before the
      * summaries are built. {@code @BatchSize} on the collection makes that one extra query for the
      * whole page rather than one per order.
      */
@@ -123,7 +123,7 @@ public class OrderService {
      * Customer-initiated cancellation.
      *
      * <p>Allowed only before dispatch. Once a parcel is with a courier, the customer's route is a
-     * return, not a cancellation — cancelling would leave stock credited for goods that are still
+     * return, not a cancellation - cancelling would leave stock credited for goods that are still
      * in transit.
      */
     @Transactional
@@ -150,7 +150,7 @@ public class OrderService {
         orders.save(order);
 
         if (wasHoldingStock) {
-            // Still only reserved — hand it straight back.
+            // Still only reserved - hand it straight back.
             inventory.releaseReservations(order.getId());
         } else {
             // Already committed as a sale, so the units have to be credited back explicitly.

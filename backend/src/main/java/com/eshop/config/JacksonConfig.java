@@ -17,7 +17,7 @@ public class JacksonConfig {
      * JSON conventions shared by every endpoint.
      *
      * <ul>
-     *   <li>Instants serialise as ISO-8601 UTC strings, not epoch numbers — a numeric timestamp is
+     *   <li>Instants serialise as ISO-8601 UTC strings, not epoch numbers - a numeric timestamp is
      *       ambiguous about precision and unreadable in logs.</li>
      *   <li>Nulls are omitted, so an absent optional field and an explicit {@code null} look the
      *       same on the wire and clients only branch on presence.</li>

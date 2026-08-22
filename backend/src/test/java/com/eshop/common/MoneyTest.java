@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * Money arithmetic.
  *
- * <p>A plain unit test — no Spring, no database — because this is pure computation and it is where a
+ * <p>A plain unit test - no Spring, no database - because this is pure computation and it is where a
  * rounding mistake turns into a real customer being charged the wrong amount.
  */
 class MoneyTest {
@@ -58,7 +58,7 @@ class MoneyTest {
         @Test
         @DisplayName("a percentage rounds to the nearest piastre")
         void percentageRounds() {
-            // 14% VAT on 99.99 is 13.9986 — the customer is charged 14.00, not 13.99.
+            // 14% VAT on 99.99 is 13.9986 - the customer is charged 14.00, not 13.99.
             assertThat(Money.egp("99.99").percentage(new BigDecimal("0.14")).amount())
                     .isEqualByComparingTo("14.00");
         }

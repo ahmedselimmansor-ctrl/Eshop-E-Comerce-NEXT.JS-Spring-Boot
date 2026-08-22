@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * A single store-configuration entry, keyed by a dotted name such as {@code checkout.cod_fee}.
  *
- * <p>These are the knobs an operator changes without a deploy — VAT rate, COD surcharge, whether
+ * <p>These are the knobs an operator changes without a deploy - VAT rate, COD surcharge, whether
  * reviews auto-approve. Values that belong to the <em>environment</em> rather than the business
  * (database hosts, API keys, bucket names) stay in {@code AppProperties} and Secret Manager; putting
  * them here would mean a database row could redirect traffic or leak credentials.
@@ -37,12 +37,12 @@ public class Setting {
     private String key;
 
     /**
-     * Arbitrary JSON — scalar, object, or array — so a setting's shape can evolve.
+     * Arbitrary JSON - scalar, object, or array - so a setting's shape can evolve.
      *
      * <p>Typed as {@link JsonNode} rather than {@code Object}. Hibernate cannot infer a JSON
      * serialiser for a field declared as {@code Object}: it falls back to treating the value as a
-     * {@code String}, which writes {@code Eshop Egypt} instead of {@code "Eshop Egypt"} — rejected by
-     * Postgres as malformed JSON — and throws {@code ClassCastException} at flush for anything that
+     * {@code String}, which writes {@code Eshop Egypt} instead of {@code "Eshop Egypt"} - rejected by
+     * Postgres as malformed JSON - and throws {@code ClassCastException} at flush for anything that
      * is not a String. A concrete node type gives the Jackson format mapper something to work with,
      * so every JSON shape round-trips.
      *

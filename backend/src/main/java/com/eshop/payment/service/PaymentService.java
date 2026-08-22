@@ -78,7 +78,7 @@ public class PaymentService {
      * <p>Runs <b>after</b> the checkout transaction commits, not inside it. Holding a database
      * transaction open across an HTTP call to a gateway would pin a connection for the duration of
      * someone else's latency, and a slow provider would exhaust the pool under load. The cost is a
-     * window where an order exists with no payment row — covered by the reservation sweeper, which
+     * window where an order exists with no payment row - covered by the reservation sweeper, which
      * releases stock for anything still unpaid.
      *
      * @param idempotencyKey scopes the payment to one checkout attempt; a repeat returns the
@@ -228,7 +228,7 @@ public class PaymentService {
     /**
      * Re-reads a payment from the provider and applies whatever it reports.
      *
-     * <p>The reconciliation path for a callback that never arrived — a provider outage, a
+     * <p>The reconciliation path for a callback that never arrived - a provider outage, a
      * misconfigured webhook URL, or a delivery that hit us mid-deploy. Also what the storefront
      * polls when the customer returns from the payment page.
      */
@@ -275,7 +275,7 @@ public class PaymentService {
      * is called. Over-refunding is not something a gateway will cleanly undo, and the money is
      * already gone by the time the mistake is visible.
      *
-     * @param idempotencyKey required — a double-clicked refund button must not pay out twice
+     * @param idempotencyKey required - a double-clicked refund button must not pay out twice
      */
     @Transactional
     public Refund refund(UUID orderId, Money amount, String reason, String note,

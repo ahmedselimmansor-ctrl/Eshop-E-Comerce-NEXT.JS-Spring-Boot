@@ -19,7 +19,7 @@ export default function middleware(request: NextRequest) {
 
   // Presence of the refresh cookie is the only auth signal available here. The access token lives
   // in memory and is not readable from the edge, so this is a routing hint, not an authorisation
-  // decision — every protected page still verifies server-side, and every API call is checked by
+  // decision - every protected page still verifies server-side, and every API call is checked by
   // the backend. Treating this cookie as proof of identity would be a real hole.
   const hasSession = request.cookies.has('refresh_token');
 

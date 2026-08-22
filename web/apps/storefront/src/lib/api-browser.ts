@@ -12,7 +12,7 @@ import { getOrCreateSessionId } from '@/lib/utils';
  * the API domain would not carry it, and loosening the cookie to `SameSite=None` to make that work
  * would give up the CSRF protection the strict setting provides.
  *
- * A single module-level instance is safe here — unlike on the server, a browser tab has exactly one
+ * A single module-level instance is safe here - unlike on the server, a browser tab has exactly one
  * visitor.
  */
 let client: EshopApi | null = null;
@@ -39,7 +39,7 @@ export function browserApi(): EshopApi {
      * and a browsing session lasts longer. This exchanges the cookie for a fresh token and the
      * client replays the original request, so the customer never sees it happen.
      *
-     * Returning false means the refresh token is gone or was revoked — the session is genuinely
+     * Returning false means the refresh token is gone or was revoked - the session is genuinely
      * over, and the store is cleared so the UI reflects that.
      */
     refreshAccessToken: async () => {
@@ -71,7 +71,7 @@ export function browserApi(): EshopApi {
   return client;
 }
 
-/** Resets the cached client — used by tests and after a sign-out. */
+/** Resets the cached client - used by tests and after a sign-out. */
 export function resetBrowserApi(): void {
   client = null;
 }

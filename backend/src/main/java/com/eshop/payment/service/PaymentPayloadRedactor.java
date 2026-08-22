@@ -10,7 +10,7 @@ import java.util.Set;
  * Strips anything sensitive from a provider payload before it is persisted or logged.
  *
  * <p>Gateways return more than the integration asked for, and a raw payload stored "just in case"
- * is how card data ends up in a database that was never meant to hold it — and how a support
+ * is how card data ends up in a database that was never meant to hold it - and how a support
  * engineer reading a log ends up looking at a token that can move money.
  *
  * <p>Redaction is by key name against an allow-nothing list, applied recursively, and the check is

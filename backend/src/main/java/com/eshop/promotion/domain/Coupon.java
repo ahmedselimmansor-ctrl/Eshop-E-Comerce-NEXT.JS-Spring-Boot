@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * A discount code a customer types at checkout.
  *
- * <p>Every limit here is enforced server-side at order creation, inside the checkout transaction —
+ * <p>Every limit here is enforced server-side at order creation, inside the checkout transaction -
  * not when the code is applied to the cart. A code validated against a cart and then applied minutes
  * later at checkout is a race: two concurrent checkouts can both pass a "usage remaining" check
  * that was true when each read it.
@@ -72,7 +72,7 @@ public class Coupon extends AuditableEntity {
     @Column(name = "min_order_amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal minOrderAmount = BigDecimal.ZERO;
 
-    /** Ceiling on a percentage discount — "20% off, up to EGP 200". */
+    /** Ceiling on a percentage discount - "20% off, up to EGP 200". */
     @Column(name = "max_discount_amount", precision = 12, scale = 2)
     private BigDecimal maxDiscountAmount;
 
@@ -85,7 +85,7 @@ public class Coupon extends AuditableEntity {
 
     /**
      * Denormalised counter for the admin list. Authoritative enforcement counts rows in
-     * {@code coupon_redemptions} inside the checkout transaction — this value can lag.
+     * {@code coupon_redemptions} inside the checkout transaction - this value can lag.
      */
     @Column(name = "used_count", nullable = false)
     private int usedCount = 0;
@@ -140,7 +140,7 @@ public class Coupon extends AuditableEntity {
      *
      * <p>{@code eligibleSubtotal} is the sum of the lines this coupon covers, which for a
      * category- or product-scoped coupon is less than the order subtotal. The result is clamped to
-     * that eligible amount so a fixed-value coupon can never exceed what was bought — and never
+     * that eligible amount so a fixed-value coupon can never exceed what was bought - and never
      * turns into a payout.
      */
     public Money discountFor(Money eligibleSubtotal) {

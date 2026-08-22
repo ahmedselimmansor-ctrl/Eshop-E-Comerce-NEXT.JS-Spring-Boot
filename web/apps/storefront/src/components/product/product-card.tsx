@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 /**
  * A product tile in a grid.
  *
- * A server component — it renders from data the page already fetched and needs no interactivity, so
+ * A server component - it renders from data the page already fetched and needs no interactivity, so
  * shipping React for it would cost bundle size for nothing. The add-to-cart control that *does*
  * need interactivity is a separate client island on the detail page.
  */
@@ -21,7 +21,7 @@ export function ProductCard({
   product: ProductCardData;
   locale: string;
   /**
-   * Marks the image as high priority. Set for the first row only — marking everything priority
+   * Marks the image as high priority. Set for the first row only - marking everything priority
    * tells the browser nothing and delays the one image that is actually the LCP element.
    */
   priority?: boolean;
@@ -56,13 +56,13 @@ export function ProductCard({
               outOfStock && 'opacity-60',
             )}
             priority={priority}
-            // Inline placeholder from the blurhash the API already sent — no second request.
+            // Inline placeholder from the blurhash the API already sent - no second request.
             placeholder={product.imageBlurhash ? 'blur' : 'empty'}
             blurDataURL={product.imageBlurhash ?? undefined}
           />
         ) : (
           <div className="flex h-full items-center justify-center text-[var(--muted-foreground)]">
-            <span className="text-xs">—</span>
+            <span className="text-xs">-</span>
           </div>
         )}
 

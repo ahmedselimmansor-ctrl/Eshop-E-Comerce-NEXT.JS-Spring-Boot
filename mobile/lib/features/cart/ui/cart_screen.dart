@@ -10,7 +10,7 @@ import '../data/cart_repository.dart';
 
 /// The cart.
 ///
-/// Totals come from the server and are rendered as received — the device never adds anything up,
+/// Totals come from the server and are rendered as received - the device never adds anything up,
 /// because tax, shipping and the cash-on-delivery fee are all server-side rules.
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
@@ -143,7 +143,7 @@ class _CartLine extends ConsumerWidget {
               // at checkout with no explanation of which line caused it.
               if (item.exceedsStock)
                 Text(
-                  'Only ${item.availableQuantity} left — reduce the quantity to continue',
+                  'Only ${item.availableQuantity} left - reduce the quantity to continue',
                   style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.error),
                 ),
 

@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 /**
  * The heart.
  *
- * Reads the whole wishlist rather than asking "is this one saved?" — the list is small, it is
+ * Reads the whole wishlist rather than asking "is this one saved?" - the list is small, it is
  * already cached by the wishlist page, and one shared query means every heart on the site stays in
  * sync without a request each.
  *

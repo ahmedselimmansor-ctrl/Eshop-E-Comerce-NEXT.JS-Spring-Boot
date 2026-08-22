@@ -6,7 +6,7 @@ import '../network/api_exception.dart';
 /// Renders an [AsyncValue] with a loading and an error state that are actually useful.
 ///
 /// The error branch shows the API's own message when there is one. A problem document carries a
-/// human-readable `detail` already localised by the server — replacing it with "Something went
+/// human-readable `detail` already localised by the server - replacing it with "Something went
 /// wrong" throws away the only part of the response that tells the customer what to do.
 class AsyncView<T> extends StatelessWidget {
   const AsyncView({
@@ -66,7 +66,7 @@ class _ErrorState extends StatelessWidget {
   }
 }
 
-/// Shown where a list has no rows — distinct from an error, which is a different problem needing a
+/// Shown where a list has no rows - distinct from an error, which is a different problem needing a
 /// different action.
 class EmptyState extends StatelessWidget {
   const EmptyState({super.key, required this.icon, required this.title, this.hint, this.action});

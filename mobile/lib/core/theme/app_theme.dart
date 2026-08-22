@@ -10,11 +10,11 @@ abstract final class AppTheme {
 
   /// IBM Plex Sans Arabic for Arabic, the platform default for English.
   ///
-  /// Arabic set in a Latin-first font falls back per glyph and renders unevenly — mismatched
+  /// Arabic set in a Latin-first font falls back per glyph and renders unevenly - mismatched
   /// weights, wrong joins, inconsistent baselines.
   /// Null in both languages: the platform's own font is used.
   ///
-  /// The Arabic family this was written for is not vendored in the repository — see the note in
+  /// The Arabic family this was written for is not vendored in the repository - see the note in
   /// pubspec.yaml. Naming a font that is not bundled does not fail loudly; Flutter silently falls
   /// back, which looks like the family was applied when it was not.
   static String? _fontFamily(Locale locale) => null;
@@ -50,7 +50,7 @@ abstract final class AppTheme {
 
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          // 48dp — comfortably above the 44dp minimum tap target, which matters most on the
+          // 48dp - comfortably above the 44dp minimum tap target, which matters most on the
           // add-to-cart and place-order buttons.
           minimumSize: const Size.fromHeight(48),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

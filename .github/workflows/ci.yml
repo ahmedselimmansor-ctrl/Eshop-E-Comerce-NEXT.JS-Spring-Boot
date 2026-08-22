@@ -1,7 +1,7 @@
 name: CI
 
 # Runs on every push and pull request. The job of this workflow is to make a broken change visible
-# before it reaches a branch anyone deploys from — it builds, tests, and scans, but never deploys.
+# before it reaches a branch anyone deploys from - it builds, tests, and scans, but never deploys.
 
 on:
   push:
@@ -26,8 +26,8 @@ jobs:
     timeout-minutes: 25
 
     # Real PostgreSQL and Redis, published on localhost where the test suite expects them. The
-    # integration tests exist to catch what a mock cannot see — a jsonb column rejecting a value, a
-    # lazy association read after its session closed, a migration that does not apply — so stubbing
+    # integration tests exist to catch what a mock cannot see - a jsonb column rejecting a value, a
+    # lazy association read after its session closed, a migration that does not apply - so stubbing
     # these out would remove the only reason the suite is worth running.
     services:
       postgres:
@@ -233,7 +233,7 @@ jobs:
       - uses: actions/checkout@v4
 
       # Catches a committed key or token. The one CI check whose failure should always stop
-      # everything — a leaked secret is not fixable by reverting the commit.
+      # everything - a leaked secret is not fixable by reverting the commit.
       - name: Scan for committed secrets
         uses: gitleaks/gitleaks-action@v2
         env:

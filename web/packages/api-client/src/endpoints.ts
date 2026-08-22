@@ -39,7 +39,7 @@ import {
  * Typed methods for every endpoint the storefront uses.
  *
  * Grouped by domain rather than exposed as loose functions so a caller has one object to inject and
- * one place to look. Each method pairs a path with the schema its response must satisfy — the two
+ * one place to look. Each method pairs a path with the schema its response must satisfy - the two
  * are never separated, which is what keeps the parsing guarantee from being accidentally skipped.
  */
 export class EshopApi {
@@ -309,7 +309,7 @@ export class EshopApi {
      * Places the order.
      *
      * The idempotency key defaults to a fresh one, but a caller retrying a failed attempt should
-     * pass the *original* key — that is what makes the retry safe. Generating a new key on retry
+     * pass the *original* key - that is what makes the retry safe. Generating a new key on retry
      * gives up the entire guarantee.
      */
     placeOrder: (body: CheckoutRequest, idempotencyKey: string = newIdempotencyKey()) =>
@@ -388,7 +388,7 @@ export class EshopApi {
   // -------------------------------------------------------------- wishlist --
 
   /**
-   * Saved items. Signed-in only — a wishlist outlives the session it was created in, so anchoring it
+   * Saved items. Signed-in only - a wishlist outlives the session it was created in, so anchoring it
    * to a guest cookie would quietly lose it.
    *
    * Every mutation returns the whole list rather than an acknowledgement, which lets the caller

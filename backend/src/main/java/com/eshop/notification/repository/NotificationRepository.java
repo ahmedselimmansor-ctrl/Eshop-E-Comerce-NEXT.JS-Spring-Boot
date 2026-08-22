@@ -26,7 +26,7 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
                                    @Param("unreadOnly") boolean unreadOnly,
                                    Pageable pageable);
 
-    /** Backs the unread badge — one indexed count, not a full page fetch. */
+    /** Backs the unread badge - one indexed count, not a full page fetch. */
     @Query("SELECT COUNT(n) FROM Notification n WHERE n.user.id = :userId AND n.readAt IS NULL")
     long countUnread(@Param("userId") UUID userId);
 

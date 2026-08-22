@@ -23,8 +23,8 @@ import java.util.Locale;
  * Filesystem-backed storage for local development.
  *
  * <p>Lets the whole stack run from {@code docker-compose} with no GCP project, no credentials, and
- * no network. It is deliberately not a faithful emulation — there are no real signed URLs, and
- * uploads go through the API rather than direct-to-bucket — so it is guarded by
+ * no network. It is deliberately not a faithful emulation - there are no real signed URLs, and
+ * uploads go through the API rather than direct-to-bucket - so it is guarded by
  * {@code eshop.storage.provider=local} and can never be selected in a deployed environment, where
  * the property is pinned to {@code gcs}.
  */
@@ -48,7 +48,7 @@ public class LocalStorageService implements StorageService {
         String objectKey = buildObjectKey(folder, filename);
 
         return new UploadTarget(
-                // The dev upload endpoint, not a signed URL — the local frontend PUTs here instead.
+                // The dev upload endpoint, not a signed URL - the local frontend PUTs here instead.
                 properties.getBaseUrl() + "/api/v1/dev/media/" + objectKey,
                 objectKey,
                 publicUrl(objectKey),
@@ -97,7 +97,7 @@ public class LocalStorageService implements StorageService {
     /**
      * Resolves a key beneath the media root, refusing anything that escapes it.
      *
-     * <p>The same traversal guard as production even though this only runs locally — a dev-only
+     * <p>The same traversal guard as production even though this only runs locally - a dev-only
      * path that writes outside its sandbox is still a path that writes outside its sandbox.
      */
     private Path resolve(String objectKey) {

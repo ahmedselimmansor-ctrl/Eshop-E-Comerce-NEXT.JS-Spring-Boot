@@ -13,7 +13,7 @@ import { useAuthStore } from '@/stores/auth-store';
  * The console's API clients.
  *
  * Both go through the same-origin proxy at `/api/v1` rather than straight to the backend, so the
- * `SameSite=Strict` refresh cookie is actually sent — see the proxy route for the full reasoning.
+ * `SameSite=Strict` refresh cookie is actually sent - see the proxy route for the full reasoning.
  *
  * Two facades share one configuration: `adminApi()` for the privileged endpoints and `api()` for
  * the handful of ordinary ones the console also uses (sign-in, the operator's own profile).
@@ -71,7 +71,7 @@ export function api(): EshopApi {
   return storefront;
 }
 
-/** Drops both cached clients — used after sign-out. */
+/** Drops both cached clients - used after sign-out. */
 export function resetApi(): void {
   admin = null;
   storefront = null;

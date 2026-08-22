@@ -65,7 +65,7 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
             """)
     Optional<Payment> findCapturedForOrder(@Param("orderId") UUID orderId);
 
-    /** Pending payments whose window has lapsed — swept to {@code EXPIRED}. */
+    /** Pending payments whose window has lapsed - swept to {@code EXPIRED}. */
     @Query("""
             SELECT p FROM Payment p
              WHERE p.status = 'PENDING' AND p.expiresAt IS NOT NULL AND p.expiresAt < :now

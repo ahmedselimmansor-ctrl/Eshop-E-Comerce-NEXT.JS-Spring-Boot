@@ -37,7 +37,7 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
   const term = typeof query.q === 'string' ? query.q.trim() : '';
   const api = await serverApi();
 
-  // An empty search shows popular terms instead of an empty grid — the shopper arrived here
+  // An empty search shows popular terms instead of an empty grid - the shopper arrived here
   // intending to look for something, and a blank page gives them nowhere to go.
   if (!term) {
     const popular = await api.search.popular(10).catch(() => []);

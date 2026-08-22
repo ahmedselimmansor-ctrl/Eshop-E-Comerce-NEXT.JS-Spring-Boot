@@ -51,7 +51,7 @@ public record AddressRequest(
         @Size(max = 20)
         String floor,
 
-        @Schema(description = "Nearby reference point — how addresses are actually given locally")
+        @Schema(description = "Nearby reference point - how addresses are actually given locally")
         @Size(max = 160)
         String landmark,
 

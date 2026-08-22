@@ -1,7 +1,7 @@
-# Staging — production-shaped, but with docs enabled and full tracing for debugging.
+# Staging - production-shaped, but with docs enabled and full tracing for debugging.
 spring:
-  # Running on GCP, so the Spring Cloud GCP auto-configurations the base config leaves off — it
-  # defaults to off so a local checkout needs no GCP account — are switched back on here.
+  # Running on GCP, so the Spring Cloud GCP auto-configurations the base config leaves off - it
+  # defaults to off so a local checkout needs no GCP account - are switched back on here.
   cloud:
     gcp:
       pubsub:

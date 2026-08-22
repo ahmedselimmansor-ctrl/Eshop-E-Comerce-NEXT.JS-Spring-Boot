@@ -30,7 +30,7 @@ import { formatDateTime, formatMoney } from '@/lib/utils';
 /**
  * One order, with everything staff need to act on it.
  *
- * The actions are the point — fulfil, refund, change status, cancel, annotate. Each is gated on the
+ * The actions are the point - fulfil, refund, change status, cancel, annotate. Each is gated on the
  * permission its endpoint enforces, and each invalidates the queries whose data it just changed so
  * the list and the dashboard counters do not go stale behind the operator's back.
  */
@@ -144,7 +144,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
             </CardBody>
           </Card>
 
-          {/* Failed attempts are shown, not hidden — they are the first thing anyone investigating
+          {/* Failed attempts are shown, not hidden - they are the first thing anyone investigating
               a "my card was declined" ticket needs to see. */}
           <Card>
             <CardHeader>
@@ -283,8 +283,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
               <CardTitle>Origin</CardTitle>
             </CardHeader>
             <CardBody className="space-y-1 text-xs text-[var(--muted-foreground)]">
-              <p className="numeric">{ip ?? '—'}</p>
-              <p className="line-clamp-3 break-all">{userAgent ?? '—'}</p>
+              <p className="numeric">{ip ?? '-'}</p>
+              <p className="line-clamp-3 break-all">{userAgent ?? '-'}</p>
             </CardBody>
           </Card>
         </div>
@@ -601,7 +601,7 @@ function OrderActions({
             onConfirm={() => saveNote.mutate()}
             pending={pending}
           >
-            <Field id="admin-note" label="Note" hint="Staff only — never shown to the customer.">
+            <Field id="admin-note" label="Note" hint="Staff only - never shown to the customer.">
               <Textarea
                 id="admin-note"
                 value={internalNote}

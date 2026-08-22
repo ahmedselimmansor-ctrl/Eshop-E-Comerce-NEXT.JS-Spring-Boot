@@ -1,4 +1,4 @@
-# Database migrations run as a Job before the rollout — never from the application pods.
+# Database migrations run as a Job before the rollout - never from the application pods.
 #
 # With `spring.flyway.enabled=false` in production, three replicas starting at once cannot race to
 # apply the same migration, and a failed migration fails the deployment rather than leaving some
@@ -17,7 +17,7 @@ metadata:
     # colliding with a completed one.
     eshop.eg/release: 'RELEASE_PLACEHOLDER'
 spec:
-  # A migration that fails twice will fail a third time — Flyway is deterministic. Retrying past
+  # A migration that fails twice will fail a third time - Flyway is deterministic. Retrying past
   # that only delays the alert.
   backoffLimit: 2
 
@@ -64,7 +64,7 @@ spec:
           env:
             - name: FLYWAY_ENABLED
               value: 'true'
-            # The migration Job needs the database and nothing else — no search, no push, no
+            # The migration Job needs the database and nothing else - no search, no push, no
             # payment providers.
             - name: ELASTICSEARCH_ENABLED
               value: 'false'

@@ -16,7 +16,7 @@ import lombok.Setter;
  *
  * <p>{@code width}/{@code height} are recorded so the frontend can reserve the exact box before the
  * image loads, which is what keeps Cumulative Layout Shift at zero. {@code blurhash} is a ~30-byte
- * encoding of the image used as an inline placeholder — it ships in the JSON response, so the
+ * encoding of the image used as an inline placeholder - it ships in the JSON response, so the
  * placeholder needs no second network round trip.
  */
 @Entity

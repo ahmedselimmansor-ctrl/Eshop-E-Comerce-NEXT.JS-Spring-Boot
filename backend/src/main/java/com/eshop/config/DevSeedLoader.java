@@ -16,14 +16,14 @@ import javax.sql.DataSource;
  * Applies the demo catalog on startup, in development only.
  *
  * <p>Deliberately not a Flyway migration. Migrations run in every environment, and a real store does
- * not want eight fictional products in its catalog — but a developer who has just cloned the
+ * not want eight fictional products in its catalog - but a developer who has just cloned the
  * repository wants a storefront with something on it, not an empty grid that makes every page look
  * broken.
  *
  * <p>{@code @Profile({"dev", "local"})} is the whole safety mechanism, so it is worth being explicit
  * about what it excludes: {@code prod} and {@code staging} never instantiate this class.
  *
- * <p>The script is idempotent — every statement ends in {@code ON CONFLICT DO NOTHING} — so
+ * <p>The script is idempotent - every statement ends in {@code ON CONFLICT DO NOTHING} - so
  * restarting a seeded environment is a no-op rather than an error.
  */
 @Slf4j
@@ -58,12 +58,12 @@ public class DevSeedLoader {
             // exception here would otherwise be indistinguishable from a real startup failure.
             //
             // The root cause is logged rather than e.getMessage(), which for a script failure is the
-            // entire file — hundreds of lines burying the one that matters.
+            // entire file - hundreds of lines burying the one that matters.
             Throwable cause = e;
             while (cause.getCause() != null) {
                 cause = cause.getCause();
             }
-            log.warn("dev_seed_failed reason={} — continuing without demo data", cause.getMessage());
+            log.warn("dev_seed_failed reason={} - continuing without demo data", cause.getMessage());
         }
     }
 }

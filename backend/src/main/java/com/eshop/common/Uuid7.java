@@ -54,7 +54,7 @@ public final class Uuid7 {
                 candidateMillis = now;
                 candidateCounter = RANDOM.nextInt(1 << 10); // leave headroom before overflow
             } else if (previousCounter < COUNTER_MASK) {
-                // Same millisecond (or the clock stepped backwards) — keep increasing.
+                // Same millisecond (or the clock stepped backwards) - keep increasing.
                 candidateMillis = previousMillis;
                 candidateCounter = previousCounter + 1;
             } else {

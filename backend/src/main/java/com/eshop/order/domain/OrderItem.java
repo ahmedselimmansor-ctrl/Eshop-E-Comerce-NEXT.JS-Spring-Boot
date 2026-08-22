@@ -20,7 +20,7 @@ import java.math.BigDecimal;
  * One line of a placed order, with the product description frozen at purchase time.
  *
  * <p>The {@code product} and {@code variant} references exist so "buy it again" and sales reporting
- * can find the catalog entry, and they are {@code ON DELETE SET NULL} — a deleted product must not
+ * can find the catalog entry, and they are {@code ON DELETE SET NULL} - a deleted product must not
  * take order history with it. Nothing displayed on an invoice is read through those references.
  */
 @Entity
@@ -52,7 +52,7 @@ public class OrderItem extends BaseEntity {
     @Column(name = "name_en")
     private String nameEn;
 
-    /** "أحمر / كبير" — the variant axes as they read at purchase time. */
+    /** "أحمر / كبير" - the variant axes as they read at purchase time. */
     @Column(name = "variant_label_ar")
     private String variantLabelAr;
 

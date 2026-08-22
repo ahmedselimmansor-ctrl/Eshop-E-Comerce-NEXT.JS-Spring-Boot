@@ -26,7 +26,7 @@ import java.sql.Statement;
  * repository returns whatever it was told to and proves nothing about any of them.
  *
  * <p>The services are supplied from outside rather than started by Testcontainers. That is the same
- * shape CI already uses — service containers published on localhost — and it means the suite does
+ * shape CI already uses - service containers published on localhost - and it means the suite does
  * not need a Docker socket, which matters because the build itself runs inside a container.
  *
  * <p>Locally: {@code docker compose up -d postgres redis}. Override the defaults with
@@ -45,7 +45,7 @@ public abstract class IntegrationTest {
     private static final String PASSWORD = env("TEST_DB_PASSWORD", "eshop");
 
     /**
-     * A database of its own, so a test run never truncates a developer's working data — {@link
+     * A database of its own, so a test run never truncates a developer's working data - {@link
      * TestFixtures#reset()} would otherwise empty whatever database happened to be configured.
      */
     private static final String DATABASE = env("TEST_DB_NAME", "eshop_test");

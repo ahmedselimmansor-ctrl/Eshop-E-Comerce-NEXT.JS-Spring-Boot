@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A parsed product listing request — the single shape both the Elasticsearch path and the
+ * A parsed product listing request - the single shape both the Elasticsearch path and the
  * PostgreSQL fallback consume.
  *
  * @param term            free-text query; {@code null} for a plain category or brand listing

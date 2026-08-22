@@ -38,7 +38,7 @@ import java.util.Set;
  * {@code @EntityGraph} on the repository method.
  *
  * <p>PostgreSQL is the source of truth. Elasticsearch mirrors these rows for search and faceting
- * and is rebuilt from here — never the other way round.
+ * and is rebuilt from here - never the other way round.
  */
 @Entity
 @Table(name = "products")
@@ -65,7 +65,7 @@ public class Product extends AuditableEntity {
     @Column(name = "short_description_en", length = 600)
     private String shortDescriptionEn;
 
-    /** Rich text. Sanitised through {@code HtmlSanitizer} before persistence — never trusted. */
+    /** Rich text. Sanitised through {@code HtmlSanitizer} before persistence - never trusted. */
     @Column(name = "description_ar")
     private String descriptionAr;
 
@@ -104,7 +104,7 @@ public class Product extends AuditableEntity {
     @Column(name = "compare_at_price", precision = 12, scale = 2)
     private BigDecimal compareAtPrice;
 
-    /** Never exposed on any storefront endpoint — margin data. */
+    /** Never exposed on any storefront endpoint - margin data. */
     @Column(name = "cost_price", precision = 12, scale = 2)
     private BigDecimal costPrice;
 
@@ -178,7 +178,7 @@ public class Product extends AuditableEntity {
      *
      * Two Hibernate constraints shape this. It refuses to fetch more than one *bag* (an unindexed
      * List) per query, and the product-card entity graphs need this collection alongside another
-     * one — hence the Set, which keeps its order because @OrderBy makes Hibernate use a
+     * one - hence the Set, which keeps its order because @OrderBy makes Hibernate use a
      * LinkedHashSet. And it cannot page in SQL while a collection is join-fetched, so the listing
      * queries leave this out of their graph entirely; @BatchSize then loads a whole page's worth in
      * one extra query instead of one per row.
@@ -193,7 +193,7 @@ public class Product extends AuditableEntity {
      *
      * Two Hibernate constraints shape this. It refuses to fetch more than one *bag* (an unindexed
      * List) per query, and the product-card entity graphs need this collection alongside another
-     * one — hence the Set, which keeps its order because @OrderBy makes Hibernate use a
+     * one - hence the Set, which keeps its order because @OrderBy makes Hibernate use a
      * LinkedHashSet. And it cannot page in SQL while a collection is join-fetched, so the listing
      * queries leave this out of their graph entirely; @BatchSize then loads a whole page's worth in
      * one extra query instead of one per row.
@@ -204,7 +204,7 @@ public class Product extends AuditableEntity {
     private Set<ProductImage> images = new LinkedHashSet<>();
 
     /*
-     * Left out of the paged entity graphs — a join-fetched collection forces Hibernate to page in
+     * Left out of the paged entity graphs - a join-fetched collection forces Hibernate to page in
      * memory. @BatchSize loads a whole page's worth in one extra query instead of one per row.
      */
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

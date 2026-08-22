@@ -6,7 +6,7 @@
 --
 -- Idempotent: every statement ends in an untargeted ON CONFLICT DO NOTHING, so running it twice
 -- changes nothing and starting an already-seeded environment is not an error. The conflict target is
--- omitted on purpose — products' unique indexes on sku and slug are partial (WHERE deleted_at IS
+-- omitted on purpose - products' unique indexes on sku and slug are partial (WHERE deleted_at IS
 -- NULL) and a partial index cannot be named as an ON CONFLICT target without repeating its predicate.
 --
 -- Prices are in EGP and roughly plausible for the Egyptian market, because a catalog full of
@@ -53,7 +53,7 @@ INSERT INTO products (
     is_featured, published_at
 ) VALUES
     ('0192a000-0000-7000-8000-00000000d001', 'SAM-S24-256', 'samsung-galaxy-s24-256gb',
-     'سامسونج جالاكسي S24 — 256 جيجابايت', 'Samsung Galaxy S24 — 256GB',
+     'سامسونج جالاكسي S24 - 256 جيجابايت', 'Samsung Galaxy S24 - 256GB',
      'شاشة 6.2 بوصة، كاميرا 50 ميجابكسل', '6.2-inch display, 50MP camera',
      'هاتف رائد بشاشة AMOLED وبطارية تدوم طوال اليوم.',
      'A flagship phone with an AMOLED display and all-day battery.',
@@ -61,7 +61,7 @@ INSERT INTO products (
      'ACTIVE', 32999.00, 36999.00, 27000.00, 'EGP', TRUE, now()),
 
     ('0192a000-0000-7000-8000-00000000d002', 'APL-IP15-128', 'apple-iphone-15-128gb',
-     'أبل آيفون 15 — 128 جيجابايت', 'Apple iPhone 15 — 128GB',
+     'أبل آيفون 15 - 128 جيجابايت', 'Apple iPhone 15 - 128GB',
      'شريحة A16 بيونيك', 'A16 Bionic chip',
      'آيفون 15 بمنفذ USB-C وكاميرا 48 ميجابكسل.',
      'iPhone 15 with USB-C and a 48MP main camera.',
@@ -77,7 +77,7 @@ INSERT INTO products (
      'ACTIVE', 1899.00, 2400.00, 1200.00, 'EGP', FALSE, now()),
 
     ('0192a000-0000-7000-8000-00000000d004', 'ANK-CBL-USBC', 'anker-usb-c-cable-2m',
-     'كابل أنكر USB-C — 2 متر', 'Anker USB-C Cable — 2m',
+     'كابل أنكر USB-C - 2 متر', 'Anker USB-C Cable - 2m',
      'كابل مضفر متين', 'Braided, 2 metres',
      'كابل شحن سريع مضفر بطول مترين.',
      'A braided two-metre fast-charging cable.',
@@ -111,7 +111,7 @@ INSERT INTO products (
     -- Draft: visible in the admin catalog, absent from every storefront listing. If this ever shows
     -- up on the storefront, the status filter has regressed.
     ('0192a000-0000-7000-8000-00000000d008', 'SAM-S25-512', 'samsung-galaxy-s25-512gb',
-     'سامسونج جالاكسي S25 — 512 جيجابايت', 'Samsung Galaxy S25 — 512GB',
+     'سامسونج جالاكسي S25 - 512 جيجابايت', 'Samsung Galaxy S25 - 512GB',
      'لم يُطرح بعد', 'Not launched yet',
      'مسودة لم تُنشر بعد.', 'An unpublished draft.',
      '0192a000-0000-7000-8000-00000000b001', '0192a000-0000-7000-8000-00000000c101',

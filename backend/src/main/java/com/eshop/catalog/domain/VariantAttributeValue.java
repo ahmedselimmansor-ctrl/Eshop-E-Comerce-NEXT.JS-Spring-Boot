@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * Binds a variant to one value on one axis: "this variant's Colour is Red".
  *
- * <p>The composite key {@code (variant_id, attribute_id)} is not incidental — it enforces at the
+ * <p>The composite key {@code (variant_id, attribute_id)} is not incidental - it enforces at the
  * database level that a variant cannot claim two colours, which is the invariant the whole variant
  * model rests on.
  */

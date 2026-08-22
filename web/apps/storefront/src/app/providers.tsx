@@ -93,7 +93,7 @@ function SessionBootstrap() {
         setSession(payload.user, payload.tokens.accessToken);
 
         // Folds anything added while browsing anonymously into the customer's cart. Failure here
-        // is not worth surfacing — the customer is signed in either way, and the merge is retried
+        // is not worth surfacing - the customer is signed in either way, and the merge is retried
         // on the next sign-in.
         const sessionId = getOrCreateSessionId();
         if (sessionId) {

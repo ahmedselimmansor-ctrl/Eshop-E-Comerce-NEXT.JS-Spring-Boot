@@ -7,7 +7,7 @@ import '../../core/config/app_config.dart';
 /// The app's language.
 ///
 /// Persisted, because a customer who switched to English should not find the app in Arabic after
-/// the next cold start. Stored in SharedPreferences rather than secure storage — a language
+/// the next cold start. Stored in SharedPreferences rather than secure storage - a language
 /// preference is not a secret.
 class LocaleController extends Notifier<Locale> {
   static const _key = 'eshop.locale';

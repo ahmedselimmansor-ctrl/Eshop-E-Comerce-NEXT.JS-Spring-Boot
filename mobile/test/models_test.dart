@@ -59,7 +59,7 @@ void main() {
     });
 
     test('reports no more pages on the last one', () {
-      // Zero-indexed, so the final page of three is number 2 — the off-by-one that would otherwise
+      // Zero-indexed, so the final page of three is number 2 - the off-by-one that would otherwise
       // make an infinite scroll request a page that does not exist.
       final last = Paged.fromJson(
         {

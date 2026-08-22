@@ -11,7 +11,7 @@ const config: NextConfig = {
   reactStrictMode: true,
 
   // Compiled into a standalone bundle so the runtime image carries only what is actually imported
-  // — roughly 150 MB instead of the full node_modules tree.
+  // - roughly 150 MB instead of the full node_modules tree.
   output: 'standalone',
 
   // The api-client is TypeScript source in a sibling workspace, not a built package; Next has to
@@ -25,7 +25,7 @@ const config: NextConfig = {
       { protocol: 'http', hostname: 'localhost' },
     ],
     formats: ['image/avif', 'image/webp'],
-    // Matched to the breakpoints the product grid actually uses — extra entries generate images
+    // Matched to the breakpoints the product grid actually uses - extra entries generate images
     // nobody requests.
     deviceSizes: [360, 640, 768, 1024, 1280, 1536],
     imageSizes: [64, 96, 128, 256, 384],
@@ -62,7 +62,7 @@ const config: NextConfig = {
         ],
       },
       {
-        // Immutable build assets — content-hashed filenames, so a year is safe.
+        // Immutable build assets - content-hashed filenames, so a year is safe.
         source: '/_next/static/:path*',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },

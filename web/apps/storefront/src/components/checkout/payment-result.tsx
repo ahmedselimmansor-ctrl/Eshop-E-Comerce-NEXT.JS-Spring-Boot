@@ -15,11 +15,11 @@ import { Card, Skeleton } from '@/components/ui/primitives';
  *
  * Three outcomes share it, discriminated by provider:
  *
- * * **Paymob** — the customer was redirected to a hosted card page and has come back. Whether the
+ * * **Paymob** - the customer was redirected to a hosted card page and has come back. Whether the
  *   payment settled is not yet known here, so this polls.
- * * **Fawry** — nothing has been paid yet by design. The customer needs the reference code, and
+ * * **Fawry** - nothing has been paid yet by design. The customer needs the reference code, and
  *   this screen is the only place they will see it, so it has to be copyable and unambiguous.
- * * **Cash on delivery** — settled at the door, not here. Showing "awaiting payment" would be
+ * * **Cash on delivery** - settled at the door, not here. Showing "awaiting payment" would be
  *   alarming and wrong.
  */
 export function PaymentResult({ locale }: { locale: string }) {
@@ -52,7 +52,7 @@ export function PaymentResult({ locale }: { locale: string }) {
      *
      * The provider's callback may arrive seconds after the browser does, so a single read on mount
      * would show "awaiting payment" to a customer whose card has already been charged. Polling
-     * stops as soon as the payment reaches a terminal state — and for Fawry it stops immediately,
+     * stops as soon as the payment reaches a terminal state - and for Fawry it stops immediately,
      * because that customer has days to pay and no amount of polling will change the answer now.
      */
     refetchInterval: (query) => {
@@ -215,7 +215,7 @@ export function PaymentResult({ locale }: { locale: string }) {
  * Reads the payment's current state.
  *
  * The endpoint re-reads from the provider when the payment is not yet terminal, so this is the
- * recovery path for a webhook that never arrived — not merely a cache read.
+ * recovery path for a webhook that never arrived - not merely a cache read.
  */
 async function browserApiPaymentStatus(paymentId: string): Promise<PaymentInstruction> {
   const { browserApi } = await import('@/lib/api-browser');

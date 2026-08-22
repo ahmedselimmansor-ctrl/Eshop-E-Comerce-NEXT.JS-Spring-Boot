@@ -47,7 +47,7 @@ public class OAuthController {
     @GetMapping("/google/callback")
     @Operation(summary = "Google redirect target",
             description = "Redirects to the storefront with a single-use exchange code. Tokens are "
-                    + "never placed in a URL — query strings persist in history, Referer headers, and proxy logs.")
+                    + "never placed in a URL - query strings persist in history, Referer headers, and proxy logs.")
     public ResponseEntity<Void> callback(@RequestParam String code,
                                          @RequestParam String state,
                                          HttpServletRequest request) {

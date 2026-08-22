@@ -71,7 +71,7 @@ public class ProductService {
     }
 
     /**
-     * Sellable units keyed by variant id, plus the product id for a simple product — the shape
+     * Sellable units keyed by variant id, plus the product id for a simple product - the shape
      * {@link ProductDetailResponse} expects.
      */
     private Map<UUID, Integer> availabilityOf(Product product) {
@@ -104,7 +104,7 @@ public class ProductService {
     /**
      * Loads the images a product card renders, while the session is still open.
      *
-     * <p>Listing queries deliberately leave {@code images} out of their entity graph — a join-fetched
+     * <p>Listing queries deliberately leave {@code images} out of their entity graph - a join-fetched
      * collection stops Hibernate paging in SQL. With {@code open-in-view} off, the collection has to
      * be touched here or {@code ProductCardResponse.from} hits a detached proxy. {@code @BatchSize}
      * turns this into one extra query for the whole page rather than one per product.
@@ -146,7 +146,7 @@ public class ProductService {
         return withCardImages(products.findRelated(productId, categoryId, brandId, PageRequest.of(0, limit)));
     }
 
-    /** "Customers also bought" — derived from real order co-occurrence, not from category overlap. */
+    /** "Customers also bought" - derived from real order co-occurrence, not from category overlap. */
     @Transactional(readOnly = true)
     public List<Product> frequentlyBoughtTogether(UUID productId, int limit) {
         List<UUID> ids = products.findFrequentlyBoughtTogether(productId, limit);
@@ -170,7 +170,7 @@ public class ProductService {
      * Bumps the view counter.
      *
      * <p>Runs in its own transaction so a failure here can never roll back the page render, and
-     * uses a bare UPDATE so it does not touch the product's optimistic-lock version — a page view
+     * uses a bare UPDATE so it does not touch the product's optimistic-lock version - a page view
      * must not make a concurrent admin save fail.
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -190,6 +190,6 @@ public class ProductService {
     /** Clears the curated-shelf caches after a catalog write. */
     @CacheEvict(value = {RedisConfig.CACHE_PRODUCT_LIST, RedisConfig.CACHE_PRODUCT_DETAIL}, allEntries = true)
     public void evictListingCaches() {
-        // Body intentionally empty — the annotation is the behaviour.
+        // Body intentionally empty - the annotation is the behaviour.
     }
 }

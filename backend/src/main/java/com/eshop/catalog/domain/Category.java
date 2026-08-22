@@ -21,7 +21,7 @@ import java.util.List;
  *
  * <p>Hierarchy is stored as a materialised path ({@code /electronics/phones/smartphones}) alongside
  * the parent pointer. "Everything under Electronics" is then a single indexed prefix scan rather
- * than a recursive CTE per request — and a category listing runs that query on every page load.
+ * than a recursive CTE per request - and a category listing runs that query on every page load.
  * The path and {@code level} are maintained by triggers in migration V9, including re-pathing the
  * whole subtree when a node is moved, so application code never has to remember to keep them in
  * sync.

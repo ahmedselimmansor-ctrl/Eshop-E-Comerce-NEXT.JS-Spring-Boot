@@ -26,7 +26,7 @@ import java.util.UUID;
  * Sends email, push, and in-app notifications.
  *
  * <p>Everything here is {@code @Async} and swallows its own failures. A mail server that is briefly
- * unreachable must never fail a checkout that has already taken payment — the customer's money is
+ * unreachable must never fail a checkout that has already taken payment - the customer's money is
  * gone and their order is real whether or not the confirmation email lands.
  *
  * <p>Delivery-critical messages are therefore not sent by a direct call from the checkout path.
@@ -80,7 +80,7 @@ public class NotificationServiceImpl implements NotificationService {
      * Tells the account owner that something security-relevant happened.
      *
      * <p>Sent after a password change or a session-wide revocation. If the owner did not do it,
-     * this email is how they find out — which is the entire point of sending it even though the
+     * this email is how they find out - which is the entire point of sending it even though the
      * action has already completed.
      */
     @Override
@@ -114,7 +114,7 @@ public class NotificationServiceImpl implements NotificationService {
      * Renders and sends one email.
      *
      * <p>Template selection is by locale suffix ({@code order-confirmation-ar.html}), and the
-     * rendered HTML sets {@code dir="rtl"} for Arabic — email clients do not infer direction, and an
+     * rendered HTML sets {@code dir="rtl"} for Arabic - email clients do not infer direction, and an
      * Arabic email laid out left-to-right is close to unreadable.
      */
     private void sendTemplate(Recipient recipient, String templateKey,
@@ -147,7 +147,7 @@ public class NotificationServiceImpl implements NotificationService {
             log.info("email_sent template={} locale={}", templateKey, recipient.locale());
 
         } catch (Exception e) {
-            // Never rethrown. The address is logged but not the body — an order confirmation
+            // Never rethrown. The address is logged but not the body - an order confirmation
             // contains a delivery address.
             log.error("email_send_failed template={} error={}", templateKey, e.toString());
         }
@@ -192,7 +192,7 @@ public class NotificationServiceImpl implements NotificationService {
             return;
         }
 
-        // Grouped by the device's own language, not the account's — a shared tablet set to English
+        // Grouped by the device's own language, not the account's - a shared tablet set to English
         // should get English even if the account default is Arabic.
         devices.forEach(device -> {
             boolean arabic = !"en".equalsIgnoreCase(device.getLocale());

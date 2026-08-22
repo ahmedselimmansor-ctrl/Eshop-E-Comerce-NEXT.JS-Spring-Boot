@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
  * <p>Controllers then take {@code @AuthenticationPrincipal UserPrincipal caller} and get a typed
  * object rather than reaching into raw claims, which keeps claim names in one place.
  *
- * <p>The user id is also pushed into the MDC here so every subsequent log line in the request — and
- * every audit row — carries it without any further plumbing.
+ * <p>The user id is also pushed into the MDC here so every subsequent log line in the request - and
+ * every audit row - carries it without any further plumbing.
  */
 @Component
 @RequiredArgsConstructor

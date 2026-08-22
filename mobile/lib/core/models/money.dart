@@ -2,7 +2,7 @@
 ///
 /// The amount is kept as the string the server sent rather than parsed into a `double`. Binary
 /// floating point cannot represent 0.1, so a price that arrives as "1899.00" and is formatted from
-/// a double can render as 1898.99 — a class of bug that is invisible in testing and infuriating in
+/// a double can render as 1898.99 - a class of bug that is invisible in testing and infuriating in
 /// production. Parsing happens only where arithmetic is genuinely needed.
 class Money {
   const Money({required this.amount, required this.currency});

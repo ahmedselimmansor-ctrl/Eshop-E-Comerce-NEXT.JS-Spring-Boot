@@ -109,7 +109,7 @@ spring:
   # Spring Cloud GCP's auto-configurations build their clients eagerly and fail outright without a
   # project id and Application Default Credentials. The application's own feature flags
   # (eshop.pubsub.enabled, eshop.storage.provider) are read far too late to prevent that, so each
-  # one is gated here as well — off by default, so a checkout runs locally with no GCP account, and
+  # one is gated here as well - off by default, so a checkout runs locally with no GCP account, and
   # switched on per environment. The variables are shared with the application flags so the two
   # cannot drift apart.
   cloud:
@@ -125,7 +125,7 @@ spring:
       storage:
         enabled: ${GCS_ENABLED:false}
 
-  # Read directly by OAuthService via @Value, not by Spring's OAuth2 client auto-configuration —
+  # Read directly by OAuthService via @Value, not by Spring's OAuth2 client auto-configuration -
   # see the note in pom.xml. Blank is a supported state: Google sign-in is then simply unavailable
   # and the endpoint answers with a clear error instead of the application failing to start.
   security:
@@ -243,7 +243,7 @@ eshop:
       salt-length: 16
       hash-length: 32
       parallelism: 1
-      memory-kb: 19456   # 19 MiB — OWASP recommended (m=19456, t=2, p=1)
+      memory-kb: 19456   # 19 MiB - OWASP recommended (m=19456, t=2, p=1)
       iterations: 2
 
   rate-limit:

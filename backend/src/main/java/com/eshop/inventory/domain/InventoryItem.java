@@ -89,7 +89,7 @@ public class InventoryItem extends AuditableEntity {
     /**
      * Holds units for a pending order.
      *
-     * @throws IllegalStateException if the hold would exceed what is on hand — a guard against a
+     * @throws IllegalStateException if the hold would exceed what is on hand - a guard against a
      *                               caller that skipped the row lock, not the primary defence
      */
     public void reserve(int quantity) {

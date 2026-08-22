@@ -1,5 +1,5 @@
 -- ============================================================================
--- V8 — Reviews, notifications, audit, outbox, idempotency, settings
+-- V8 - Reviews, notifications, audit, outbox, idempotency, settings
 -- ============================================================================
 
 CREATE TABLE reviews (

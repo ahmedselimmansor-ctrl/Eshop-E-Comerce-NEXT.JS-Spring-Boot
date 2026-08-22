@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Production. Differs from the base only in scale and sampling — the shape of the deployment is
+# Production. Differs from the base only in scale and sampling - the shape of the deployment is
 # identical, which is what makes staging a meaningful rehearsal.
 
 namespace: eshop

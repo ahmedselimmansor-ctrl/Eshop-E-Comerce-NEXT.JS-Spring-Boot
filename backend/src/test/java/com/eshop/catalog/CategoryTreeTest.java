@@ -37,7 +37,7 @@ class CategoryTreeTest extends IntegrationTest {
         taxonomy();
 
         // GET /categories is the flat list and GET /categories/tree is the nested one. Both are
-        // deliberate — a <select> in a form wants the flat shape — and the distinction is easy to
+        // deliberate - a <select> in a form wants the flat shape - and the distinction is easy to
         // get wrong from the outside, so both are pinned here.
         mvc.perform(get("/api/v1/categories").header("Accept-Language", "en"))
                 .andExpect(status().isOk())

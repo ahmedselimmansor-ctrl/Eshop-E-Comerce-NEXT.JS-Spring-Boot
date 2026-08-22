@@ -14,7 +14,7 @@ export async function generateMetadata({
   return { title: t('trackTitle'), robots: { index: false, follow: true } };
 }
 
-/** Guest order tracking — no account needed, but both the order number and the email are required. */
+/** Guest order tracking - no account needed, but both the order number and the email are required. */
 export default async function TrackOrderPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);

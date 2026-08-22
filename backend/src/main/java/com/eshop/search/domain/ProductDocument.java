@@ -68,7 +68,7 @@ public record ProductDocument(
 
         List<AttributeEntry> attributes,
 
-        /** Everything worth matching on, concatenated — SKU, brand, category, searchable specs. */
+        /** Everything worth matching on, concatenated - SKU, brand, category, searchable specs. */
         String searchKeywords
 ) {
 

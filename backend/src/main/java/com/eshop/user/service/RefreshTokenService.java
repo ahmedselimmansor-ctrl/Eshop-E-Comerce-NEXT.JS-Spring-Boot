@@ -26,7 +26,7 @@ import java.util.UUID;
  * refreshes.
  *
  * <h2>Why reuse detection</h2>
- * Rotation alone does not tell you that theft happened — it just shortens the window. But once a
+ * Rotation alone does not tell you that theft happened - it just shortens the window. But once a
  * token has been rotated, a second presentation of that same token can only come from a copy. There
  * is no way to know whether the copy is the thief or the victim, so the safe response is to revoke
  * the whole family: both parties are logged out, and the real user re-authenticates with a password
@@ -91,7 +91,7 @@ public class RefreshTokenService {
         return new Rotation(user, replacement);
     }
 
-    /** Ends one session. Unknown or already-revoked tokens are a no-op — logout must not fail. */
+    /** Ends one session. Unknown or already-revoked tokens are a no-op - logout must not fail. */
     @Transactional
     public void revoke(String rawToken) {
         if (rawToken == null || rawToken.isBlank()) {

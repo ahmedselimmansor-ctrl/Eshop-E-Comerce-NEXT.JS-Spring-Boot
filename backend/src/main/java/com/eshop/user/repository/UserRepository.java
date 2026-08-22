@@ -19,7 +19,7 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     /**
-     * Authentication lookup. The entity graph pulls roles and permissions in one query — without it
+     * Authentication lookup. The entity graph pulls roles and permissions in one query - without it
      * the eager {@code @ManyToMany} associations issue a separate select per role on the hottest
      * path in the application.
      */

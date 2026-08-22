@@ -26,7 +26,7 @@ interface FilterLabels {
 /**
  * The filter sidebar.
  *
- * A sidebar on desktop and a full-screen sheet on mobile — the same component, because the filter
+ * A sidebar on desktop and a full-screen sheet on mobile - the same component, because the filter
  * logic is identical and only the container differs.
  */
 export function FilterPanel({
@@ -152,7 +152,7 @@ function FilterContents({
             min={0}
             value={minPrice}
             onChange={(event) => setMinPrice(event.target.value)}
-            // Committed on blur rather than on every keystroke — an input event per digit would
+            // Committed on blur rather than on every keystroke - an input event per digit would
             // fire a request per digit.
             onBlur={() => update({ minPrice: minPrice || null })}
             placeholder={labels.priceFrom}

@@ -7,7 +7,7 @@ metadata:
     #
     # `restricted` is the strictest built-in profile: no privileged containers, no host namespaces,
     # no root, no added capabilities. Setting it here means a manifest that violates it is rejected
-    # at admission rather than discovered later in a review — the workloads in this namespace all
+    # at admission rather than discovered later in a review - the workloads in this namespace all
     # satisfy it already, so there is nothing to grandfather.
     pod-security.kubernetes.io/enforce: restricted
     pod-security.kubernetes.io/enforce-version: latest
@@ -24,7 +24,7 @@ metadata:
   namespace: eshop
 spec:
   # A ceiling on what this namespace can consume. Its real purpose is to bound the blast radius of
-  # a runaway HPA or a misconfigured resource request — without it, one bad deploy can exhaust the
+  # a runaway HPA or a misconfigured resource request - without it, one bad deploy can exhaust the
   # cluster and take unrelated workloads with it.
   hard:
     requests.cpu: '40'
@@ -43,7 +43,7 @@ spec:
   limits:
     - type: Container
       # Applied to any container that omits its own values. A pod with no request is scheduled as
-      # best-effort and is the first thing evicted under pressure — usually not what was intended.
+      # best-effort and is the first thing evicted under pressure - usually not what was intended.
       defaultRequest:
         cpu: 100m
         memory: 128Mi

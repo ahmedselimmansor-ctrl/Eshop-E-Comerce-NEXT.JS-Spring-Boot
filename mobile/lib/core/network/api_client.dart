@@ -10,12 +10,12 @@ import 'api_exception.dart';
 /// Two things here differ from the web client and are worth stating, because both are consequences
 /// of being a native app rather than a browser:
 ///
-/// * **The refresh token is stored in the platform keychain**, not in a cookie — a native app has
+/// * **The refresh token is stored in the platform keychain**, not in a cookie - a native app has
 ///   no cookie jar, and the keychain (Keychain on iOS, EncryptedSharedPreferences on Android) is
 ///   the only storage that survives a rooted device with its contents still encrypted.
 /// * **Refresh is serialised.** A screen that fires four requests at once will get four 401s when
 ///   the access token expires; without a lock, each would start its own refresh, and three of them
-///   would present a token the first has already rotated — which the backend correctly treats as
+///   would present a token the first has already rotated - which the backend correctly treats as
 ///   replay and responds to by revoking the whole family. In other words, the naive version logs
 ///   the customer out at random.
 class ApiClient {
@@ -131,8 +131,8 @@ class ApiClient {
 
   /// Exchanges the stored refresh token for a new pair.
   ///
-  /// Returns `false` when the session is genuinely over — the token was revoked, expired, or
-  /// replayed — at which point the caller signs the customer out.
+  /// Returns `false` when the session is genuinely over - the token was revoked, expired, or
+  /// replayed - at which point the caller signs the customer out.
   Future<bool> _refresh() async {
     // A refresh is already running: wait for its outcome instead of starting a competing one.
     final inFlight = _refreshInFlight;
@@ -168,7 +168,7 @@ class ApiClient {
 
       await saveSession(
         accessToken: tokens['accessToken'] as String,
-        // Rotated on every use — the old one is now revoked, and presenting it again would be
+        // Rotated on every use - the old one is now revoked, and presenting it again would be
         // treated as theft.
         refreshToken: tokens['refreshToken'] as String,
       );

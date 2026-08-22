@@ -16,7 +16,7 @@ export async function generateMetadata({
  * The customer's saved items.
  *
  * Rendered entirely client-side rather than fetched here: the list is private, changes on every
- * heart tap across the site, and would have to be `no-store` anyway — server-rendering it would
+ * heart tap across the site, and would have to be `no-store` anyway - server-rendering it would
  * cost a blocking request for markup that cannot be cached.
  */
 export default async function WishlistPage({ params }: { params: Promise<{ locale: string }> }) {

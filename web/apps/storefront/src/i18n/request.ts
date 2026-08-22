@@ -4,7 +4,7 @@ import { isSupportedLocale, routing } from './routing';
 /**
  * Per-request i18n configuration.
  *
- * Also the single place where date, number, and currency formats are defined — leaving those to
+ * Also the single place where date, number, and currency formats are defined - leaving those to
  * each call site produces a page where the same price appears three different ways.
  */
 export default getRequestConfig(async ({ requestLocale }) => {

@@ -70,7 +70,7 @@ public record ProductDetailResponse(
                                 Integer width, Integer height, String blurhash, UUID variantId) {
     }
 
-    /** One selectable dimension — "Colour" with its available values. */
+    /** One selectable dimension - "Colour" with its available values. */
     public record VariantAxis(String code, String name, String type, List<AxisValue> values) {
     }
 

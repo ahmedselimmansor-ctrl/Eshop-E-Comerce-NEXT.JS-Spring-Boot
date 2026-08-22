@@ -3,7 +3,7 @@ import type { ProductQueryParams } from '@eshop/api-client';
 /**
  * Turns raw search params into a typed, bounded query.
  *
- * Shared by every listing surface — `/products`, a category, a brand, search — so the filters
+ * Shared by every listing surface - `/products`, a category, a brand, search - so the filters
  * behave identically everywhere and there is one place to change how a parameter is read.
  *
  * Every value is clamped rather than passed through: a hand-edited `?size=100000` must not become a
@@ -24,7 +24,7 @@ export function parseListingParams(
     return Array.isArray(value) ? value : [value];
   };
 
-  // Attribute facets arrive as repeated `attr_<code>` parameters — `?attr_color=red&attr_size=l`.
+  // Attribute facets arrive as repeated `attr_<code>` parameters - `?attr_color=red&attr_size=l`.
   const attributes: Record<string, string[]> = {};
   for (const [key, value] of Object.entries(raw)) {
     if (key.startsWith('attr_') && value) {

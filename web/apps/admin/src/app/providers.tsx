@@ -19,7 +19,7 @@ export function Providers({ children }: { children: ReactNode }) {
             retry: (failureCount, error) =>
               error instanceof ApiError && !error.retryable ? false : failureCount < 2,
           },
-          // Never retried automatically — a refund or a status change may have succeeded before the
+          // Never retried automatically - a refund or a status change may have succeeded before the
           // response was lost, and replaying it would apply it twice.
           mutations: { retry: false },
         },

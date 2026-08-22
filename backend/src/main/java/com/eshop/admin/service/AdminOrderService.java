@@ -20,7 +20,7 @@ import java.util.UUID;
  *
  * <p>An {@code Order} is the worst offender for lazy state in this codebase: {@code OrderResponse}
  * walks items, their product references, the status timeline, and the shipment list. Mapping it in a
- * controller — after the service's transaction has committed and the session is gone — throws
+ * controller - after the service's transaction has committed and the session is gone - throws
  * {@code LazyInitializationException} on every call while compiling perfectly well.
  *
  * <p>See {@link AdminOpsService} for the same reasoning applied to the rest of the console.

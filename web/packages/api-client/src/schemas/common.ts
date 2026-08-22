@@ -64,7 +64,7 @@ export function pageSchema<T extends z.ZodTypeAny>(item: T) {
 /**
  * The stable error vocabulary from the API.
  *
- * Client code branches on `code`, never on `detail` — `detail` is human prose that is reworded and
+ * Client code branches on `code`, never on `detail` - `detail` is human prose that is reworded and
  * translated freely, and matching on it is a bug waiting for the next copy change.
  */
 export const errorCodeSchema = z.enum([
@@ -127,7 +127,7 @@ export const fieldViolationSchema = z.object({
 
 export type FieldViolation = z.infer<typeof fieldViolationSchema>;
 
-/** RFC 9457 problem document — the shape of every error the API returns. */
+/** RFC 9457 problem document - the shape of every error the API returns. */
 export const problemDetailSchema = z.object({
   type: z.string().optional(),
   title: z.string().optional(),

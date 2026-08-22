@@ -43,7 +43,7 @@ export function WishlistView({ locale }: { locale: string }) {
   } = useQuery({
     queryKey: ['wishlist'],
     queryFn: () => browserApi().wishlist.get(),
-    // Guests have no wishlist to fetch — the endpoint would 401 and the retry would too.
+    // Guests have no wishlist to fetch - the endpoint would 401 and the retry would too.
     enabled: Boolean(user),
   });
 
@@ -132,7 +132,7 @@ export function WishlistView({ locale }: { locale: string }) {
   const moveError = moveToCart.error instanceof ApiError ? moveToCart.error.detail : null;
 
   /*
-   * Built from `getPathname` so the Arabic link is the Arabic URL — a shared link that reads
+   * Built from `getPathname` so the Arabic link is the Arabic URL - a shared link that reads
    * `/ar/مفضلة/…` is the one an Arabic speaker will recognise in a message.
    *
    * The origin is only knowable in the browser, and this component is prerendered, so the link
@@ -348,7 +348,7 @@ function SavedCard({
           ) : null}
         </div>
 
-        {/* Sold out keeps the item — losing a saved product because it is temporarily unavailable
+        {/* Sold out keeps the item - losing a saved product because it is temporarily unavailable
             would be exactly the wrong behaviour for a wishlist. */}
         {item.inStock ? (
           <Button size="sm" fullWidth loading={moving} onClick={onMove} className="mt-2">

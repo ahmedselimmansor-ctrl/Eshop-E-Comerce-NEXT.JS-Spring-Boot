@@ -4,7 +4,7 @@ import { problemDetailSchema, type ErrorCode, type FieldViolation, type ProblemD
 /**
  * A failed API call, carrying the parsed problem document.
  *
- * Callers branch on {@link code} — the stable machine value — never on the message, which is prose
+ * Callers branch on {@link code} - the stable machine value - never on the message, which is prose
  * the backend rewords and translates freely.
  */
 export class ApiError extends Error {
@@ -45,7 +45,7 @@ export class ApiError extends Error {
   }
 }
 
-/** Thrown when the response does not match its schema — a contract drift, not a user error. */
+/** Thrown when the response does not match its schema - a contract drift, not a user error. */
 export class SchemaMismatchError extends Error {
   constructor(
     readonly path: string,
@@ -78,7 +78,7 @@ export interface ClientConfig {
   getLocale?: () => string;
   /** Guest cart identifier, sent as `X-Session-Id`. */
   getSessionId?: () => string | null | undefined;
-  /** Sends cookies — required in the browser for the HttpOnly refresh cookie. */
+  /** Sends cookies - required in the browser for the HttpOnly refresh cookie. */
   credentials?: RequestCredentials;
   defaultHeaders?: Record<string, string>;
 }
@@ -234,7 +234,7 @@ export class ApiClient {
  * Generates an idempotency key.
  *
  * Required on checkout, payment, and refund calls. The key must be stable across retries of the
- * *same* logical attempt — generate it once when the customer presses "Pay", not on each retry, or
+ * *same* logical attempt - generate it once when the customer presses "Pay", not on each retry, or
  * the guarantee is lost precisely when it is needed.
  */
 export function newIdempotencyKey(): string {

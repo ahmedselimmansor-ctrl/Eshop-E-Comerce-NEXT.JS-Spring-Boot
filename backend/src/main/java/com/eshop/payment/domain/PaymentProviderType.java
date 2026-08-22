@@ -8,7 +8,7 @@ public enum PaymentProviderType {
 
     /**
      * Fawry reference codes. The customer receives a number and pays at any Fawry outlet, ATM, or
-     * through their banking app — the dominant way to pay online without a card here.
+     * through their banking app - the dominant way to pay online without a card here.
      */
     FAWRY,
 

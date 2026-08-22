@@ -24,7 +24,7 @@ import java.util.Map;
  * One line in a cart.
  *
  * <p>{@code unitPrice} and {@code snapshot} record the product as it was when added. The snapshot
- * keeps the cart renderable in one query — no join to the catalog to show a name and a thumbnail —
+ * keeps the cart renderable in one query - no join to the catalog to show a name and a thumbnail -
  * and the captured price is what {@code CartService.validate} compares against the live catalog to
  * raise {@code PRICE_CHANGED} before checkout. The customer is shown the change and asked to
  * confirm; the order is always created from live prices.

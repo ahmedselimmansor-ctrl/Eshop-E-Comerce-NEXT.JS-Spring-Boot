@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
  *
  * The one interactive island on the product page. Selection is held as a map of
  * `attributeCode → valueCode` and resolved to a variant by matching against each variant's own
- * `selection` map — the server already told us which combination each SKU represents, so the
+ * `selection` map - the server already told us which combination each SKU represents, so the
  * client never has to reconstruct that from the axes.
  */
 export function ProductPurchasePanel({
@@ -27,7 +27,7 @@ export function ProductPurchasePanel({
   locale: string;
 }) {
   // `selectOption`, `onlyLeft` and `save` all take an argument, so they cannot be handed down from
-  // the server component that renders this island — it reads its own messages instead.
+  // the server component that renders this island - it reads its own messages instead.
   const t = useTranslations('product');
 
   const queryClient = useQueryClient();
@@ -223,7 +223,7 @@ export function ProductPurchasePanel({
           )}
         </Button>
 
-        {/* Saving is offered even when the item is not purchasable — "tell me when it's back" is
+        {/* Saving is offered even when the item is not purchasable - "tell me when it's back" is
             precisely what a wishlist is for. */}
         <WishlistToggle productId={product.id} variantId={selectedVariant?.id ?? null} />
       </div>

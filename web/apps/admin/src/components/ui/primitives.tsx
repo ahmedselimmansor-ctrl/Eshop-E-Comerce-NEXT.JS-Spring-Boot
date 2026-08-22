@@ -158,7 +158,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
 );
 Select.displayName = 'Select';
 
-/** A labelled control. The label is always rendered — a placeholder is not a label. */
+/** A labelled control. The label is always rendered - a placeholder is not a label. */
 export function Field({
   id,
   label,

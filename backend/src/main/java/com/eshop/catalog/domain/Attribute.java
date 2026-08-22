@@ -18,14 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A product characteristic — colour, size, storage capacity, material.
+ * A product characteristic - colour, size, storage capacity, material.
  *
  * <p>One definition serves two distinct jobs, distinguished by {@link #variantAxis}:
  * <ul>
- *   <li><b>Variant axis</b> ({@code true}) — the attribute generates purchasable variants. A
+ *   <li><b>Variant axis</b> ({@code true}) - the attribute generates purchasable variants. A
  *       T-shirt with colour and size axes yields one {@link ProductVariant} per combination, each
  *       with its own SKU, price, and stock.</li>
- *   <li><b>Descriptive</b> ({@code false}) — the attribute describes the product without splitting
+ *   <li><b>Descriptive</b> ({@code false}) - the attribute describes the product without splitting
  *       it. Screen size and warranty period belong on the spec table, not on separate SKUs.</li>
  * </ul>
  * Getting this wrong is expensive: marking a descriptive attribute as an axis multiplies the SKU

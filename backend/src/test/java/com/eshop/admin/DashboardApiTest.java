@@ -14,8 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * The dashboard summary, on a store that has not sold anything yet.
  *
  * <p>This is the shape every new store sees in its first week, and it is the case the console got
- * wrong: the API returns a null {@code changePercent} when the preceding period was zero — growth
- * from nothing is not a percentage — and the web client's schema demanded a number, which rejected
+ * wrong: the API returns a null {@code changePercent} when the preceding period was zero - growth
+ * from nothing is not a percentage - and the web client's schema demanded a number, which rejected
  * the whole payload and blanked the dashboard.
  *
  * <p>The contract asserted here is the one the client now models: the metric object is always

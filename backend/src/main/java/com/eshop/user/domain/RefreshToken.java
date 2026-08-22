@@ -18,14 +18,14 @@ import java.util.UUID;
  * One issued refresh token.
  *
  * <p>Tokens rotate: every use mints a replacement and revokes the presented one. All tokens
- * descended from a single login share a {@code familyId}, which is what makes theft detectable —
+ * descended from a single login share a {@code familyId}, which is what makes theft detectable -
  * if a revoked token is presented again, either the legitimate client or an attacker is replaying,
  * and there is no way to tell which. The safe response is to revoke the entire family and force a
  * fresh login.
  *
  * <p>Only the SHA-256 of the token is stored. A database dump therefore does not yield usable
  * sessions. Plain SHA-256 rather than Argon2 is appropriate here because the input is already 256
- * bits of {@link java.security.SecureRandom} output — there is no dictionary to attack.
+ * bits of {@link java.security.SecureRandom} output - there is no dictionary to attack.
  */
 @Entity
 @Table(name = "refresh_tokens")

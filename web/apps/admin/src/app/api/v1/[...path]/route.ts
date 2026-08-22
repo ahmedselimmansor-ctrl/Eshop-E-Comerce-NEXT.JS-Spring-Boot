@@ -5,10 +5,10 @@ import { NextRequest, NextResponse } from 'next/server';
  *
  * The browser talks to `/api/v1/*` on the console's own origin, and this handler forwards to
  * the API. The path is identical to the backend's, so the shared API client needs no separate
- * base URL for the browser — it simply calls the same paths against the current origin. That indirection exists for one reason: the refresh token is an `HttpOnly;
+ * base URL for the browser - it simply calls the same paths against the current origin. That indirection exists for one reason: the refresh token is an `HttpOnly;
  * SameSite=Strict` cookie, and a strict cookie is not sent on a cross-origin request. Calling the
- * API domain directly from the browser would mean either loosening the cookie to `SameSite=None` —
- * giving up the CSRF protection that strict setting provides — or keeping the refresh token
+ * API domain directly from the browser would mean either loosening the cookie to `SameSite=None` -
+ * giving up the CSRF protection that strict setting provides - or keeping the refresh token
  * somewhere JavaScript can read it, which is worse.
  *
  * Everything else the proxy does follows from that: forward the cookie in, forward `Set-Cookie`
@@ -125,6 +125,6 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
   return proxy(request, (await context.params).path);
 }
 
-/** Never prerendered or cached — every call is per-visitor and often authenticated. */
+/** Never prerendered or cached - every call is per-visitor and often authenticated. */
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';

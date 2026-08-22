@@ -43,7 +43,7 @@ public class AdminDashboardController {
     @GetMapping("/summary")
     @Operation(summary = "Headline metrics",
             description = "Each figure is paired with the equivalent preceding period. "
-                    + "`changePercent` is null when the previous period was zero — render that as "
+                    + "`changePercent` is null when the previous period was zero - render that as "
                     + "\"new\" rather than as a percentage.")
     public ResponseEntity<DashboardService.Summary> summary(
             @RequestParam(defaultValue = "7") int rangeDays) {
@@ -55,7 +55,7 @@ public class AdminDashboardController {
 
     @GetMapping("/revenue-series")
     @Operation(summary = "Revenue over time",
-            description = "Granularity is chosen from the range — hourly up to 2 days, daily up to "
+            description = "Granularity is chosen from the range - hourly up to 2 days, daily up to "
                     + "3 months, monthly beyond that.")
     public List<DashboardService.RevenuePoint> revenueSeries(
             @RequestParam(defaultValue = "30") int rangeDays) {

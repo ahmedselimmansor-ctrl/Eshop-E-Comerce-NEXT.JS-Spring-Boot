@@ -82,7 +82,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
     /**
      * Reuses a caller-supplied id when it looks sane, so a trace started in the Next.js BFF stays
      * one trace end to end. Anything longer than 64 characters or containing control characters is
-     * replaced — the value ends up in log fields and must not be able to forge a line.
+     * replaced - the value ends up in log fields and must not be able to forge a line.
      */
     private String resolveRequestId(HttpServletRequest request) {
         String incoming = request.getHeader(RequestContext.HEADER_REQUEST_ID);

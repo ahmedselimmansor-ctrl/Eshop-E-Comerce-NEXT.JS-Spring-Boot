@@ -146,7 +146,7 @@ public class UserService {
      * Customer search for the admin list.
      *
      * <p>Roles are initialised here because {@code UserResponse.summary} renders them and
-     * {@code open-in-view} is off — the page is otherwise detached by the time the DTO is built.
+     * {@code open-in-view} is off - the page is otherwise detached by the time the DTO is built.
      */
     @Transactional(readOnly = true)
     public Page<User> search(String query, UserStatus status, Pageable pageable) {

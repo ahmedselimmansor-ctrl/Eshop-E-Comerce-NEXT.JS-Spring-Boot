@@ -1,5 +1,5 @@
 -- ============================================================================
--- R__ (repeatable) — Reference data: permissions, roles, settings, shipping.
+-- R__ (repeatable) - Reference data: permissions, roles, settings, shipping.
 -- Idempotent by design: every insert is keyed on a natural key with ON CONFLICT.
 -- Safe to re-run on every deploy.
 -- ============================================================================
@@ -79,14 +79,14 @@ SELECT r.id, p.id FROM roles r, permissions p
    AND (p.resource = 'order' OR p.name IN ('customer:read', 'report:read', 'shipping:write', 'inventory:read'))
 ON CONFLICT DO NOTHING;
 
--- ADMIN — everything except role and settings management
+-- ADMIN - everything except role and settings management
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id FROM roles r, permissions p
  WHERE r.name = 'ADMIN'
    AND p.name NOT IN ('role:write', 'settings:write')
 ON CONFLICT DO NOTHING;
 
--- SUPER_ADMIN — everything
+-- SUPER_ADMIN - everything
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id FROM roles r, permissions p
  WHERE r.name = 'SUPER_ADMIN'
@@ -122,22 +122,22 @@ SELECT gen_random_uuid(), m.code, m.name_ar, m.name_en, m.desc_ar, m.desc_en,
        (SELECT id FROM shipping_zones WHERE name_ar = m.zone_ar),
        m.base_cost, m.per_kg, m.free_threshold, m.dmin, m.dmax, m.cod, TRUE, m.pos
   FROM (VALUES
-    ('CAIRO_STD',   'توصيل عادي — القاهرة الكبرى', 'Standard — Greater Cairo',
+    ('CAIRO_STD',   'توصيل عادي - القاهرة الكبرى', 'Standard - Greater Cairo',
      'التوصيل خلال ١-٢ يوم عمل', 'Delivered within 1-2 business days',
      'القاهرة الكبرى',       40.00, 0.00, 1000.00, 1, 2, TRUE, 1),
-    ('CAIRO_EXP',   'توصيل سريع — نفس اليوم',      'Express — same day',
+    ('CAIRO_EXP',   'توصيل سريع - نفس اليوم',      'Express - same day',
      'الطلبات قبل الساعة ١٢ ظهراً تصل في نفس اليوم', 'Order before 12 PM for same-day delivery',
      'القاهرة الكبرى',       90.00, 0.00, NULL,    0, 1, FALSE, 2),
-    ('DELTA_STD',   'توصيل عادي — الإسكندرية والدلتا', 'Standard — Alexandria & Delta',
+    ('DELTA_STD',   'توصيل عادي - الإسكندرية والدلتا', 'Standard - Alexandria & Delta',
      'التوصيل خلال ٢-٣ أيام عمل', 'Delivered within 2-3 business days',
      'الإسكندرية والدلتا',   55.00, 5.00, 1500.00, 2, 3, TRUE, 3),
-    ('CANAL_STD',   'توصيل عادي — القناة وسيناء',  'Standard — Canal & Sinai',
+    ('CANAL_STD',   'توصيل عادي - القناة وسيناء',  'Standard - Canal & Sinai',
      'التوصيل خلال ٣-٤ أيام عمل', 'Delivered within 3-4 business days',
      'القناة وسيناء',        65.00, 5.00, 1500.00, 3, 4, TRUE, 4),
-    ('SAID_STD',    'توصيل عادي — الصعيد',          'Standard — Upper Egypt',
+    ('SAID_STD',    'توصيل عادي - الصعيد',          'Standard - Upper Egypt',
      'التوصيل خلال ٣-٥ أيام عمل', 'Delivered within 3-5 business days',
      'الصعيد',               70.00, 6.00, 2000.00, 3, 5, TRUE, 5),
-    ('REMOTE_STD',  'توصيل — المناطق النائية',      'Remote areas',
+    ('REMOTE_STD',  'توصيل - المناطق النائية',      'Remote areas',
      'التوصيل خلال ٥-٧ أيام عمل', 'Delivered within 5-7 business days',
      'المناطق النائية',      110.00, 8.00, NULL,   5, 7, FALSE, 6)
   ) AS m(code, name_ar, name_en, desc_ar, desc_en, zone_ar,

@@ -9,7 +9,7 @@ variable "environment" {
 }
 
 variable "region" {
-  description = "GCP region. Keep the database, cache, and cluster in the same one — cross-region latency is charged to every query."
+  description = "GCP region. Keep the database, cache, and cluster in the same one - cross-region latency is charged to every query."
   type        = string
 }
 

@@ -15,7 +15,7 @@ import java.util.UUID;
  *
  * <p>Each entry carries a full product card because that is exactly what the page draws, and
  * live availability because "add to cart" has to be disabled for items that sold out while they
- * were saved — which, for a wishlist, is the common case rather than the exception.
+ * were saved - which, for a wishlist, is the common case rather than the exception.
  */
 @Schema(name = "WishlistResponse")
 public record WishlistResponse(
@@ -52,7 +52,7 @@ public record WishlistResponse(
 
     /**
      * @param availability availability keyed by wishlist item id, as resolved in one bulk lookup
-     * @param includeToken false when rendering someone else's shared list — the token is the
+     * @param includeToken false when rendering someone else's shared list - the token is the
      *                     capability, and echoing it to a viewer would let them reshare it
      */
     public static WishlistResponse from(Wishlist wishlist,

@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * One attempt to take money for an order — including the ones that failed.
+ * One attempt to take money for an order - including the ones that failed.
  *
  * <p>Failed attempts are shown, not hidden. They are the first thing anyone investigating a "my card
  * was declined" ticket needs, and a console that lists only the successful capture makes that

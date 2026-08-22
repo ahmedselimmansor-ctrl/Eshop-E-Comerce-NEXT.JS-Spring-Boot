@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Payment provider callbacks.
  *
- * <p>Unauthenticated by design — a payment gateway cannot present a bearer token. Authenticity comes
+ * <p>Unauthenticated by design - a payment gateway cannot present a bearer token. Authenticity comes
  * entirely from the HMAC signature over the raw body, verified inside each provider.
  *
  * <p>Three things about these endpoints are deliberate:
@@ -30,7 +30,7 @@ import java.util.Map;
  *   <li><b>The raw body is taken as a String</b>, not a parsed object. Signatures are computed over
  *       the exact bytes sent; deserialising and re-serialising reorders keys and changes number
  *       formatting, which breaks verification in ways that are painful to diagnose.</li>
- *   <li><b>They always return 200</b> once the event is stored — including for an invalid
+ *   <li><b>They always return 200</b> once the event is stored - including for an invalid
  *       signature. A non-2xx makes the provider retry, and retrying a payload we could not verify
  *       achieves nothing. Real failures are recorded and retried on our own schedule.</li>
  *   <li><b>They are exempt from rate limiting</b> (see {@code RateLimitFilter}). A provider
@@ -71,7 +71,7 @@ public class PaymentWebhookController {
         try {
             outcome = webhooks.handle(provider, rawBody, headersOf(request));
         } catch (RuntimeException e) {
-            // The event could not even be stored — a database outage. This is the one case worth
+            // The event could not even be stored - a database outage. This is the one case worth
             // a 5xx, because the provider's retry is genuinely the recovery path.
             log.error("webhook_store_failed provider={} error={}", provider, e.toString(), e);
             return ResponseEntity.status(503).body(Map.of("status", "retry"));

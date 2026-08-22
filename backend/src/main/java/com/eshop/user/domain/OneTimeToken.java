@@ -19,7 +19,7 @@ import java.time.Instant;
  * Single-use token for email verification, password reset, and phone OTP.
  *
  * <p>Stored hashed, consumed exactly once, and attempt-counted so a six-digit OTP cannot be
- * brute-forced — after a handful of wrong guesses the token is burned rather than merely rejected.
+ * brute-forced - after a handful of wrong guesses the token is burned rather than merely rejected.
  */
 @Entity
 @Table(name = "one_time_tokens")

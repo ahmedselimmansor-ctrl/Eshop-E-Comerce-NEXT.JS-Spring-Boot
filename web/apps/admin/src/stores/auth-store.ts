@@ -18,7 +18,7 @@ interface AuthState {
 /**
  * Operator session.
  *
- * The access token is held in memory only — never `localStorage`, never a readable cookie. An
+ * The access token is held in memory only - never `localStorage`, never a readable cookie. An
  * operations console is a higher-value target than the storefront: one stolen token here can refund
  * money and edit prices. The refresh token lives in an `HttpOnly; SameSite=Strict` cookie the page
  * cannot read, so an XSS gets at most a fifteen-minute credential rather than a thirty-day one.
@@ -34,7 +34,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   finishInitialising: () => set({ initialising: false }),
 }));
 
-/** Reads the token outside React — the API client needs it on every call but is not a component. */
+/** Reads the token outside React - the API client needs it on every call but is not a component. */
 export function currentAccessToken(): string | null {
   return useAuthStore.getState().accessToken;
 }
@@ -42,7 +42,7 @@ export function currentAccessToken(): string | null {
 /**
  * Whether the operator holds a permission.
  *
- * Used to hide controls they cannot use. This is presentation only — every one of these actions is
+ * Used to hide controls they cannot use. This is presentation only - every one of these actions is
  * independently enforced by `@PreAuthorize` on the endpoint, because a hidden button is not a
  * security boundary.
  */

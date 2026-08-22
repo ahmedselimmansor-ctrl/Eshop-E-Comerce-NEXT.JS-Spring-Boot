@@ -35,7 +35,7 @@ public class ShippingService {
     /**
      * Priced options for a destination.
      *
-     * <p>Returns an empty list rather than throwing when nowhere serves the address — the checkout
+     * <p>Returns an empty list rather than throwing when nowhere serves the address - the checkout
      * UI needs to say "we do not deliver here yet", which is a different message from an error.
      */
     @Transactional(readOnly = true)

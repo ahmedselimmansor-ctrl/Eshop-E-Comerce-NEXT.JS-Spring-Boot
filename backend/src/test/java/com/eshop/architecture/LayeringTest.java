@@ -66,7 +66,7 @@ class LayeringTest {
                 .because("""
                         a controller holding a repository queries outside a transaction and maps the \
                         result after the session has closed, which is how every \
-                        LazyInitializationException in this codebase happened — put the query and \
+                        LazyInitializationException in this codebase happened - put the query and \
                         the mapping in a @Transactional service instead""");
 
         rule.check(classes);

@@ -43,7 +43,7 @@ public record CartResponse(
             int quantity,
             Money lineTotal,
 
-            @Schema(description = "Sellable units right now — the cap for a quantity stepper")
+            @Schema(description = "Sellable units right now - the cap for a quantity stepper")
             int availableQuantity,
 
             boolean inStock,

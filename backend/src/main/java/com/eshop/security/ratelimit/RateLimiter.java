@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Token-bucket rate limiting evaluated inside Redis.
  *
- * <p>The whole decision — refill, test, consume, compute reset — happens in one Lua script, which
+ * <p>The whole decision - refill, test, consume, compute reset - happens in one Lua script, which
  * Redis runs atomically. A read-modify-write from the application would let concurrent requests
  * across pods each observe the same remaining count and all pass, which is exactly the burst the
  * limiter exists to stop.
@@ -115,13 +115,13 @@ public class RateLimiter {
                     allowed ? 0 : retryAfterSeconds);
 
         } catch (RuntimeException e) {
-            log.warn("rate_limit_unavailable tier={} identity={} error={} — failing open",
+            log.warn("rate_limit_unavailable tier={} identity={} error={} - failing open",
                     tier, identity, e.getMessage());
             return Decision.allowed(config.getCapacity(), config.getCapacity(), 0);
         }
     }
 
-    /** Clears a bucket — used after a successful login so a legitimate user is not left throttled. */
+    /** Clears a bucket - used after a successful login so a legitimate user is not left throttled. */
     public void reset(String tier, String identity) {
         try {
             redis.delete(KEY_PREFIX + tier + ":" + identity);

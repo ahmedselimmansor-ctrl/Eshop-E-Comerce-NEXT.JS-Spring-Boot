@@ -20,7 +20,7 @@ public record ReviewResponse(
         Instant adminRepliedAt,
         List<String> mediaUrls,
 
-        @Schema(description = "Display name only — never the reviewer's email")
+        @Schema(description = "Display name only - never the reviewer's email")
         String authorName,
 
         String authorAvatarUrl,
@@ -45,7 +45,7 @@ public record ReviewResponse(
     }
 
     /**
-     * First name plus a last initial — "أحمد م." — which reads as a real person without publishing
+     * First name plus a last initial - "أحمد م." - which reads as a real person without publishing
      * a full name next to a purchase history on an indexable page.
      */
     private static String displayName(Review review) {

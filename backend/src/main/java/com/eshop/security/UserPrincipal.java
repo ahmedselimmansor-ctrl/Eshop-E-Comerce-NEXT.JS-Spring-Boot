@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * The authenticated caller, reconstructed from the access token on every request.
  *
- * <p>Built purely from token claims — no database read on the hot path. The trade-off is that a
+ * <p>Built purely from token claims - no database read on the hot path. The trade-off is that a
  * permission change takes effect when the access token next rotates rather than instantly; with a
  * 15-minute access-token lifetime that window is acceptable, and the cases that must be immediate
  * (suspension, password change) revoke the refresh-token family, which cuts the session off at the
@@ -50,7 +50,7 @@ public record UserPrincipal(
      *
      * <p>Permissions are added verbatim ({@code order:refund}) and roles with the conventional
      * {@code ROLE_} prefix, so both {@code hasAuthority('order:refund')} and {@code hasRole('ADMIN')}
-     * work. Endpoints should prefer the permission form — see {@code docs/03-CONVENTIONS.md}.
+     * work. Endpoints should prefer the permission form - see {@code docs/03-CONVENTIONS.md}.
      */
     public Collection<GrantedAuthority> authorities() {
         Set<GrantedAuthority> authorities = new LinkedHashSet<>();

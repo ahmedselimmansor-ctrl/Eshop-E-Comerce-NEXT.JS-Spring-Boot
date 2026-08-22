@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 # Base manifests, shared by every environment. Anything that differs between dev, staging, and
-# production is a patch in the corresponding overlay — never a copy of this file.
+# production is a patch in the corresponding overlay - never a copy of this file.
 
 namespace: eshop
 
@@ -24,7 +24,7 @@ configMapGenerator:
   - name: eshop-api-config
     literals:
       # Non-secret configuration only. Anything sensitive comes from Secret Manager through the
-      # ExternalSecret — a value here is readable by anyone with namespace read access.
+      # ExternalSecret - a value here is readable by anyone with namespace read access.
       - SPRING_PROFILES_ACTIVE=prod
       - SERVER_PORT=8080
       - DB_PORT=5432

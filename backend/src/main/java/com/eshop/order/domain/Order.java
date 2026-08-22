@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A placed order — the system's financial record.
+ * A placed order - the system's financial record.
  *
  * <p>Everything here is a <b>snapshot</b>. The addresses are frozen JSON, the line items carry
  * their own copies of names, images, and prices, and the shipping method's name is duplicated onto
@@ -41,7 +41,7 @@ import java.util.UUID;
  *
  * <p>That redundancy is the point. An invoice must say what was actually bought, at what price,
  * shipped where, on the day it was placed. If an order rendered by joining live catalog rows, then
- * renaming a product or correcting a typo in an address would silently rewrite history — including
+ * renaming a product or correcting a typo in an address would silently rewrite history - including
  * documents already sent to a customer or a tax authority.
  */
 @Entity
@@ -128,7 +128,7 @@ public class Order extends AuditableEntity {
     @Column(name = "customer_note")
     private String customerNote;
 
-    /** Internal only — never included in any customer-facing response. */
+    /** Internal only - never included in any customer-facing response. */
     @Column(name = "admin_note")
     private String adminNote;
 
@@ -166,7 +166,7 @@ public class Order extends AuditableEntity {
     private long version;
 
     /*
-     * Left out of the paged entity graphs — Hibernate cannot page in SQL while a collection is
+     * Left out of the paged entity graphs - Hibernate cannot page in SQL while a collection is
      * join-fetched. @BatchSize loads a whole page's worth in one extra query instead of one per row.
      */
     @BatchSize(size = 50)

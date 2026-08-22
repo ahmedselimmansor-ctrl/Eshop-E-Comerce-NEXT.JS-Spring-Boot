@@ -23,8 +23,8 @@ import java.util.List;
 /**
  * One parcel dispatched against an order.
  *
- * <p>An order can produce several shipments — items from different warehouses, or a backordered
- * line that follows later — so the tracking number lives here rather than on the order.
+ * <p>An order can produce several shipments - items from different warehouses, or a backordered
+ * line that follows later - so the tracking number lives here rather than on the order.
  */
 @Entity
 @Table(name = "shipments")
@@ -38,7 +38,7 @@ public class Shipment extends AuditableEntity {
         IN_TRANSIT,
         OUT_FOR_DELIVERY,
         DELIVERED,
-        /** Delivery attempted and failed — wrong address, nobody home, refused. */
+        /** Delivery attempted and failed - wrong address, nobody home, refused. */
         FAILED,
         RETURNED
     }
@@ -60,7 +60,7 @@ public class Shipment extends AuditableEntity {
     @Column(name = "status", nullable = false, length = 30)
     private Status status = Status.PENDING;
 
-    /** What the courier charged us — margin data, never shown to the customer. */
+    /** What the courier charged us - margin data, never shown to the customer. */
     @Column(name = "cost", precision = 12, scale = 2)
     private BigDecimal cost;
 

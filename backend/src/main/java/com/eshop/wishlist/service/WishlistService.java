@@ -30,7 +30,7 @@ import java.util.UUID;
  * Saved items.
  *
  * <p>Deliberately simpler than the cart: no pricing, no stock hold, no guest support. A wishlist
- * outlives a session by design — it is the list a customer comes back to in a month — and anchoring
+ * outlives a session by design - it is the list a customer comes back to in a month - and anchoring
  * it to a browser cookie would quietly lose it. Guests are asked to sign in instead.
  *
  * <p>Every method takes the caller's id and resolves the list from it. A wishlist id is never
@@ -55,7 +55,7 @@ public class WishlistService {
     /**
      * The caller's default list, created on first access.
      *
-     * <p>Read-only paths call this too, so it is not annotated {@code readOnly} — the first ever
+     * <p>Read-only paths call this too, so it is not annotated {@code readOnly} - the first ever
      * read is also the insert.
      */
     @Transactional
@@ -71,7 +71,7 @@ public class WishlistService {
      * come back through an entity graph that already loads all of this, but a write path does not:
      * a product fetched by {@code products.require} during {@link #add} arrives with its images and
      * brand as uninitialised proxies, and serialising the response would then fail with a
-     * {@code LazyInitializationException} — after the row was already committed.
+     * {@code LazyInitializationException} - after the row was already committed.
      */
     private Wishlist initialised(Wishlist wishlist) {
         for (WishlistItem item : wishlist.getItems()) {
@@ -139,7 +139,7 @@ public class WishlistService {
         return initialised(wishlists.save(wishlist));
     }
 
-    /** Removes by item id. Unknown ids are a 404, not a silent success — the UI should resync. */
+    /** Removes by item id. Unknown ids are a 404, not a silent success - the UI should resync. */
     @Transactional
     public Wishlist remove(UUID userId, UUID itemId) {
         Wishlist wishlist = getOrCreate(userId);
@@ -175,7 +175,7 @@ public class WishlistService {
      *
      * <p>The wishlist row is dropped only after the cart accepted the item. If the product went out
      * of stock or was delisted, {@code CartService} throws, this transaction rolls back, and the
-     * customer still has their saved item — losing it in exchange for an error would be the worst
+     * customer still has their saved item - losing it in exchange for an error would be the worst
      * possible outcome.
      */
     @Transactional
@@ -236,7 +236,7 @@ public class WishlistService {
         return wishlistItems.countByWishlistId(wishlistId);
     }
 
-    /** 128 bits, hex-encoded — unguessable, and short enough to survive being pasted into WhatsApp. */
+    /** 128 bits, hex-encoded - unguessable, and short enough to survive being pasted into WhatsApp. */
     private static String newShareToken() {
         byte[] bytes = new byte[16];
         RANDOM.nextBytes(bytes);

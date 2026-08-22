@@ -70,7 +70,7 @@ public class AuthService {
         passwordPolicy.validate(request.password(), email, request.firstName());
 
         // A duplicate email is reported as a conflict rather than silently succeeding, because the
-        // alternative — pretending to register and emailing the existing owner — is worse UX for a
+        // alternative - pretending to register and emailing the existing owner - is worse UX for a
         // real duplicate and only marginally better against enumeration. Registration is rate
         // limited to 3/hour per IP, which is what actually blunts enumeration here.
         if (users.existsByEmailAndDeletedAtIsNull(email)) {
@@ -300,7 +300,7 @@ public class AuthService {
 
     private Role customerRole() {
         return roles.findByName(Role.CUSTOMER).orElseThrow(() -> new IllegalStateException(
-                "The CUSTOMER role is missing — R__seed_reference_data.sql has not been applied"));
+                "The CUSTOMER role is missing - R__seed_reference_data.sql has not been applied"));
     }
 
     private static Recipient recipientOf(User user) {
