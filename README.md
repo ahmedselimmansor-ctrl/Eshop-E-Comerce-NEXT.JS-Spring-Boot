@@ -890,9 +890,9 @@ flowchart LR
 
     subgraph CI ["CI (.github/workflows/ci.yml)"]
         direction TB
-        BE["Backend<br/>compile · 63 tests<br/>real Postgres + Redis"]
+        BE["Backend<br/>compile · 72 tests<br/>real Postgres + Redis"]
         MIG["Migrations<br/>apply, then re-apply R__<br/>to prove idempotency"]
-        WEB["Web<br/>typecheck · lint · 46 tests · build"]
+        WEB["Web<br/>typecheck · lint · 70 tests · build"]
         MOB["Mobile<br/>analyze · 49 tests"]
         SEC["Security<br/>secret scan · Trivy · SBOM"]
         INF["Infra<br/>terraform validate · kustomize build"]
@@ -1037,8 +1037,8 @@ on every call. Services return finished DTOs.
 
 ```bash
 make test          # backend, web and mobile
-make test-backend  # 63 tests, needs `make infra` running
-make test-web      # typecheck, lint, and 46 unit tests
+make test-backend  # 72 tests, needs `make infra` running
+make test-web      # typecheck, lint, and 70 unit and component tests
 make test-mobile   # flutter analyze and 49 tests
 ```
 
@@ -1091,9 +1091,10 @@ and rolls back on failure.
 ## Status
 
 **Backend.** Complete and tested: migrations, security, catalog, inventory, cart, promotions,
-checkout, orders, payments, search, media, notifications, and the admin API. Sixty-three tests,
-covering checkout, the full refund path against a captured payment, the store rules that live in
-settings, the admin API, JSON round-tripping, and the layering rules.
+checkout, orders, payments, search, media, notifications, and the admin API. Seventy-two tests,
+covering checkout, the full refund path against a captured payment, webhook signature verification
+in both directions, the store rules that live in settings, the admin API, JSON round-tripping, and
+the layering rules.
 
 **Storefront.** The full purchase path in both languages with RTL: home, listing with facets, product
 detail, cart, checkout, account, orders, and wishlist.

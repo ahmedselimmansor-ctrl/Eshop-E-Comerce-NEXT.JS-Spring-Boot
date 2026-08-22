@@ -1,20 +1,9 @@
 import { defineConfig } from 'vitest/config';
 import { resolve } from 'node:path';
 
-/**
- * One Vitest run for the whole workspace.
- *
- * Node environment, not jsdom: what is worth testing here is the code that fails silently rather
- * than visibly. A Zod schema that no longer matches the API turns a field into `undefined` and a
- * price into a blank space, and a component test with a mocked client would not notice, because the
- * mock is written from the same wrong assumption as the schema.
- */
+/** Only what every project shares; the `@` alias differs per app and lives in the workspace file. */
 export default defineConfig({
-  test: {
-    environment: 'node',
-    include: ['{apps,packages}/*/src/**/*.test.ts', '{apps,packages}/*/test/**/*.test.ts'],
-    passWithNoTests: false,
-  },
+  esbuild: { jsx: 'automatic' },
   resolve: {
     alias: {
       '@eshop/api-client': resolve(__dirname, 'packages/api-client/src/index.ts'),
