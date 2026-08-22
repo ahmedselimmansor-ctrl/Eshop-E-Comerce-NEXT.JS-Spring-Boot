@@ -148,7 +148,8 @@
     "quantityReduced": "المتاح {count} فقط - تم تعديل الكمية",
     "itemUnavailable": "هذا المنتج لم يعد متاحاً",
     "reviewIssues": "بعض المنتجات في سلتك تحتاج مراجعة",
-    "fixIssues": "تحديث السلة"
+    "fixIssues": "تحديث السلة",
+    "belowMinimum": "الحد الأدنى للطلب {amount}"
   },
   "checkout": {
     "title": "إتمام الشراء",

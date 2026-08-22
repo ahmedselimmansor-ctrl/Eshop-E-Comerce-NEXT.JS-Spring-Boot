@@ -148,7 +148,8 @@
     "quantityReduced": "Only {count} left - quantity adjusted",
     "itemUnavailable": "This item is no longer available",
     "reviewIssues": "Some items in your cart need attention",
-    "fixIssues": "Update cart"
+    "fixIssues": "Update cart",
+    "belowMinimum": "Orders start at {amount}"
   },
   "checkout": {
     "title": "Checkout",

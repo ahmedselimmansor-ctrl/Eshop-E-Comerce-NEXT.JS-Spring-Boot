@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ApiClient, newIdempotencyKey, type RequestOptions } from './http';
+import { publicSettingsSchema } from './schemas/common';
 import {
   addressSchema,
   authResponseSchema,
@@ -131,6 +132,23 @@ export class EshopApi {
       this.client.request(`/api/v1/me/addresses/${id}/default`, addressSchema, {
         method: 'POST',
         query: { type },
+      }),
+  };
+
+  // -------------------------------------------------------------- settings --
+
+  /**
+   * Store rules the client needs before it can avoid breaking one.
+   *
+   * The minimum order value and the cash-on-delivery surcharge are enforced server-side; without
+   * reading them the first a customer hears of a minimum is a rejection after they have filled in
+   * an address.
+   */
+  readonly settings = {
+    public: (options?: RequestOptions) =>
+      this.client.request('/api/v1/settings/public', publicSettingsSchema, {
+        next: { revalidate: 300, tags: ['settings'] },
+        ...options,
       }),
   };
 

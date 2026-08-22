@@ -149,3 +149,55 @@ export type Locale = z.infer<typeof localeSchema>;
 
 /** ISO-8601 instant, as the API always sends it. */
 export const instantSchema = z.string().datetime({ offset: true }).or(z.string());
+
+/**
+ * The settings a storefront is allowed to know.
+ *
+ * Deliberately loose. The server decides which rows carry `is_public`, and a new one should reach
+ * the client without a release here, so unknown keys pass through rather than failing the parse.
+ * The keys the client actually reads are pulled out by the accessors below, each with a fallback,
+ * because a store that has not configured a value is a normal state and not an error.
+ */
+export const publicSettingsSchema = z.record(z.string(), z.unknown());
+
+export type PublicSettings = z.infer<typeof publicSettingsSchema>;
+
+/** A localised store name arrives as `{ ar, en }`; everything else is a plain scalar. */
+export function settingText(
+  settings: PublicSettings | undefined,
+  key: string,
+  locale: string,
+  fallback = '',
+): string {
+  const value = settings?.[key];
+  if (value == null) return fallback;
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object') {
+    const localised = (value as Record<string, unknown>)[locale];
+    if (typeof localised === 'string') return localised;
+  }
+  return fallback;
+}
+
+export function settingNumber(
+  settings: PublicSettings | undefined,
+  key: string,
+  fallback: number,
+): number {
+  const value = settings?.[key];
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string') {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  }
+  return fallback;
+}
+
+export function settingFlag(
+  settings: PublicSettings | undefined,
+  key: string,
+  fallback: boolean,
+): boolean {
+  const value = settings?.[key];
+  return typeof value === 'boolean' ? value : fallback;
+}

@@ -23,10 +23,14 @@ import com.eshop.user.repository.AddressRepository;
 import com.eshop.user.repository.RoleRepository;
 import com.eshop.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.sql.DataSource;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -45,6 +49,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class TestFixtures {
 
+    private final DataSource dataSource;
     private final JdbcTemplate jdbc;
     private final UserRepository users;
     private final RoleRepository roles;
@@ -74,11 +79,22 @@ public class TestFixtures {
             "attributes", "attribute_values");
 
     /**
-     * Empties every other table.
+     * Empties every other table, then restores the reference data.
      *
      * <p>The list is read from the schema rather than hard-coded, so a new migration cannot leave a
      * table quietly un-truncated and let state bleed from one test into the next. One
      * {@code TRUNCATE ... CASCADE} handles the foreign keys, so ordering does not matter.
+     *
+     * <p>The re-seed afterwards is not belt and braces. {@code TRUNCATE ... CASCADE} also empties
+     * every table holding a foreign key into the named ones, and it decides that from the
+     * constraints rather than from the rows, so {@code settings} goes with {@code users} however
+     * carefully it is left out of the list. Without this, every test after the first ran against a
+     * store with no settings at all: the minimum-order check compared against its zero fallback, and
+     * the cash-on-delivery surcharge silently became nothing.
+     *
+     * <p>Re-running the repeatable migration rather than re-inserting a copy here keeps the tests
+     * asserting against the reference data the application actually ships, and it is idempotent by
+     * design, so it is a no-op for everything the cascade did not touch.
      */
     @Transactional
     public void reset() {
@@ -91,6 +107,11 @@ public class TestFixtures {
         if (!tables.isEmpty()) {
             jdbc.execute("TRUNCATE TABLE " + String.join(", ", tables) + " RESTART IDENTITY CASCADE");
         }
+
+        ResourceDatabasePopulator seed = new ResourceDatabasePopulator(
+                new ClassPathResource("db/migration/R__seed_reference_data.sql"));
+        seed.setCommentPrefixes("--");
+        seed.execute(dataSource);
     }
 
     // ----------------------------------------------------------------- users --

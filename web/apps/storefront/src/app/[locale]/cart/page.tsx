@@ -60,6 +60,7 @@ export default async function CartPage({ params }: { params: Promise<{ locale: s
           loading: common('loading'),
           retry: common('retry'),
           somethingWentWrong: common('somethingWentWrong'),
+          belowMinimum: t('belowMinimum'),
         }}
       />
     </div>

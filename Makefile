@@ -111,8 +111,8 @@ test-mobile: ## Analyze and test the Flutter app
 	./scripts/flutter.sh analyze && ./scripts/flutter.sh test
 
 .PHONY: test-web
-test-web: ## Typecheck and lint the web applications
-	$(WEB) npm run typecheck && npm run lint
+test-web: ## Typecheck, lint and unit-test the web applications
+	$(WEB) npm run typecheck && npm run lint && npm run test
 
 .PHONY: typecheck
 typecheck: ## Typecheck the web workspace only

@@ -180,6 +180,10 @@ jobs:
         working-directory: web
         run: npm run typecheck
 
+      - name: Tests
+        working-directory: web
+        run: npm run test
+
       - name: Lint
         working-directory: web
         run: npm run lint

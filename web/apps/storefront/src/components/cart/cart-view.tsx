@@ -8,6 +8,7 @@ import { ApiError, formatMoney, type Cart } from '@eshop/api-client';
 import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { Card, Input, Separator, Skeleton } from '@/components/ui/primitives';
+import { settingNumber } from '@eshop/api-client';
 import { browserApi } from '@/lib/api-browser';
 
 interface Labels {
@@ -32,6 +33,7 @@ interface Labels {
   loading: string;
   retry: string;
   somethingWentWrong: string;
+  belowMinimum: string;
 }
 
 export function CartView({ locale, labels }: { locale: string; labels: Labels }) {
@@ -42,6 +44,24 @@ export function CartView({ locale, labels }: { locale: string; labels: Labels })
     queryKey: ['cart'],
     queryFn: () => browserApi().cart.get(),
   });
+
+  /**
+   * The store's own rules, so the cart can enforce the minimum here rather than letting checkout
+   * reject it after the customer has filled in an address.
+   *
+   * Failure is not surfaced: if this request does not land, the minimum falls back to zero and the
+   * server still refuses a cart that is too small. A settings outage should not stop people buying.
+   */
+  const { data: settings } = useQuery({
+    queryKey: ['public-settings'],
+    queryFn: () => browserApi().settings.public(),
+    staleTime: 5 * 60_000,
+    retry: 1,
+  });
+
+  const minimumOrder = settingNumber(settings, 'checkout.min_order', 0);
+  const subtotal = Number(cart?.totals.subtotal.amount ?? 0);
+  const belowMinimum = minimumOrder > 0 && subtotal < minimumOrder;
 
   /**
    * Every mutation writes the returned cart straight into the cache.
@@ -313,9 +333,26 @@ export function CartView({ locale, labels }: { locale: string; labels: Labels })
             </span>
           </div>
 
-          <Button asChild size="lg" fullWidth className="mt-2">
-            <Link href="/checkout">{labels.checkout}</Link>
-          </Button>
+          {belowMinimum ? (
+            <>
+              <p role="status" className="text-xs text-[var(--danger)]">
+                {labels.belowMinimum.replace(
+                  '{amount}',
+                  formatMoney(
+                    { amount: minimumOrder.toFixed(2), currency: cart.totals.subtotal.currency },
+                    locale,
+                  ),
+                )}
+              </p>
+              <Button size="lg" fullWidth className="mt-2" disabled>
+                {labels.checkout}
+              </Button>
+            </>
+          ) : (
+            <Button asChild size="lg" fullWidth className="mt-2">
+              <Link href="/checkout">{labels.checkout}</Link>
+            </Button>
+          )}
         </div>
       </Card>
     </div>
