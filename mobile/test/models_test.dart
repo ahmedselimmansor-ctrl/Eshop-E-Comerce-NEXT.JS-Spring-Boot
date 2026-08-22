@@ -35,18 +35,21 @@ void main() {
 
   group('Paged', () {
     test('reads metadata from the nested page object', () {
-      final page = Paged.fromJson({
-        'content': [
-          {
-            'id': 'p1',
-            'slug': 'a-product',
-            'sku': 'SKU-1',
-            'name': 'A product',
-            'price': {'amount': '100.00', 'currency': 'EGP'},
-          },
-        ],
-        'page': {'number': 1, 'size': 20, 'totalElements': 41, 'totalPages': 3},
-      }, ProductCard.fromJson);
+      final page = Paged.fromJson(
+        {
+          'content': [
+            {
+              'id': 'p1',
+              'slug': 'a-product',
+              'sku': 'SKU-1',
+              'name': 'A product',
+              'price': {'amount': '100.00', 'currency': 'EGP'},
+            },
+          ],
+          'page': {'number': 1, 'size': 20, 'totalElements': 41, 'totalPages': 3},
+        },
+        ProductCard.fromJson,
+      );
 
       expect(page.content, hasLength(1));
       expect(page.number, 1);
@@ -58,10 +61,13 @@ void main() {
     test('reports no more pages on the last one', () {
       // Zero-indexed, so the final page of three is number 2 — the off-by-one that would otherwise
       // make an infinite scroll request a page that does not exist.
-      final last = Paged.fromJson({
-        'content': <dynamic>[],
-        'page': {'number': 2, 'size': 20, 'totalElements': 41, 'totalPages': 3},
-      }, ProductCard.fromJson);
+      final last = Paged.fromJson(
+        {
+          'content': <dynamic>[],
+          'page': {'number': 2, 'size': 20, 'totalElements': 41, 'totalPages': 3},
+        },
+        ProductCard.fromJson,
+      );
 
       expect(last.hasMore, isFalse);
     });
