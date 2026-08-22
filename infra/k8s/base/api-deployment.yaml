@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eshop-api
+  labels:
+    app.kubernetes.io/name: eshop-api
+    app.kubernetes.io/component: backend
+spec:
+  # Replicas are managed by the HPA, so this is only the count at first apply. Setting it here and
+  # in the HPA would make every `kubectl apply` fight the autoscaler.
+  replicas: 3
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      # Zero unavailable: capacity never dips below the current replica count during a deploy, so a
+      # rollout at peak traffic does not shed load.
+      maxUnavailable: 0
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: eshop-api
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: eshop-api
+        app.kubernetes.io/component: backend
+      annotations:
+        # Rolls the pods whenever the ConfigMap changes. Without this, a config edit applies only to
+        # pods that happen to restart later, leaving the fleet in two different states.
+        checksum/config: '{{ CONFIG_CHECKSUM }}'
+
+    spec:
+      serviceAccountName: eshop-api
+      # Cloud SQL, Memorystore, and Cloud Storage are all reached with the pod's Google identity via
+      # Workload Identity — there is no service-account key anywhere in the image or in a Secret.
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+
+      # Gives in-flight requests time to finish. The preStop sleep below plus this budget is what
+      # makes a rollout invisible to customers mid-checkout.
+      terminationGracePeriodSeconds: 45
+
+      containers:
+        - name: api
+          image: eshop/api:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          envFrom:
+            - configMapRef:
+                name: eshop-api-config
+            - secretRef:
+                # Projected from Secret Manager by the External Secrets Operator — see
+                # external-secrets.yaml. Never created by hand, never committed.
+                name: eshop-api-secrets
+
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+
+          resources:
+            requests:
+              # The request is what the scheduler packs against and what Autopilot bills. Set to
+              # steady-state usage, not to peak — over-requesting wastes a node's worth of capacity
+              # per few pods.
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              # No CPU limit on purpose: a limit throttles the JVM during GC and at startup, and the
+              # request already guarantees a floor. Memory *is* limited, because a leaking pod
+              # should be killed rather than starve its neighbours.
+              memory: 2Gi
+
+          startupProbe:
+            # Spring Boot with Flyway and a connection pool takes 30–60s. A startup probe lets the
+            # liveness probe stay aggressive afterwards without killing a slow-booting pod.
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            failureThreshold: 24
+            timeoutSeconds: 3
+
+          livenessProbe:
+            # Liveness answers one question: is this JVM wedged? It deliberately does not check the
+            # database — restarting every pod because Cloud SQL failed over turns a 60-second blip
+            # into a full outage.
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 3
+
+          readinessProbe:
+            # Readiness *does* check the database and Redis: a pod that cannot reach them should
+            # stop receiving traffic without being restarted.
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 3
+
+          lifecycle:
+            preStop:
+              exec:
+                # Endpoint removal propagates to kube-proxy and the load balancer asynchronously,
+                # so a pod can still receive traffic for a few seconds after it starts terminating.
+                # Sleeping first drains that window; skipping it is the usual cause of 502s during
+                # an otherwise healthy rollout.
+                command: ['sh', '-c', 'sleep 10']
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ['ALL']
+
+          volumeMounts:
+            # The root filesystem is read-only, so the JVM's scratch space has to be an explicit
+            # writable mount.
+            - name: tmp
+              mountPath: /tmp
+
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 512Mi
+
+      # Spreads replicas across zones so a single zone failure cannot take the whole API down.
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: eshop-api

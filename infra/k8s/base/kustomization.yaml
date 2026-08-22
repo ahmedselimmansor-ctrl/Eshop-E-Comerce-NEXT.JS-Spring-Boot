@@ -1,0 +1,58 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Base manifests, shared by every environment. Anything that differs between dev, staging, and
+# production is a patch in the corresponding overlay — never a copy of this file.
+
+namespace: eshop
+
+resources:
+  - namespace.yaml
+  - external-secrets.yaml
+  - api-deployment.yaml
+  - api-scaling.yaml
+  - web-deployment.yaml
+  - gateway.yaml
+  - network-policy.yaml
+  - migration-job.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: eshop
+  app.kubernetes.io/managed-by: kustomize
+
+configMapGenerator:
+  - name: eshop-api-config
+    literals:
+      # Non-secret configuration only. Anything sensitive comes from Secret Manager through the
+      # ExternalSecret — a value here is readable by anyone with namespace read access.
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8080
+      - DB_PORT=5432
+      - DB_NAME=eshop
+      - DB_POOL_MAX=30
+      - REDIS_PORT=6379
+      - REDIS_SSL=true
+      - ELASTICSEARCH_ENABLED=true
+      - STORAGE_PROVIDER=gcs
+      - PUBSUB_ENABLED=true
+      - FCM_ENABLED=true
+      - JWT_ACCESS_TTL_SECONDS=900
+      - JWT_REFRESH_TTL_DAYS=30
+      - REFRESH_COOKIE_SECURE=true
+      - OTEL_SERVICE_NAME=eshop-backend
+      - TRACE_SAMPLE_RATE=0.05
+      - LOG_LEVEL_APP=INFO
+
+# Kustomize appends a content hash to generated ConfigMap names, so changing a value produces a new
+# name, which changes the pod spec, which rolls the Deployment. Config changes therefore reach every
+# pod instead of only the ones that happen to restart later.
+generatorOptions:
+  disableNameSuffixHash: false
+
+images:
+  - name: eshop/api
+    newTag: latest
+  - name: eshop/web
+    newTag: latest
+  - name: eshop/admin
+    newTag: latest

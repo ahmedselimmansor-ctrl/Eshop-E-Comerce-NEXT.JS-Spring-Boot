@@ -1,0 +1,75 @@
+# Production — every secret arrives from Secret Manager via External Secrets Operator.
+spring:
+  # Running on GCP, so the Spring Cloud GCP auto-configurations the base config leaves off — it
+  # defaults to off so a local checkout needs no GCP account — are switched back on here.
+  cloud:
+    gcp:
+      pubsub:
+        enabled: true
+      secretmanager:
+        enabled: true
+      storage:
+        enabled: true
+
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        generate_statistics: false
+  datasource:
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX:30}
+      minimum-idle: 10
+  data:
+    redis:
+      ssl:
+        enabled: true
+  flyway:
+    # Prod migrations run as a Kubernetes Job before the rollout, never by the app pods.
+    enabled: ${FLYWAY_ENABLED:false}
+
+server:
+  tomcat:
+    threads:
+      max: 300
+    accesslog:
+      enabled: false   # the JSON request log covers this
+
+eshop:
+  jwt:
+    refresh-cookie-secure: true
+  storage:
+    provider: gcs
+  pubsub:
+    enabled: true
+  rate-limit:
+    enabled: true
+  elasticsearch:
+    enabled: true
+  notification:
+    fcm:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: never
+  tracing:
+    sampling:
+      probability: ${TRACE_SAMPLE_RATE:0.05}
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+logging:
+  level:
+    root: WARN
+    com.eshop: INFO
+    org.springframework: WARN

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false">
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+  <springProperty scope="context" name="appName" source="spring.application.name"/>
+
+  <!-- Human-readable console for local development -->
+  <springProfile name="local">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) [%X{traceId:-}/%X{spanId:-}] %cyan(%-40.40logger{39}) : %msg%n%wEx</pattern>
+      </encoder>
+    </appender>
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+
+  <!--
+    Structured JSON for every deployed environment. Cloud Logging on GKE parses
+    stdout JSON automatically; `severity` and `logging.googleapis.com/trace`
+    are the field names it recognises for log level and trace correlation.
+  -->
+  <springProfile name="dev,staging,prod">
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+        <providers>
+          <timestamp>
+            <fieldName>timestamp</fieldName>
+            <timeZone>UTC</timeZone>
+            <pattern>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</pattern>
+          </timestamp>
+          <pattern>
+            <pattern>
+              {
+                "severity": "%level",
+                "service": "${appName:-eshop-backend}",
+                "thread": "%thread",
+                "logger": "%logger{40}",
+                "trace_id": "%mdc{traceId:-}",
+                "span_id": "%mdc{spanId:-}",
+                "request_id": "%mdc{requestId:-}",
+                "user_id": "%mdc{userId:-}",
+                "route": "%mdc{route:-}",
+                "http_status": "%mdc{status:-}",
+                "duration_ms": "%mdc{durationMs:-}",
+                "client_ip": "%mdc{clientIp:-}"
+              }
+            </pattern>
+          </pattern>
+          <message><fieldName>message</fieldName></message>
+          <stackTrace>
+            <fieldName>stack_trace</fieldName>
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+              <maxDepthPerThrowable>40</maxDepthPerThrowable>
+              <maxLength>6000</maxLength>
+              <rootCauseFirst>true</rootCauseFirst>
+              <exclude>^sun\.reflect\..*\.invoke</exclude>
+              <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+            </throwableConverter>
+          </stackTrace>
+        </providers>
+      </encoder>
+    </appender>
+
+    <!-- Never block the request thread on log I/O -->
+    <appender name="ASYNC_JSON" class="ch.qos.logback.classic.AsyncAppender">
+      <appender-ref ref="JSON"/>
+      <queueSize>8192</queueSize>
+      <discardingThreshold>0</discardingThreshold>
+      <neverBlock>true</neverBlock>
+      <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <root level="INFO">
+      <appender-ref ref="ASYNC_JSON"/>
+    </root>
+  </springProfile>
+
+  <!-- Noise suppression, all profiles -->
+  <logger name="org.apache.catalina" level="WARN"/>
+  <logger name="org.apache.coyote" level="WARN"/>
+  <logger name="com.zaxxer.hikari.pool.PoolBase" level="WARN"/>
+  <logger name="io.lettuce.core.protocol" level="WARN"/>
+  <logger name="org.elasticsearch.client.RestClient" level="ERROR"/>
+</configuration>

@@ -1,0 +1,12 @@
+# Copy to terraform.tfvars and fill in. terraform.tfvars is gitignored.
+
+project_id     = "eshop-prod-123456"
+project_number = "123456789012"
+region         = "europe-west1"
+
+# Restrict control-plane access. An empty list means open to the internet, which is not a
+# reasonable production setting.
+authorized_networks = [
+  { cidr = "203.0.113.0/24", name = "office" },
+  { cidr = "198.51.100.42/32", name = "ci-runner" },
+]

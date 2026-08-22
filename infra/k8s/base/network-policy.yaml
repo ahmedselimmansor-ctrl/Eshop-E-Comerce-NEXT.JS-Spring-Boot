@@ -1,0 +1,160 @@
+# Network policy: default deny, then allow only what is actually needed.
+#
+# Without this, every pod in the cluster can reach every other pod and any external address. That
+# turns a single compromised container — a dependency with a supply-chain problem, say — into
+# lateral movement across the whole namespace and unrestricted egress.
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+spec:
+  # Applies to every pod in the namespace. Each allow rule below opens exactly one path.
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+
+---
+# Every pod needs DNS. Called out separately because a default-deny egress policy silently breaks
+# name resolution, and the resulting failure looks like an application bug rather than a network one.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eshop-api
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: eshop-api
+
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    # From the load balancer's health checkers and proxies.
+    - from:
+        - ipBlock:
+            cidr: 35.191.0.0/16
+        - ipBlock:
+            cidr: 130.211.0.0/22
+      ports:
+        - protocol: TCP
+          port: 8080
+
+    # From the storefront and admin pods, for server-side rendering.
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/component: frontend
+      ports:
+        - protocol: TCP
+          port: 8080
+
+  egress:
+    # Cloud SQL and Memorystore over Private Service Connect.
+    - to:
+        - ipBlock:
+            cidr: 10.0.0.0/8
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 6379
+
+    # Elasticsearch, in-cluster.
+    - to:
+        - podSelector:
+            matchLabels:
+              common.k8s.elastic.co/type: elasticsearch
+      ports:
+        - protocol: TCP
+          port: 9200
+
+    # Outbound HTTPS: payment gateways, Google APIs, SMTP relay, Firebase.
+    #
+    # Not narrowed to specific IPs on purpose — Paymob, Fawry, and Google all sit behind CDNs whose
+    # address ranges change without notice, and a policy that breaks payments during a provider's
+    # infrastructure change is worse than the marginal containment it buys. Egress is instead
+    # constrained by port and audited through VPC flow logs.
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              # The metadata server is reachable only through Workload Identity's own path; direct
+              # access would let a compromised process request tokens for the node's identity.
+              - 169.254.169.254/32
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 587
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eshop-frontend
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: frontend
+
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 35.191.0.0/16
+        - ipBlock:
+            cidr: 130.211.0.0/22
+      ports:
+        - protocol: TCP
+          port: 3000
+        - protocol: TCP
+          port: 3001
+
+  egress:
+    # The API, and nothing else in-cluster.
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: eshop-api
+      ports:
+        - protocol: TCP
+          port: 8080
+
+    # Outbound HTTPS for image optimisation from the CDN.
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 169.254.169.254/32
+      ports:
+        - protocol: TCP
+          port: 443

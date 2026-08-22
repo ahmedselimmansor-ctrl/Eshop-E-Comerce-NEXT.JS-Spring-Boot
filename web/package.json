@@ -1,0 +1,26 @@
+{
+  "name": "eshop-web",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Eshop storefront and admin dashboard",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace=@eshop/storefront",
+    "dev:admin": "npm run dev --workspace=@eshop/admin",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "clean": "rm -rf apps/*/.next apps/*/node_modules packages/*/node_modules node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

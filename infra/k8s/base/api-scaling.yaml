@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eshop-api
+  labels:
+    app.kubernetes.io/name: eshop-api
+  annotations:
+    # Container-native load balancing: the LB sends traffic straight to pod IPs instead of hopping
+    # through a node's kube-proxy, which removes a hop and makes the LB's own health checks
+    # authoritative.
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"default": "eshop-api-backendconfig"}'
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: eshop-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: eshop-api
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: eshop-api
+
+  minReplicas: 3
+  maxReplicas: 50
+
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          # 70%, not 90%: scaling up takes time — image pull, JVM start, Flyway, warm-up — and a
+          # target that high means the decision is made only once latency is already climbing.
+          averageUtilization: 70
+
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
+  behavior:
+    scaleUp:
+      # Reacts quickly. A flash sale arrives faster than a conservative window can follow.
+      stabilizationWindowSeconds: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 30
+        - type: Pods
+          value: 4
+          periodSeconds: 30
+      selectPolicy: Max
+
+    scaleDown:
+      # Slow on the way down. Traffic is spiky, and shedding capacity five minutes into a lull only
+      # to need it back a minute later costs more than the idle pods would have.
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 25
+          periodSeconds: 60
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: eshop-api
+spec:
+  # Caps how many pods a *voluntary* disruption may remove at once — a node drain, an Autopilot
+  # upgrade, a cluster resize. Without it, GKE may evict every replica on one node simultaneously.
+  minAvailable: 50%
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: eshop-api
+
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: eshop-api-backendconfig
+spec:
+  healthCheck:
+    checkIntervalSec: 10
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /actuator/health/readiness
+    port: 8080
+
+  # Must exceed the longest request the API serves. A checkout that calls a payment gateway can
+  # legitimately take twenty seconds; a 30-second draining timeout gives it room to finish.
+  connectionDraining:
+    drainingTimeoutSec: 60
+
+  timeoutSec: 30
+
+  # WAF and rate limiting at the edge, before a request ever reaches a pod.
+  securityPolicy:
+    name: eshop-armor-policy
+
+  logging:
+    enable: true
+    sampleRate: 0.1

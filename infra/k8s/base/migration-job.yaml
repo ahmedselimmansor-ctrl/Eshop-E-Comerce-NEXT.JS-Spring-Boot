@@ -1,0 +1,96 @@
+# Database migrations run as a Job before the rollout — never from the application pods.
+#
+# With `spring.flyway.enabled=false` in production, three replicas starting at once cannot race to
+# apply the same migration, and a failed migration fails the deployment rather than leaving some
+# pods on the new schema and some on the old.
+#
+# CI applies this Job and waits for it, then updates the Deployment image. The ordering is what
+# makes a schema change safe; see docs/05-DEPLOYMENT.md for the expand/contract rules that keep the
+# old code working against the new schema during the overlap.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eshop-migrate
+  annotations:
+    # Overwritten by CI with the release tag, so each deploy creates a distinct Job rather than
+    # colliding with a completed one.
+    eshop.eg/release: 'RELEASE_PLACEHOLDER'
+spec:
+  # A migration that fails twice will fail a third time — Flyway is deterministic. Retrying past
+  # that only delays the alert.
+  backoffLimit: 2
+
+  # Cleaned up an hour after completion: long enough to read the logs during a deploy, short enough
+  # not to accumulate one Job per release.
+  ttlSecondsAfterFinished: 3600
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: eshop-migrate
+        app.kubernetes.io/component: migration
+    spec:
+      restartPolicy: Never
+      serviceAccountName: eshop-api
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: flyway
+          # The application image itself, so the migrations that run are exactly the ones the code
+          # in this release expects. A separate migration image can drift.
+          image: eshop/api:latest
+
+          command:
+            - java
+            - -Dspring.flyway.enabled=true
+            - -Dspring.main.web-application-type=none
+            # Exits as soon as Flyway finishes rather than starting the web server and waiting to
+            # be killed.
+            - -Dspring.profiles.active=migration
+            - org.springframework.boot.loader.launch.JarLauncher
+
+          envFrom:
+            - configMapRef:
+                name: eshop-api-config
+            - secretRef:
+                name: eshop-api-secrets
+
+          env:
+            - name: FLYWAY_ENABLED
+              value: 'true'
+            # The migration Job needs the database and nothing else — no search, no push, no
+            # payment providers.
+            - name: ELASTICSEARCH_ENABLED
+              value: 'false'
+            - name: PUBSUB_ENABLED
+              value: 'false'
+            - name: FCM_ENABLED
+              value: 'false'
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ['ALL']
+
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 256Mi

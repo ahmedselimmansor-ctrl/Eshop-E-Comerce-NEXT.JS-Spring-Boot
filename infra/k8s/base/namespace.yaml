@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: eshop
+  labels:
+    # Pod Security Admission, enforced at the namespace.
+    #
+    # `restricted` is the strictest built-in profile: no privileged containers, no host namespaces,
+    # no root, no added capabilities. Setting it here means a manifest that violates it is rejected
+    # at admission rather than discovered later in a review — the workloads in this namespace all
+    # satisfy it already, so there is nothing to grandfather.
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+
+    app.kubernetes.io/part-of: eshop
+
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: eshop-quota
+  namespace: eshop
+spec:
+  # A ceiling on what this namespace can consume. Its real purpose is to bound the blast radius of
+  # a runaway HPA or a misconfigured resource request — without it, one bad deploy can exhaust the
+  # cluster and take unrelated workloads with it.
+  hard:
+    requests.cpu: '40'
+    requests.memory: 80Gi
+    limits.memory: 160Gi
+    persistentvolumeclaims: '10'
+    count/deployments.apps: '20'
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: eshop-limits
+  namespace: eshop
+spec:
+  limits:
+    - type: Container
+      # Applied to any container that omits its own values. A pod with no request is scheduled as
+      # best-effort and is the first thing evicted under pressure — usually not what was intended.
+      defaultRequest:
+        cpu: 100m
+        memory: 128Mi
+      default:
+        memory: 512Mi
+      max:
+        cpu: '4'
+        memory: 8Gi

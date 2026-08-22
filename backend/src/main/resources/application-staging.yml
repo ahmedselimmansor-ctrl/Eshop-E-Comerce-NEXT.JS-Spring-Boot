@@ -1,0 +1,49 @@
+# Staging — production-shaped, but with docs enabled and full tracing for debugging.
+spring:
+  # Running on GCP, so the Spring Cloud GCP auto-configurations the base config leaves off — it
+  # defaults to off so a local checkout needs no GCP account — are switched back on here.
+  cloud:
+    gcp:
+      pubsub:
+        enabled: true
+      secretmanager:
+        enabled: true
+      storage:
+        enabled: true
+
+  data:
+    redis:
+      ssl:
+        enabled: true
+  flyway:
+    enabled: ${FLYWAY_ENABLED:false}
+
+eshop:
+  jwt:
+    refresh-cookie-secure: true
+  storage:
+    provider: gcs
+  pubsub:
+    enabled: true
+  payment:
+    fawry:
+      base-url: https://atfawry.fawrystaging.com
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoint:
+    health:
+      show-details: when-authorized
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.eshop: DEBUG

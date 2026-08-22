@@ -1,0 +1,38 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Staging: production-shaped but smaller, with full tracing so a problem found here is diagnosable
+# without waiting for it to reappear.
+
+namespace: eshop
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: HorizontalPodAutoscaler
+      name: eshop-api
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 2
+      - op: replace
+        path: /spec/maxReplicas
+        value: 6
+
+  - target:
+      kind: Deployment
+      name: eshop-api
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+
+configMapGenerator:
+  - name: eshop-api-config
+    behavior: merge
+    literals:
+      - SPRING_PROFILES_ACTIVE=staging
+      - TRACE_SAMPLE_RATE=1.0
+      - LOG_LEVEL_APP=DEBUG

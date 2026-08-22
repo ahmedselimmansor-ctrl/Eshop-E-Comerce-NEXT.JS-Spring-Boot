@@ -1,0 +1,220 @@
+name: Deploy
+
+# Builds images, runs migrations, then rolls the deployments.
+#
+# The ordering is the important part: migrations complete before any new pod starts, and the schema
+# change must be backward-compatible with the code currently running — see the expand/contract rules
+# in docs/05-DEPLOYMENT.md. Getting that wrong is how a deploy takes the site down while every
+# individual step reports success.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        default: staging
+        type: choice
+        options: [staging, prod]
+
+permissions:
+  contents: read
+  # Required for Workload Identity Federation. GitHub mints a short-lived OIDC token that Google
+  # exchanges for credentials — so there is no service-account key stored as a repository secret,
+  # which is the single most commonly leaked credential in a CI setup.
+  id-token: write
+
+env:
+  REGISTRY: europe-west1-docker.pkg.dev
+  IMAGE_PREFIX: europe-west1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/eshop
+
+jobs:
+  build:
+    name: Build images
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tag }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: meta
+        name: Resolve image tag
+        run: |
+          # The git SHA, always — never `latest`. A tag that moves makes a rollback ambiguous and
+          # makes "which build is running in production?" unanswerable.
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=sha-${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+          service_account: ${{ vars.DEPLOY_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build and push API
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./infra/docker/backend.Dockerfile
+          push: true
+          tags: ${{ env.IMAGE_PREFIX }}/api:${{ steps.meta.outputs.tag }}
+          # Layer cache in the registry, so a rebuild reuses the dependency layer instead of
+          # re-resolving every Maven artefact.
+          cache-from: type=registry,ref=${{ env.IMAGE_PREFIX }}/api:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE_PREFIX }}/api:buildcache,mode=max
+          provenance: true
+          sbom: true
+
+      - name: Build and push storefront
+        uses: docker/build-push-action@v6
+        with:
+          context: ./web
+          file: ./infra/docker/web.Dockerfile
+          push: true
+          build-args: |
+            APP_NAME=storefront
+            NEXT_PUBLIC_API_BASE_URL=${{ vars.PUBLIC_API_URL }}
+            NEXT_PUBLIC_SITE_URL=${{ vars.PUBLIC_SITE_URL }}
+            NEXT_PUBLIC_CDN_BASE_URL=${{ vars.PUBLIC_CDN_URL }}
+          tags: ${{ env.IMAGE_PREFIX }}/web:${{ steps.meta.outputs.tag }}
+          cache-from: type=registry,ref=${{ env.IMAGE_PREFIX }}/web:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE_PREFIX }}/web:buildcache,mode=max
+          provenance: true
+          sbom: true
+
+      - name: Build and push admin
+        uses: docker/build-push-action@v6
+        with:
+          context: ./web
+          file: ./infra/docker/web.Dockerfile
+          push: true
+          build-args: |
+            APP_NAME=admin
+            NEXT_PUBLIC_API_BASE_URL=${{ vars.PUBLIC_API_URL }}
+          tags: ${{ env.IMAGE_PREFIX }}/admin:${{ steps.meta.outputs.tag }}
+          provenance: true
+          sbom: true
+
+      # Blocks a deploy on a vulnerability that has a fix available. Unfixed CVEs are reported but
+      # not blocking — there is nothing to do about them, and failing on them trains people to skip
+      # the check.
+      - name: Scan images
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_PREFIX }}/api:${{ steps.meta.outputs.tag }}
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || (startsWith(github.ref, 'refs/tags/v') && 'prod' || 'staging') }}
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    # Production requires a reviewer's approval, configured on the GitHub environment. Staging
+    # deploys automatically — that is what makes it useful.
+    environment:
+      name: ${{ github.event.inputs.environment || (startsWith(github.ref, 'refs/tags/v') && 'prod' || 'staging') }}
+      url: ${{ vars.PUBLIC_SITE_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+          service_account: ${{ vars.DEPLOY_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ vars.GKE_CLUSTER }}
+          location: ${{ vars.GCP_REGION }}
+
+      - name: Set image tags
+        working-directory: infra/k8s/overlays/${{ github.event.inputs.environment || (startsWith(github.ref, 'refs/tags/v') && 'prod' || 'staging') }}
+        run: |
+          kustomize edit set image \
+            eshop/api=${{ env.IMAGE_PREFIX }}/api:${{ needs.build.outputs.image_tag }} \
+            eshop/web=${{ env.IMAGE_PREFIX }}/web:${{ needs.build.outputs.image_tag }} \
+            eshop/admin=${{ env.IMAGE_PREFIX }}/admin:${{ needs.build.outputs.image_tag }}
+
+      # Migrations run as a Job and must finish before any new pod starts. The application pods have
+      # Flyway disabled in production precisely so three replicas cannot race to apply the same
+      # migration on startup.
+      - name: Run database migrations
+        run: |
+          set -euo pipefail
+
+          # A Job name unique to this release, so it does not collide with a completed one.
+          job_name="eshop-migrate-${{ needs.build.outputs.image_tag }}"
+
+          kubectl kustomize infra/k8s/overlays/${{ github.event.inputs.environment || 'staging' }} \
+            | yq eval 'select(.kind == "Job")' - \
+            | sed "s/name: eshop-migrate/name: ${job_name}/" \
+            | kubectl apply -f -
+
+          echo "Waiting for migrations…"
+          if ! kubectl wait --for=condition=complete --timeout=600s "job/${job_name}" -n eshop; then
+            echo "::error::Migration job failed — deployment aborted, nothing was rolled out"
+            kubectl logs "job/${job_name}" -n eshop --tail=200
+            exit 1
+          fi
+          kubectl logs "job/${job_name}" -n eshop --tail=50
+
+      - name: Apply manifests
+        run: |
+          kubectl apply -k infra/k8s/overlays/${{ github.event.inputs.environment || 'staging' }}
+
+      # `kubectl apply` returns as soon as the API server accepts the change, not when the rollout
+      # succeeds. Waiting here is what makes a failed deploy fail the workflow.
+      - name: Wait for rollout
+        run: |
+          set -euo pipefail
+          for deployment in eshop-api eshop-web eshop-admin; do
+            echo "→ $deployment"
+            kubectl rollout status "deployment/$deployment" -n eshop --timeout=600s
+          done
+
+      - name: Smoke test
+        run: |
+          set -euo pipefail
+
+          # Hits the real load balancer, not a cluster-internal address — this is the path a
+          # customer takes, including TLS, Cloud Armor, and the CDN.
+          for attempt in $(seq 1 10); do
+            if curl -fsS --max-time 10 "${{ vars.PUBLIC_SITE_URL }}/api/v1/categories/tree" > /dev/null; then
+              echo "Smoke test passed"
+              exit 0
+            fi
+            echo "attempt $attempt failed, retrying…"
+            sleep 10
+          done
+
+          echo "::error::Smoke test failed after the rollout completed"
+          exit 1
+
+      - name: Roll back on failure
+        if: failure()
+        run: |
+          echo "::warning::Deployment failed — rolling back to the previous revision"
+          for deployment in eshop-api eshop-web eshop-admin; do
+            kubectl rollout undo "deployment/$deployment" -n eshop || true
+          done
+          # Note: this reverts the *code*, not the schema. Migrations are written to be
+          # backward-compatible for exactly this reason — see docs/05-DEPLOYMENT.md.

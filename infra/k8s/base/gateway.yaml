@@ -1,0 +1,149 @@
+# Ingress via the Gateway API.
+#
+# Gateway rather than the older Ingress resource: routing rules live in HTTPRoute objects that a
+# team can own independently of the Gateway itself, and header/redirect behaviour is expressed
+# declaratively instead of through provider-specific annotations.
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: eshop-gateway
+  annotations:
+    # Reserved static IP, so the DNS record survives a Gateway recreation.
+    networking.gke.io/certmap: eshop-cert-map
+spec:
+  gatewayClassName: gke-l7-global-external-managed
+
+  addresses:
+    - type: NamedAddress
+      value: eshop-global-ip
+
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
+
+    - name: https
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        options:
+          # Google-managed certificates, renewed automatically. A manually renewed certificate is
+          # the single most common cause of an avoidable outage.
+          networking.gke.io/pre-shared-certs: eshop-managed-cert
+      allowedRoutes:
+        namespaces:
+          from: Same
+
+---
+# Every plaintext request is redirected before it reaches a backend, so no application ever has to
+# decide whether a request arrived securely.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: eshop-https-redirect
+spec:
+  parentRefs:
+    - name: eshop-gateway
+      sectionName: http
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: eshop-routes
+spec:
+  parentRefs:
+    - name: eshop-gateway
+      sectionName: https
+
+  hostnames:
+    - eshop.eg
+    - www.eshop.eg
+
+  rules:
+    # ---- API -------------------------------------------------------------
+    # Listed first: HTTPRoute matches most-specific-path-first, but keeping the order explicit
+    # makes the intent obvious to the next reader.
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      backendRefs:
+        - name: eshop-api
+          port: 80
+
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /actuator/health
+      backendRefs:
+        - name: eshop-api
+          port: 80
+
+    # ---- storefront ------------------------------------------------------
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: eshop-web
+          port: 80
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - name: Strict-Transport-Security
+                value: max-age=63072000; includeSubDomains; preload
+
+---
+# The admin dashboard is on its own hostname, not a path.
+#
+# A separate origin means its cookies are not sent with storefront requests, an XSS in the
+# storefront cannot reach admin endpoints through the browser's same-origin trust, and the
+# hostname can be put behind Identity-Aware Proxy or an IP allow-list independently.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: eshop-admin-route
+spec:
+  parentRefs:
+    - name: eshop-gateway
+      sectionName: https
+
+  hostnames:
+    - admin.eshop.eg
+
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      backendRefs:
+        - name: eshop-api
+          port: 80
+
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: eshop-admin
+          port: 80
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              # The admin console has nothing a search engine should see.
+              - name: X-Robots-Tag
+                value: noindex, nofollow

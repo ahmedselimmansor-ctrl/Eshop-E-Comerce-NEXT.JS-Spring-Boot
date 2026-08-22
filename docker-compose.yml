@@ -1,0 +1,223 @@
+# The full local stack: `docker compose up -d` and everything the application needs is running.
+#
+# No GCP project, no credentials, and no network egress are required — Cloud Storage is replaced by
+# fake-gcs-server, outbound mail by Mailpit, and Cloud Trace by Jaeger. That matters because a new
+# engineer's first hour should be spent reading code, not requesting IAM roles.
+#
+#   docker compose up -d              # infrastructure only
+#   docker compose --profile app up   # infrastructure + the application images
+#   docker compose logs -f api
+#
+# Data lives in named volumes, so `docker compose down` keeps it and `down -v` starts clean.
+
+name: eshop
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: eshop-postgres
+    environment:
+      POSTGRES_DB: eshop
+      POSTGRES_USER: eshop
+      POSTGRES_PASSWORD: eshop
+      # Matches the collation Cloud SQL is created with, so index ordering and LIKE behaviour are
+      # identical locally and in production — a difference here surfaces as tests that pass on a
+      # laptop and fail in staging.
+      POSTGRES_INITDB_ARGS: '--encoding=UTF8 --locale=C'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U eshop -d eshop']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    command:
+      - postgres
+      # Logs any statement slower than 200ms, so an accidental sequential scan is visible during
+      # development rather than in a production incident.
+      - -c
+      - log_min_duration_statement=200
+      - -c
+      - max_connections=200
+
+  redis:
+    image: redis:7-alpine
+    container_name: eshop-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    # Persistence is on so a restart does not silently drop every cart, rate-limit bucket, and
+    # distributed lock mid-session.
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: eshop-elasticsearch
+    environment:
+      discovery.type: single-node
+      # Security off locally only. Production runs ECK with TLS and credentials — see
+      # infra/terraform and the ELASTICSEARCH_* variables.
+      xpack.security.enabled: 'false'
+      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
+      cluster.routing.allocation.disk.threshold_enabled: 'false'
+    ports:
+      - '9200:9200'
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -sf http://localhost:9200/_cluster/health || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 1.5g
+
+  # Catches every outbound email instead of sending it. Open http://localhost:8025 to read what the
+  # application would have delivered — order confirmations, password resets, verification links.
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: eshop-mailpit
+    ports:
+      - '1025:1025'   # SMTP
+      - '8025:8025'   # web UI
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+  # Stands in for Cloud Storage. The application talks to it with the same GCS client, so the
+  # storage code path exercised locally is the one that runs in production.
+  gcs:
+    image: fsouza/fake-gcs-server:1.55.1
+    container_name: eshop-gcs
+    ports:
+      - '4443:4443'
+    volumes:
+      - gcs-data:/storage
+    command:
+      - -scheme
+      - http
+      - -port
+      - '4443'
+      - -external-url
+      - http://localhost:4443
+      - -backend
+      - filesystem
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    container_name: eshop-jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: 'true'
+    ports:
+      - '16686:16686'  # UI
+      - '4318:4318'    # OTLP/HTTP — matches OTEL_EXPORTER_OTLP_ENDPOINT
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q -O- http://localhost:16686 || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ---------------------------------------------------------------------------
+  # Application services. Behind a profile so `docker compose up -d` gives you
+  # just the infrastructure — the usual case, where the API and the storefront
+  # run from an IDE with hot reload.
+  # ---------------------------------------------------------------------------
+
+  api:
+    profiles: ['app']
+    build:
+      context: ./backend
+      dockerfile: ../infra/docker/backend.Dockerfile
+    container_name: eshop-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_HOST: postgres
+      DB_NAME: eshop
+      DB_USER: eshop
+      DB_PASSWORD: eshop
+      REDIS_HOST: redis
+      ELASTICSEARCH_URIS: http://elasticsearch:9200
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      STORAGE_PROVIDER: local
+      APP_BASE_URL: http://localhost:8080
+      WEB_BASE_URL: http://localhost:3000
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318/v1/traces
+      # Payment providers are left unconfigured: local checkout uses cash on delivery, which needs
+      # no gateway. Set PAYMOB_* / FAWRY_* in .env to exercise the real flows against sandboxes.
+    ports:
+      - '8080:8080'
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q -O- http://localhost:8080/actuator/health/readiness || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  web:
+    profiles: ['app']
+    build:
+      context: ./web
+      dockerfile: ../infra/docker/web.Dockerfile
+      args:
+        APP_NAME: storefront
+        # Baked in at build time — NEXT_PUBLIC_* values are inlined into the client bundle and
+        # cannot be changed at runtime.
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
+        NEXT_PUBLIC_SITE_URL: http://localhost:3000
+        NEXT_PUBLIC_CDN_BASE_URL: http://localhost:4443/eshop-media-local
+    container_name: eshop-web
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      # Server components call the API directly by service name, skipping the host network.
+      API_INTERNAL_BASE_URL: http://api:8080
+    ports:
+      - '3000:3000'
+
+  admin:
+    profiles: ['app']
+    build:
+      context: ./web
+      dockerfile: ../infra/docker/web.Dockerfile
+      args:
+        APP_NAME: admin
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
+    container_name: eshop-admin
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      API_INTERNAL_BASE_URL: http://api:8080
+      PORT: 3001
+    ports:
+      - '3001:3001'
+
+volumes:
+  postgres-data:
+  redis-data:
+  elasticsearch-data:
+  gcs-data:
