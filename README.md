@@ -1112,5 +1112,4 @@ Widget behaviour is unverified, since there is no emulator in this environment.
 Known gaps: no end-to-end or component tests on the web (the unit tests cover the API contract, the
 formatting helpers and the listing-parameter clamping, not rendering); the refund path has not been
 exercised against a real captured payment, since a cash-on-delivery order has nothing to refund and
-the API correctly rejects it; and the admin product form takes image URLs rather than using the
-pre-signed upload endpoint.
+the API correctly rejects it.

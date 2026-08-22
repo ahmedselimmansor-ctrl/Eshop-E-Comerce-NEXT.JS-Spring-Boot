@@ -24,6 +24,7 @@ import {
   Select,
   Textarea,
 } from '@/components/ui/primitives';
+import { ImageUploader } from '@/components/products/image-uploader';
 import { hasPermission } from '@/stores/auth-store';
 
 /**
@@ -42,7 +43,6 @@ export function ProductForm({ product }: { product?: AdminProductDetail }) {
   const canWrite = hasPermission('product:write');
 
   const [images, setImages] = useState<string[]>(product?.images.map((image) => image.url) ?? []);
-  const [imageUrl, setImageUrl] = useState('');
 
   // Reference data for the two selects. Cached generously - a taxonomy changes rarely.
   const brands = useQuery({
@@ -270,55 +270,8 @@ export function ProductForm({ product }: { product?: AdminProductDetail }) {
         <CardHeader>
           <CardTitle>Images</CardTitle>
         </CardHeader>
-        <CardBody className="space-y-3">
-          {/* The first image is the primary one - stated rather than left to be discovered. */}
-          {images.length > 0 ? (
-            <ol className="space-y-1.5">
-              {images.map((url, index) => (
-                <li key={url} className="flex items-center gap-2 text-xs">
-                  <span className="w-16 shrink-0 text-[var(--muted-foreground)]">
-                    {index === 0 ? 'Primary' : `#${index + 1}`}
-                  </span>
-                  <span className="min-w-0 flex-1 truncate">{url}</span>
-                  {canWrite ? (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      aria-label="Remove image"
-                      onClick={() => setImages((current) => current.filter((_, i) => i !== index))}
-                    >
-                      <Trash2 aria-hidden />
-                    </Button>
-                  ) : null}
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="text-xs text-[var(--muted-foreground)]">No images yet.</p>
-          )}
-
-          {canWrite ? (
-            <div className="flex gap-2">
-              <Input
-                value={imageUrl}
-                onChange={(event) => setImageUrl(event.target.value)}
-                placeholder="https://…"
-                aria-label="Image URL"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                disabled={!imageUrl.trim()}
-                onClick={() => {
-                  setImages((current) => [...current, imageUrl.trim()]);
-                  setImageUrl('');
-                }}
-              >
-                Add
-              </Button>
-            </div>
-          ) : null}
+        <CardBody>
+          <ImageUploader images={images} onChange={setImages} disabled={!canWrite} />
         </CardBody>
       </Card>
 

@@ -332,10 +332,17 @@ export class EshopAdminApi {
         body: { filename, contentType, folder },
       }),
 
-    remove: (objectKeys: string[]) =>
+    /**
+     * Deletes one object.
+     *
+     * Singular, matching the API: the endpoint takes `objectKey`, not a list. Sending an array under
+     * `objectKeys` failed validation on every call, which nothing noticed because the admin form
+     * never reached this code.
+     */
+    remove: (objectKey: string) =>
       this.client.requestVoid(`${this.base}/media`, {
         method: 'DELETE',
-        body: { objectKeys },
+        body: { objectKey },
       }),
   };
 }
