@@ -27,7 +27,9 @@ dependencies:
   # ---- networking ------------------------------------------------------------
   dio: ^5.7.0
   # Retries idempotent requests on a dropped connection — worth having on a mobile network.
-  dio_smart_retry: ^7.0.1
+  # Pinned to 6.x: 7.x requires a newer `collection` than the Flutter SDK pins, so the
+  # constraint above it does not resolve at all against Flutter 3.24.
+  dio_smart_retry: ^6.0.0
 
   # ---- models ----------------------------------------------------------------
   # Immutable models with generated equality and JSON. The API's shape is mirrored here the same
@@ -71,15 +73,24 @@ flutter:
   assets:
     - assets/images/
 
-  fonts:
-    # IBM Plex Sans Arabic is one of the few Arabic families with a real weight range — Arabic
-    # carries far less hierarchy through case than Latin, so weight has to do that work.
-    - family: IBMPlexSansArabic
-      fonts:
-        - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
-        - asset: assets/fonts/IBMPlexSansArabic-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/IBMPlexSansArabic-Bold.ttf
-          weight: 700
+  # Fonts are deliberately not declared here.
+  #
+  # IBM Plex Sans Arabic would be the right choice — one of the few Arabic families with a real
+  # weight range, and Arabic carries far less hierarchy through case than Latin, so weight has to do
+  # that work. But the .ttf files are not in the repository, and declaring assets that do not exist
+  # fails the asset bundle before a single test runs, which is worse than falling back to the
+  # platform's own Arabic font.
+  #
+  # To use it: download the family into mobile/assets/fonts/ and restore the block below, then set
+  # _fontFamily in lib/core/theme/app_theme.dart back to 'IBMPlexSansArabic'.
+  #
+  #   fonts:
+  #     - family: IBMPlexSansArabic
+  #       fonts:
+  #         - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
+  #         - asset: assets/fonts/IBMPlexSansArabic-Medium.ttf
+  #           weight: 500
+  #         - asset: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
+  #           weight: 600
+  #         - asset: assets/fonts/IBMPlexSansArabic-Bold.ttf
+  #           weight: 700

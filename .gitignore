@@ -93,3 +93,8 @@ tmp/
 .cache/
 coverage/
 .scannerwork/
+
+# ---- Flutter build state ----
+mobile/.dart_tool/
+mobile/.flutter-plugins*
+mobile/build/
