@@ -98,12 +98,8 @@ images: ## Build the container images
 test: test-backend test-web ## Run every test suite
 
 .PHONY: test-backend
-test-backend: ## Unit tests (Testcontainers pulls its own images)
+test-backend: ## Backend tests (needs `make infra` for Postgres and Redis)
 	$(MVN) test
-
-.PHONY: test-integration
-test-integration: ## Integration tests against real Postgres, Redis, and Elasticsearch
-	$(MVN) verify
 
 .PHONY: test-web
 test-web: ## Typecheck and lint the web applications

@@ -224,6 +224,26 @@ public class TestFixtures {
                         "No shipping methods — the reference-data migration did not run"));
     }
 
+    // ------------------------------------------------------------ taxonomy --
+
+    /**
+     * A category and, optionally, its parent.
+     *
+     * <p>Goes through the repository inside a transaction like every other fixture. Raw
+     * {@code JdbcTemplate} writes issued straight from a test method are not visible to the
+     * application's own connections, so a tree built that way looks empty to the endpoint under test.
+     */
+    @Transactional
+    public Category category(String slug, String nameAr, String nameEn, Category parent) {
+        Category category = new Category();
+        category.setSlug(slug);
+        category.setNameAr(nameAr);
+        category.setNameEn(nameEn);
+        category.setParent(parent);
+        category.setActive(true);
+        return categories.saveAndFlush(category);
+    }
+
     @Transactional
     public Brand brand() {
         return brands.findBySlug("test-brand").orElseGet(() -> {
