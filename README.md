@@ -99,10 +99,10 @@ flowchart TB
     FW -.->|"webhook"| REST
     JOBS --> MAIL
 
-    style PG fill:#dbeafe,stroke:#1e40af
-    style RD fill:#fee2e2,stroke:#991b1b
-    style ES fill:#fef3c7,stroke:#92400e
-    style GCS fill:#dcfce7,stroke:#166534
+    style PG fill:#1d4ed8,stroke:#1e3a8a,color:#ffffff
+    style RD fill:#b91c1c,stroke:#7f1d1d,color:#ffffff
+    style ES fill:#b45309,stroke:#78350f,color:#ffffff
+    style GCS fill:#15803d,stroke:#14532d,color:#ffffff
 ```
 
 Elasticsearch is deliberately not on the critical path. It returns ids; the cards are hydrated from
@@ -118,61 +118,96 @@ module's repositories. The layering rules below are enforced by ArchUnit tests, 
 
 ```mermaid
 flowchart TB
-    subgraph web ["web layer (controllers + DTOs)"]
-        WC["Storefront controllers"]
-        WA["Admin controllers"]
-    end
+    WEB["<b>web</b><br/>controllers · request and response DTOs"]
+    SVC["<b>service</b><br/>@Transactional · owns the mapping to DTOs"]
+    DOM["<b>domain</b><br/>JPA entities · repositories"]
+    DB[("PostgreSQL")]
 
-    subgraph services ["service layer (transactional)"]
-        CAT["catalog"]
-        INV["inventory"]
-        CART["cart"]
-        PROMO["promotion"]
-        ORD["order"]
-        PAY["payment"]
-        SRCH["search"]
-        REV["review"]
-        NOTIF["notification"]
-        MEDIA["media"]
-        SET["settings"]
-        ADM["admin"]
-    end
+    COMMON["<b>common</b><br/>Money · Problem+JSON errors<br/>idempotency · outbox · security"]
 
-    subgraph domain ["domain layer (entities)"]
-        ENT["JPA entities + repositories"]
-    end
+    WEB --> SVC --> DOM --> DB
+    COMMON -.-> WEB
+    COMMON -.-> SVC
+    COMMON -.-> DOM
 
-    subgraph common ["common (cross-cutting)"]
-        MONEY["Money"]
-        ERR["Problem+JSON errors"]
-        IDEM["Idempotency"]
-        OUT["Outbox"]
-        SECU["Security · JWT · RBAC"]
-    end
+    DOM -. "forbidden" .-> WEB
 
-    WC --> CAT & CART & ORD & SRCH & REV
-    WA --> ADM
-    ADM --> CAT & INV & ORD & REV & SET
-
-    ORD --> INV & PROMO & PAY & CART
-    CART --> CAT & INV & PROMO
-    PAY --> ORD
-    SRCH --> CAT
-
-    CAT & INV & CART & PROMO & ORD & PAY & REV & SET --> ENT
-    services --> common
-
-    style common fill:#f1f5f9,stroke:#475569
-    style domain fill:#eef2ff,stroke:#4338ca
+    style DB fill:#1d4ed8,stroke:#1e3a8a,color:#ffffff
+    style COMMON fill:#475569,stroke:#1e293b,color:#ffffff
+    linkStyle 6 stroke:#b91c1c,stroke-width:2px,color:#b91c1c
 ```
 
-Two rules matter enough to be tests:
+The dashed red edge is the one the ArchUnit suite exists to prevent. Two rules matter enough to be
+tests:
 
 - **No entity or repository may depend on the web layer.** A domain object that knows about a
   response DTO cannot be reused, and the dependency ends up pointing both ways.
 - **No controller may inject a repository.** A controller holding a repository queries outside a
   transaction and maps the result after the session has closed. With `open-in-view` disabled that
   compiles perfectly and throws `LazyInitializationException` on every call.
+
+And the modules themselves, with the dependencies that actually exist between them:
+
+```mermaid
+flowchart LR
+    ADMIN["admin"]
+    ORDER["order"]
+    CART["cart"]
+    PAYMENT["payment"]
+    INVENTORY["inventory"]
+    PROMOTION["promotion"]
+    CATALOG["catalog"]
+    SEARCH["search"]
+    REVIEW["review"]
+    SETTINGS["settings"]
+    OUTBOX["outbox relay"]
+    NOTIFICATION["notification"]
+
+    ADMIN --> CATALOG
+    ADMIN --> INVENTORY
+    ADMIN --> ORDER
+    ADMIN --> PAYMENT
+    ADMIN --> REVIEW
+    ADMIN --> SEARCH
+    ADMIN --> SETTINGS
+
+    ORDER --> CART
+    ORDER --> CATALOG
+    ORDER --> INVENTORY
+    ORDER --> PROMOTION
+    ORDER --> PAYMENT
+    ORDER --> SETTINGS
+    PAYMENT --> ORDER
+
+    CART --> CATALOG
+    CART --> INVENTORY
+    CART --> PROMOTION
+
+    SEARCH --> CATALOG
+    SEARCH --> INVENTORY
+    REVIEW --> CATALOG
+    REVIEW --> SETTINGS
+    CATALOG <--> INVENTORY
+
+    ORDER -. "event" .-> OUTBOX
+    PAYMENT -. "event" .-> OUTBOX
+    OUTBOX --> NOTIFICATION
+
+    style ORDER fill:#1d4ed8,stroke:#1e3a8a,color:#ffffff
+    style CATALOG fill:#15803d,stroke:#14532d,color:#ffffff
+    style OUTBOX fill:#b45309,stroke:#78350f,color:#ffffff
+```
+
+This is derived from the actual imports, not from intent. Three things it shows that are easy to get
+wrong from memory:
+
+- **`notification` has no inbound arrow from `order` or `payment`.** Nothing calls it directly.
+  Events go to the outbox in the same transaction as the write, and the relay drains them, which is
+  what stops a mail provider being briefly down from rolling back a captured payment.
+- **`catalog` and `inventory` point at each other.** A product listing needs availability, and a
+  stock row needs the product it counts.
+- **`payment` and `order` also point both ways**, on purpose: an order starts a payment, and a
+  captured payment moves the order.
 
 ---
 
@@ -195,8 +230,8 @@ flowchart LR
 
     H -.->|"on failure"| X["GlobalExceptionHandler<br/>RFC 9457 problem document"]
 
-    style X fill:#fee2e2,stroke:#991b1b
-    style J fill:#dbeafe,stroke:#1e40af
+    style X fill:#b91c1c,stroke:#7f1d1d,color:#ffffff
+    style J fill:#1d4ed8,stroke:#1e3a8a,color:#ffffff
 ```
 
 The response mapping happens **inside** the transactional service, not in the controller. That is
@@ -393,8 +428,8 @@ flowchart LR
     RS --> AV
     AV -->|"decides"| BUY["Can a customer buy this?"]
 
-    style AV fill:#dcfce7,stroke:#166534
-    style BUY fill:#dbeafe,stroke:#1e40af
+    style AV fill:#15803d,stroke:#14532d,color:#ffffff
+    style BUY fill:#1d4ed8,stroke:#1e3a8a,color:#ffffff
 ```
 
 A screen or a query that reads `quantity_on_hand` alone is how a store oversells.
@@ -834,9 +869,9 @@ flowchart TB
     ESO --> gke
     APIP -.->|"Workload Identity"| SM
 
-    style SQL fill:#dbeafe,stroke:#1e40af
-    style MEM fill:#fee2e2,stroke:#991b1b
-    style SM fill:#f3e8ff,stroke:#6b21a8
+    style SQL fill:#1d4ed8,stroke:#1e3a8a,color:#ffffff
+    style MEM fill:#b91c1c,stroke:#7f1d1d,color:#ffffff
+    style SM fill:#6d28d9,stroke:#4c1d95,color:#ffffff
 ```
 
 Secrets never appear in this repository, in a container image, or in a CI variable. They live in
@@ -876,8 +911,8 @@ flowchart LR
     IMG --> DBJ --> ROLL --> SMOKE
     SMOKE -.->|"fails"| RB
 
-    style SEC fill:#fee2e2,stroke:#991b1b
-    style RB fill:#fee2e2,stroke:#991b1b
+    style SEC fill:#b91c1c,stroke:#7f1d1d,color:#ffffff
+    style RB fill:#b91c1c,stroke:#7f1d1d,color:#ffffff
 ```
 
 Images are tagged with the git SHA and never `latest`. A tag that moves makes a rollback ambiguous.
@@ -925,7 +960,6 @@ their sandboxes.
 ---
 
 ## Layout
-
 ```
 backend/          Spring Boot API, package per domain, enforced by ArchUnit
   ├── common/       errors, Money, UUIDv7, outbox, idempotency
