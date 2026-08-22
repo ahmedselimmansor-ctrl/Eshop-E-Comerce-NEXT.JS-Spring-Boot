@@ -193,6 +193,16 @@ public class FawryPaymentProvider implements PaymentProvider {
 
     @Override
     public Callback parseCallback(String rawBody, Map<String, String> headers) {
+        // A provider with no shared secret cannot verify anything, and signing with a blank key
+        // throws rather than producing a comparable digest. Rejecting here keeps the failure mode
+        // honest: the event is recorded as invalid, the endpoint answers 200 so the provider stops
+        // retrying, and the log says why. Without it every callback became a 503 and the provider
+        // retried a deployment that was never going to accept it.
+        if (!isConfigured()) {
+            log.warn("{}_callback_rejected reason=provider_not_configured", "fawry");
+            return Callback.invalid(null, Map.of());
+        }
+
         Map<String, Object> payload;
         try {
             payload = objectMapper.readValue(rawBody, Map.class);

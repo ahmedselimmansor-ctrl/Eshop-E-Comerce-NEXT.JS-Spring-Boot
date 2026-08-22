@@ -5,10 +5,12 @@ import com.eshop.payment.domain.PaymentProviderType;
 import com.eshop.payment.domain.PaymentWebhookEvent;
 import com.eshop.payment.repository.PaymentRepository;
 import com.eshop.payment.repository.PaymentWebhookEventRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
@@ -37,7 +39,6 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class PaymentWebhookService {
 
     private final PaymentService payments;
@@ -45,12 +46,44 @@ public class PaymentWebhookService {
     private final PaymentWebhookEventRepository events;
 
     /**
+     * Used to claim the event id in its own transaction.
+     *
+     * <p>The duplicate insert has to fail without poisoning the caller's transaction. Catching
+     * {@code DataIntegrityViolationException} inside a single transaction is not enough: Spring has
+     * already marked it rollback-only by then, so the method returns normally and the commit throws
+     * {@code UnexpectedRollbackException} instead. That surfaced as a 503, and a 503 is exactly what
+     * makes a provider retry - so every retry produced another retry.
+     */
+    private final TransactionTemplate requiresNew;
+
+    public PaymentWebhookService(PaymentService payments,
+                                 PaymentRepository paymentRepository,
+                                 PaymentWebhookEventRepository events,
+                                 PlatformTransactionManager transactionManager) {
+        this.payments = payments;
+        this.paymentRepository = paymentRepository;
+        this.events = events;
+        this.requiresNew = new TransactionTemplate(transactionManager);
+        this.requiresNew.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+    }
+
+    /**
      * @return an outcome for logging and metrics; the controller answers 200 regardless
      */
     @Transactional
     public Outcome handle(PaymentProviderType providerType, String rawBody, Map<String, String> headers) {
-        PaymentProvider provider = payments.require(providerType);
-        PaymentProvider.Callback callback = provider.parseCallback(rawBody, headers);
+        PaymentProvider provider = payments.lookup(providerType).orElse(null);
+
+        // An unconfigured or unknown provider cannot verify a signature, so the callback is recorded
+        // as invalid rather than acted on. The controller still answers 200: a provider that gets a
+        // 503 retries, and a deployment with no shared secret will never start accepting.
+        PaymentProvider.Callback callback = provider == null || !provider.isConfigured()
+                ? PaymentProvider.Callback.invalid(null, Map.of())
+                : provider.parseCallback(rawBody, headers);
+
+        if (provider == null || !provider.isConfigured()) {
+            log.warn("webhook_provider_not_configured provider={}", providerType);
+        }
 
         PaymentWebhookEvent event = new PaymentWebhookEvent();
         event.setProvider(providerType);
@@ -59,9 +92,19 @@ public class PaymentWebhookService {
         event.setPayload(callback.payload());
         event.setSignatureValid(callback.valid());
 
-        try {
-            events.saveAndFlush(event);
-        } catch (DataIntegrityViolationException duplicate) {
+        // Claimed in its own transaction so a duplicate rolls back only the insert.
+        // Claimed in its own transaction so a duplicate rolls back only the insert.
+        boolean claimed = Boolean.TRUE.equals(requiresNew.execute(status -> {
+            try {
+                events.saveAndFlush(event);
+                return true;
+            } catch (DataIntegrityViolationException duplicate) {
+                status.setRollbackOnly();
+                return false;
+            }
+        }));
+
+        if (!claimed) {
             // Already seen. This is the common case under provider retries, not an error.
             log.info("webhook_duplicate_ignored provider={} event={}", providerType, event.getEventId());
             return Outcome.DUPLICATE;

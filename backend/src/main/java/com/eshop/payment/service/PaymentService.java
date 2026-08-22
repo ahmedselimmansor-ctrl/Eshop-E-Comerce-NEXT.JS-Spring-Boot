@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Map;
 import java.util.UUID;
 
@@ -407,6 +408,18 @@ public class PaymentService {
                 .filter(PaymentProvider::isConfigured)
                 .map(PaymentProvider::type)
                 .toList();
+    }
+
+    /**
+     * The provider, whether or not it is configured.
+     *
+     * <p>For the webhook path only. {@link #require} answers 503 for an unconfigured provider, which
+     * is right when a customer is trying to pay and wrong when a provider is calling us: 503 is
+     * retryable, so a deployment that has never configured Paymob would be retried forever and would
+     * record nothing to explain why. The caller decides what to do instead.
+     */
+    public Optional<PaymentProvider> lookup(PaymentProviderType type) {
+        return Optional.ofNullable(providers.get(type));
     }
 
     public PaymentProvider require(PaymentProviderType type) {
