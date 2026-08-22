@@ -11,6 +11,8 @@ import com.eshop.inventory.domain.InventoryItem;
 import com.eshop.inventory.domain.Warehouse;
 import com.eshop.inventory.repository.InventoryItemRepository;
 import com.eshop.order.domain.ShippingMethod;
+import com.eshop.payment.domain.Payment;
+import com.eshop.payment.repository.PaymentRepository;
 import com.eshop.order.repository.ShippingMethodRepository;
 import com.eshop.review.domain.Review;
 import com.eshop.review.repository.ReviewRepository;
@@ -35,6 +37,8 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.Set;
 
 /**
@@ -59,6 +63,7 @@ public class TestFixtures {
     private final WarehouseRepository warehouses;
     private final InventoryItemRepository inventoryItems;
     private final ReviewRepository reviews;
+    private final PaymentRepository payments;
     private final AddressRepository addresses;
     private final ShippingMethodRepository shippingMethods;
     private final PasswordEncoder passwords;
@@ -263,6 +268,26 @@ public class TestFixtures {
         category.setParent(parent);
         category.setActive(true);
         return categories.saveAndFlush(category);
+    }
+
+    // -------------------------------------------------------------- payments --
+
+    /**
+     * Marks an order's payment captured, the way collection does.
+     *
+     * <p>Cash on delivery has no gateway callback to wait for: the courier collects, and the payment
+     * is recorded as captured. Without this, a refund is untestable, because
+     * {@code findCapturedForOrder} finds nothing and the endpoint correctly refuses with 409 - which
+     * is the right behaviour and also the reason the refund path went unexercised for so long.
+     */
+    @Transactional
+    public Payment capturePayment(UUID orderId) {
+        Payment payment = payments.findByOrderIdOrderByCreatedAtDesc(orderId).stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No payment for order " + orderId));
+
+        payment.capture("test-capture-" + payment.getId(), Map.of("test", true));
+        return payments.saveAndFlush(payment);
     }
 
     @Transactional

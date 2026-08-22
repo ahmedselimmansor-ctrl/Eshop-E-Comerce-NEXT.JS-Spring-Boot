@@ -80,9 +80,8 @@ public class AdminProductController {
                     + "product is visible in stock-filtered views rather than silently absent.")
     public ResponseEntity<AdminProductDetail> create(@AuthenticationPrincipal UserPrincipal caller,
                                                      @Valid @RequestBody ProductWriteRequest request) {
-        Product created = adminProducts.create(request, caller.id());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(adminProducts.detail(created.getId()));
+                .body(adminProducts.createAndDescribe(request, caller.id()));
     }
 
     @PutMapping("/{productId}")
@@ -92,8 +91,7 @@ public class AdminProductController {
     public AdminProductDetail update(@AuthenticationPrincipal UserPrincipal caller,
                                      @PathVariable UUID productId,
                                      @Valid @RequestBody ProductWriteRequest request) {
-        adminProducts.update(productId, request, caller.id());
-        return adminProducts.detail(productId);
+        return adminProducts.updateAndDescribe(productId, request, caller.id());
     }
 
     @DeleteMapping("/{productId}")
@@ -126,9 +124,8 @@ public class AdminProductController {
             @PathVariable UUID productId,
             @Valid @RequestBody ProductWriteRequest.VariantSpec request) {
 
-        adminProducts.addVariant(productId, request, caller.id());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(adminProducts.detail(productId));
+                .body(adminProducts.addVariantAndDescribe(productId, request, caller.id()));
     }
 
     @DeleteMapping("/variants/{variantId}")

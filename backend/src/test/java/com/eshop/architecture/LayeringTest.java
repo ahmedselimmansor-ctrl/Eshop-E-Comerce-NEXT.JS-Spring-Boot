@@ -1,6 +1,11 @@
 package com.eshop.architecture;
 
+import com.tngtech.archunit.base.DescribedPredicate;
+import com.tngtech.archunit.core.domain.JavaCall;
+import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.domain.properties.HasReturnType;
+import com.tngtech.archunit.lang.conditions.ArchConditions;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
@@ -68,6 +73,39 @@ class LayeringTest {
                         result after the session has closed, which is how every \
                         LazyInitializationException in this codebase happened - put the query and \
                         the mapping in a @Transactional service instead""");
+
+        rule.check(classes);
+    }
+
+    @Test
+    @DisplayName("no controller method returns or holds a JPA entity")
+    void controllersDoNotHandleEntities() {
+        // Five separate LazyInitializationException bugs in this codebase had the same shape: a
+        // controller took an entity back from a service and read something off it after the
+        // transaction had closed. Each compiled cleanly and failed at runtime, and the last one only
+        // ever failed on a *retry*, so it survived until refunds were tested properly.
+        //
+        // A controller that never holds an entity cannot make the mistake.
+        //
+        // Scoped to the admin layer, and that is a deliberate admission rather than a design: the
+        // storefront controllers violate this in 57 places. Most are safe today because their
+        // queries declare an @EntityGraph, but "safe because of a fetch plan somewhere else" is
+        // exactly the property that quietly stops holding. Widening this rule means moving those
+        // mappings into their services, which is worth doing and is not a change to make blind.
+        ArchRule rule = noClasses()
+                .that().areAnnotatedWith(RestController.class)
+                .and().resideInAPackage("com.eshop.admin.web..")
+                .should(ArchConditions.callMethodWhere(
+                        JavaCall.Predicates.target(
+                                HasReturnType.Predicates.rawReturnType(
+                                        DescribedPredicate.describe(
+                                                "a JPA entity",
+                                                (JavaClass target) ->
+                                                        target.isAnnotatedWith(Entity.class))))))
+                .because("""
+                        the entity is detached by the time the controller sees it, so reading a lazy \
+                        association off it throws at request time - return a finished DTO from a \
+                        @Transactional service instead""");
 
         rule.check(classes);
     }

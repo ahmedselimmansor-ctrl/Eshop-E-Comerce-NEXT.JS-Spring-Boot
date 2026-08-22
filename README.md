@@ -888,10 +888,10 @@ flowchart LR
 
     subgraph CI ["CI (.github/workflows/ci.yml)"]
         direction TB
-        BE["Backend<br/>compile · 56 tests<br/>real Postgres + Redis"]
+        BE["Backend<br/>compile · 63 tests<br/>real Postgres + Redis"]
         MIG["Migrations<br/>apply, then re-apply R__<br/>to prove idempotency"]
         WEB["Web<br/>typecheck · lint · 46 tests · build"]
-        MOB["Mobile<br/>analyze · 23 tests"]
+        MOB["Mobile<br/>analyze · 49 tests"]
         SEC["Security<br/>secret scan · Trivy · SBOM"]
         INF["Infra<br/>terraform validate · kustomize build"]
     end
@@ -1035,9 +1035,9 @@ on every call. Services return finished DTOs.
 
 ```bash
 make test          # backend, web and mobile
-make test-backend  # 56 tests, needs `make infra` running
+make test-backend  # 63 tests, needs `make infra` running
 make test-web      # typecheck, lint, and 46 unit tests
-make test-mobile   # flutter analyze and 23 tests
+make test-mobile   # flutter analyze and 49 tests
 ```
 
 The backend suite runs against a real PostgreSQL and Redis rather than mocks, because the defects it
@@ -1089,9 +1089,9 @@ and rolls back on failure.
 ## Status
 
 **Backend.** Complete and tested: migrations, security, catalog, inventory, cart, promotions,
-checkout, orders, payments, search, media, notifications, and the admin API. Fifty-six tests,
-covering the checkout and refund paths, the store rules that live in settings, the admin API, JSON
-round-tripping, and the layering rules.
+checkout, orders, payments, search, media, notifications, and the admin API. Sixty-three tests,
+covering checkout, the full refund path against a captured payment, the store rules that live in
+settings, the admin API, JSON round-tripping, and the layering rules.
 
 **Storefront.** The full purchase path in both languages with RTL: home, listing with facets, product
 detail, cart, checkout, account, orders, and wishlist.
@@ -1102,8 +1102,8 @@ the permission its endpoint enforces.
 
 **Mobile.** The full purchase path: home, search with debounced queries and sorting, category
 listing, product detail, cart, checkout, order detail, account, addresses, and sign-in with
-registration. `flutter analyze` is clean and 23 tests cover the parsing and the order state logic.
-Widget behaviour is unverified, since there is no emulator in this environment.
+registration. `flutter analyze` is clean and 49 tests cover parsing, the order state logic, widget
+rendering, and the API contract against responses captured from a running server.
 
 **Infrastructure.** Docker, Kustomize for three environments, Terraform for GCP, and CI/CD.
 

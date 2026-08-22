@@ -266,12 +266,11 @@ public class OrderService {
     }
 
     @Transactional
-    public Order addAdminNote(UUID orderId, String note, UUID adminId) {
+    public void addAdminNote(UUID orderId, String note, UUID adminId) {
         Order order = require(orderId);
         order.setAdminNote(note);
         orders.save(order);
         log.info("order_note_added number={} actor={}", order.getOrderNumber(), adminId);
-        return order;
     }
 
     // ---------------------------------------------------------------- returns --

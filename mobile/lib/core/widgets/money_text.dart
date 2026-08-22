@@ -48,11 +48,15 @@ class MoneyText extends StatelessWidget {
 
     if (compareAt == null) return primary;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    // Wrap, not Row. Two EGP prices side by side are about 170 logical pixels, and a product tile in
+    // the home rail is 156 wide, so a Row overflows for every discounted product - visibly, with the
+    // striped overflow banner in debug and a clipped price in release. Wrap lays them out on one
+    // line where there is room and drops the struck-through price below where there is not.
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 6,
       children: [
         primary,
-        const SizedBox(width: 6),
         Text(
           formatMoney(compareAt!, locale: locale),
           style: compareStyle ??

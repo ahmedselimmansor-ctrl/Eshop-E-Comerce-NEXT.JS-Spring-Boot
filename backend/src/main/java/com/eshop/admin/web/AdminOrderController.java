@@ -2,6 +2,7 @@ package com.eshop.admin.web;
 
 import com.eshop.admin.service.AdminOrderService;
 import com.eshop.admin.web.dto.AdminOrderDetail;
+import com.eshop.admin.web.dto.RefundResponse;
 import com.eshop.admin.web.dto.ReturnSummary;
 import com.eshop.common.exception.BusinessException;
 import com.eshop.common.exception.ErrorCode;
@@ -154,14 +155,8 @@ public class AdminOrderController {
                             "مطلوب مفتاح Idempotency-Key لعمليات الاسترداد", null);
         }
 
-        Order order = orders.require(orderId);
-        Money amount = Money.of(request.amount(), order.getCurrency());
-
-        Refund refund = payments.refund(orderId, amount, request.reason(),
-                request.note(), caller.id(), idempotencyKey);
-
-        return new RefundResponse(refund.getId(), refund.amountMoney(),
-                refund.getStatus().name(), refund.getCompletedAt());
+        return adminOrders.refund(orderId, request.amount(), request.reason(), request.note(),
+                caller.id(), idempotencyKey);
     }
 
     @PostMapping("/{orderId}/notes")
@@ -184,11 +179,8 @@ public class AdminOrderController {
                                        @PathVariable UUID returnId,
                                        @Valid @RequestBody ResolveReturnRequest request) {
 
-        OrderReturn resolved = orders.resolveReturn(returnId, request.status(),
-                request.adminNote(), caller.id());
-
-        return new ReturnSummary(resolved.getId(), resolved.getReturnNumber(),
-                resolved.getStatus().name(), resolved.getReason().name(), resolved.totalQuantity());
+        return adminOrders.resolveReturn(returnId, request.status(), request.adminNote(),
+                caller.id());
     }
 
     private static String blankToNull(String value) {
@@ -196,13 +188,6 @@ public class AdminOrderController {
     }
 
     // ----------------------------------------------------------- payload types --
-
-    /**
-     * @param completedAt {@code null} while the provider has not yet confirmed - the refund exists
-     *                    and is counted against the refundable balance either way
-     */
-    public record RefundResponse(UUID id, Money amount, String status, Instant completedAt) {
-    }
 
     public record StatusChangeRequest(@NotNull OrderStatus status, @Size(max = 500) String note) {
     }

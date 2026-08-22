@@ -117,8 +117,36 @@ public class AdminProductService {
         return AdminProductDetail.from(product);
     }
 
+    /**
+     * Creates a product and returns the editor's view of it.
+     *
+     * <p>Returns the DTO rather than the entity so no caller outside this transaction ever holds
+     * one. {@code createEntity} stays available for internal callers that are already in a session.
+     */
     @Transactional
-    public Product create(ProductWriteRequest request, UUID actorId) {
+    public AdminProductDetail createAndDescribe(ProductWriteRequest request, UUID actorId) {
+        return detail(createEntity(request, actorId).getId());
+    }
+
+    /** Updates a product and returns the editor's view of it. */
+    @Transactional
+    public AdminProductDetail updateAndDescribe(UUID productId, ProductWriteRequest request,
+                                                UUID actorId) {
+        update(productId, request, actorId);
+        return detail(productId);
+    }
+
+    /** Adds a variant and returns the product's refreshed editor view. */
+    @Transactional
+    public AdminProductDetail addVariantAndDescribe(UUID productId,
+                                                    ProductWriteRequest.VariantSpec request,
+                                                    UUID actorId) {
+        addVariant(productId, request, actorId);
+        return detail(productId);
+    }
+
+    @Transactional
+    public Product createEntity(ProductWriteRequest request, UUID actorId) {
         assertSkuAvailable(request.sku(), null);
 
         Product product = new Product();
