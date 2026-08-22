@@ -888,10 +888,10 @@ flowchart LR
 
     subgraph CI ["CI (.github/workflows/ci.yml)"]
         direction TB
-        BE["Backend<br/>compile · 50 tests<br/>real Postgres + Redis"]
+        BE["Backend<br/>compile · 56 tests<br/>real Postgres + Redis"]
         MIG["Migrations<br/>apply, then re-apply R__<br/>to prove idempotency"]
-        WEB["Web<br/>typecheck · lint · build"]
-        MOB["Mobile<br/>analyze · 13 tests"]
+        WEB["Web<br/>typecheck · lint · 46 tests · build"]
+        MOB["Mobile<br/>analyze · 23 tests"]
         SEC["Security<br/>secret scan · Trivy · SBOM"]
         INF["Infra<br/>terraform validate · kustomize build"]
     end
@@ -1035,9 +1035,9 @@ on every call. Services return finished DTOs.
 
 ```bash
 make test          # backend, web and mobile
-make test-backend  # 50 tests, needs `make infra` running
-make test-web      # typecheck and lint
-make test-mobile   # flutter analyze and 13 tests
+make test-backend  # 56 tests, needs `make infra` running
+make test-web      # typecheck, lint, and 46 unit tests
+make test-mobile   # flutter analyze and 23 tests
 ```
 
 The backend suite runs against a real PostgreSQL and Redis rather than mocks, because the defects it
@@ -1089,8 +1089,9 @@ and rolls back on failure.
 ## Status
 
 **Backend.** Complete and tested: migrations, security, catalog, inventory, cart, promotions,
-checkout, orders, payments, search, media, notifications, and the admin API. Fifty tests, covering
-the checkout and refund paths, the admin API, JSON round-tripping, and the layering rules.
+checkout, orders, payments, search, media, notifications, and the admin API. Fifty-six tests,
+covering the checkout and refund paths, the store rules that live in settings, the admin API, JSON
+round-tripping, and the layering rules.
 
 **Storefront.** The full purchase path in both languages with RTL: home, listing with facets, product
 detail, cart, checkout, account, orders, and wishlist.
@@ -1099,13 +1100,17 @@ detail, cart, checkout, account, orders, and wishlist.
 form, inventory, customers, review moderation, search health, and settings. Every action is gated on
 the permission its endpoint enforces.
 
-**Mobile.** Builds and analyzes clean, with the home, product detail, and cart screens over the same
-API. Search, category listing, checkout, orders, account, and auth are not built yet; those routes
-resolve to an explicit placeholder rather than an error page. Widget behaviour is unverified, since
-there is no emulator in this environment.
+**Mobile.** The full purchase path: home, search with debounced queries and sorting, category
+listing, product detail, cart, checkout, order detail, account, addresses, and sign-in with
+registration. `flutter analyze` is clean and 23 tests cover the parsing and the order state logic.
+Widget behaviour is unverified, since there is no emulator in this environment.
 
 **Infrastructure.** Docker, Kustomize for three environments, Terraform for GCP, and CI/CD.
 
-Known gaps: no web unit or end-to-end tests, and the refund path has not been exercised against a
-real captured payment (a cash-on-delivery order has nothing to refund, which the API correctly
-rejects).
+**Tests.** 125 in total: 56 backend, 46 web, 23 mobile. All three run in CI.
+
+Known gaps: no end-to-end or component tests on the web (the unit tests cover the API contract, the
+formatting helpers and the listing-parameter clamping, not rendering); the refund path has not been
+exercised against a real captured payment, since a cash-on-delivery order has nothing to refund and
+the API correctly rejects it; and the admin product form takes image URLs rather than using the
+pre-signed upload endpoint.

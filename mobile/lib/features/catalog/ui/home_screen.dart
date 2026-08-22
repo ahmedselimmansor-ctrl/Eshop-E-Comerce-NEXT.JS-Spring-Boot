@@ -23,10 +23,15 @@ class HomeScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () => context.go('/search'),
+            onPressed: () => context.push('/search'),
             tooltip: 'Search',
           ),
           const _CartButton(),
+          IconButton(
+            tooltip: 'Account',
+            icon: const Icon(Icons.person_outline),
+            onPressed: () => context.push('/account'),
+          ),
         ],
       ),
       body: RefreshIndicator(
@@ -40,7 +45,7 @@ class HomeScreen extends ConsumerWidget {
           children: [
             _SectionHeader(
               title: 'Categories',
-              onSeeAll: () => context.go('/search'),
+              onSeeAll: () => context.push('/search'),
             ),
             SizedBox(
               height: 108,
@@ -54,7 +59,7 @@ class HomeScreen extends ConsumerWidget {
 
             _SectionHeader(
               title: 'Popular right now',
-              onSeeAll: () => context.go('/search'),
+              onSeeAll: () => context.push('/search'),
             ),
             SizedBox(
               height: 292,
@@ -98,7 +103,7 @@ class _CategoryRail extends StatelessWidget {
         return SizedBox(
           width: 84,
           child: InkWell(
-            onTap: () => context.go('/categories/${category.slug}'),
+            onTap: () => context.push('/categories/${category.slug}'),
             borderRadius: BorderRadius.circular(12),
             child: Column(
               children: [
@@ -144,7 +149,7 @@ class _ProductRail extends StatelessWidget {
         return ProductCardTile(
           product: product,
           width: 156,
-          onTap: () => context.go('/products/${product.slug}'),
+          onTap: () => context.push('/products/${product.slug}'),
         );
       },
     );
@@ -183,7 +188,7 @@ class _CartButton extends ConsumerWidget {
 
     return IconButton(
       tooltip: 'Cart',
-      onPressed: () => context.go('/cart'),
+      onPressed: () => context.push('/cart'),
       icon: Badge(
         isLabelVisible: count > 0,
         label: Text('$count'),

@@ -74,7 +74,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
       messenger.showSnackBar(
         SnackBar(
           content: Text('${product.name} added to your cart'),
-          action: SnackBarAction(label: 'View', onPressed: () => context.go('/cart')),
+          action: SnackBarAction(label: 'View', onPressed: () => context.push('/cart')),
         ),
       );
     } catch (error) {
