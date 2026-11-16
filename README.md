@@ -2,7 +2,7 @@
 
 A full-stack e-commerce platform built for the Egyptian market and designed to run on Google Cloud.
 
-**Arabic-first with RTL** · **Paymob, Fawry & cash on delivery** · **Spring Boot · Next.js · Flutter · GKE**
+**Arabic-first with RTL** · **Paymob, Fawry & cash on delivery** · **Spring Boot · Next.js · GKE**
 
 ---
 
@@ -28,7 +28,7 @@ A full-stack e-commerce platform built for the Egyptian market and designed to r
 
 ## What this is
 
-A production-shaped storefront, admin console, and mobile client over a single Spring Boot backend.
+A production-shaped storefront and admin console over a single Spring Boot backend.
 The decisions that shape it, a modular monolith rather than microservices, Arabic as the default
 locale rather than an afterthought, and cash on delivery as a first-class payment method rather than
 a bolt-on, are argued in [`docs/00-ARCHITECTURE.md`](docs/00-ARCHITECTURE.md).
@@ -38,14 +38,13 @@ a bolt-on, are argued in [`docs/00-ARCHITECTURE.md`](docs/00-ARCHITECTURE.md).
 | Backend | Java 21 · Spring Boot 3.5 · PostgreSQL 16 · Redis 7 · Elasticsearch 8 |
 | Storefront | Next.js 15 (App Router) · React 19 · Tailwind CSS v4 · TanStack Query · Zustand · Zod |
 | Admin | Next.js 15, sharing the storefront's typed API client |
-| Mobile | Flutter 3 · Riverpod · go_router |
 | Infrastructure | GKE Autopilot · Cloud SQL · Memorystore · Cloud CDN · Cloud Armor · Terraform |
 
 ---
 
 ## System architecture
 
-Three clients, one API. The storefront and the admin console share a single Zod-validated API
+Two clients, one API. The storefront and the admin console share a single Zod-validated API
 client, so a response shape that changes breaks the build rather than a page at runtime.
 
 ```mermaid
@@ -53,7 +52,6 @@ flowchart TB
     subgraph clients [Clients]
         SF["Storefront<br/>Next.js 15 · ar/en RTL"]
         AD["Admin console<br/>Next.js 15"]
-        MB["Mobile<br/>Flutter · iOS/Android"]
     end
 
     subgraph edge [Edge]
@@ -837,10 +835,6 @@ sequenceDiagram
 The access token lives in memory and the refresh token in an HttpOnly cookie. An XSS that reaches
 the page gets at most a fifteen-minute token, not a thirty-day session.
 
-On mobile there is no cookie jar, so the refresh token goes into the platform keychain, and refreshes
-are serialised behind a lock. Without that lock, four concurrent 401s start four refreshes, three of
-them present a token the first already rotated, and the backend correctly treats that as replay.
-
 ---
 
 ## Deployment topology
@@ -893,7 +887,6 @@ flowchart LR
         BE["Backend<br/>compile · 94 tests<br/>real Postgres + Redis"]
         MIG["Migrations<br/>apply, then re-apply R__<br/>to prove idempotency"]
         WEB["Web<br/>typecheck · lint · 70 tests · build"]
-        MOB["Mobile<br/>analyze · 49 tests"]
         SEC["Security<br/>secret scan · Trivy · SBOM"]
         INF["Infra<br/>terraform validate · kustomize build"]
     end
@@ -923,7 +916,7 @@ Images are tagged with the git SHA and never `latest`. A tag that moves makes a 
 
 ## Running it locally
 
-Docker is the only prerequisite. No local JDK, Maven, Node, or Flutter install is needed.
+Docker is the only prerequisite. No local JDK, Maven, or Node install is needed.
 
 ```bash
 git clone https://github.com/ahmedselimmansor-ctrl/Eshop-E-Comerce-NEXT.JS-Spring-Boot.git
@@ -980,7 +973,6 @@ web/
   ├── apps/storefront/       customer facing, ar/en with full RTL
   └── apps/admin/            operations console
 
-mobile/           Flutter client
 infra/
   ├── terraform/    GCP infrastructure as code
   ├── k8s/          Kustomize base plus dev/staging/prod overlays
@@ -1036,10 +1028,9 @@ on every call. Services return finished DTOs.
 ## Testing
 
 ```bash
-make test          # backend, web and mobile
+make test          # backend and web
 make test-backend  # 94 tests, needs `make infra` running
 make test-web      # typecheck, lint, and 70 unit and component tests
-make test-mobile   # flutter analyze and 49 tests
 ```
 
 The backend suite runs against a real PostgreSQL and Redis rather than mocks, because the defects it
@@ -1103,14 +1094,9 @@ detail, cart, checkout, account, orders, and wishlist.
 form, inventory, customers, review moderation, search health, and settings. Every action is gated on
 the permission its endpoint enforces.
 
-**Mobile.** The full purchase path: home, search with debounced queries and sorting, category
-listing, product detail, cart, checkout, order detail, account, addresses, and sign-in with
-registration. `flutter analyze` is clean and 49 tests cover parsing, the order state logic, widget
-rendering, and the API contract against responses captured from a running server.
-
 **Infrastructure.** Docker, Kustomize for three environments, Terraform for GCP, and CI/CD.
 
-**Tests.** 213 in total: 94 backend, 70 web, 49 mobile. All three run in CI.
+**Tests.** 164 in total: 94 backend, 70 web. Both run in CI.
 
 The backend suite runs against a real PostgreSQL and Redis and covers checkout, the full refund path
 against a captured payment, webhook signature verification in both directions, the security posture,

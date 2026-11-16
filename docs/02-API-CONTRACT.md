@@ -58,7 +58,7 @@ Stable `code` values (frontend switches on these, never on `detail`):
 | POST | `/auth/resend-verification` | `{email}` → `202` |
 | GET | `/auth/oauth/google` | → `302` to Google |
 | GET | `/auth/oauth/google/callback` | → `302` to frontend with one-time code |
-| POST | `/auth/oauth/exchange` | `{code}` → `200 {user, tokens}` (mobile/SPA) |
+| POST | `/auth/oauth/exchange` | `{code}` → `200 {user, tokens}` (SPA) |
 
 `tokens` = `{ accessToken, refreshToken, tokenType: "Bearer", expiresIn: 900 }`.
 Web clients additionally receive the refresh token as `Set-Cookie: refresh_token=...; HttpOnly; Secure; SameSite=Strict; Path=/api/v1/auth`.

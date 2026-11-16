@@ -95,7 +95,7 @@ images: ## Build the container images
 # ----------------------------------------------------------------------- test --
 
 .PHONY: test
-test: test-backend test-web test-mobile ## Run every test suite
+test: test-backend test-web ## Run every test suite
 
 .PHONY: db-repair
 db-repair: ## Realign Flyway checksums after a migration comment changed (does not re-run any SQL)
@@ -105,10 +105,6 @@ db-repair: ## Realign Flyway checksums after a migration comment changed (does n
 .PHONY: test-backend
 test-backend: ## Backend tests (needs `make infra` for Postgres and Redis)
 	$(MVN) test
-
-.PHONY: test-mobile
-test-mobile: ## Analyze and test the Flutter app
-	./scripts/flutter.sh analyze && ./scripts/flutter.sh test
 
 .PHONY: test-web
 test-web: ## Typecheck, lint and unit-test the web applications

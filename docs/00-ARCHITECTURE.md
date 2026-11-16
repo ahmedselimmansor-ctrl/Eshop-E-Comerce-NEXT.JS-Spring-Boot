@@ -44,7 +44,6 @@ The domain boundaries here (catalog / cart / order / payment) share transactiona
 │   ├── apps/storefront/        # Next.js 15 · customer-facing · ar/en RTL
 │   ├── apps/admin/             # Next.js 15 · admin dashboard
 │   └── packages/api-client/    # Zod schemas + typed fetch client (shared)
-├── mobile/                     # Flutter 3 · Riverpod · go_router
 ├── infra/
 │   ├── terraform/              # GCP IaC (modules + envs)
 │   ├── k8s/                    # Kustomize base + overlays
@@ -193,7 +192,7 @@ Postgres write → transactional outbox row → Pub/Sub `product.updated` → in
 | Input | Bean Validation on every DTO, allow-list deserialization, size limits, `Content-Type` pinning, file upload MIME+magic-byte check, max 10MB. |
 | Output | RFC 9457 `ProblemDetail`, no stack traces to clients, no SQL in messages, generic auth failures (never "user not found"). |
 | Headers | CSP (nonce-based), `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options: DENY`. |
-| CSRF | Web uses `SameSite=Strict` httpOnly refresh cookie + double-submit token for cookie-auth routes; mobile uses Bearer only (CSRF N/A). |
+| CSRF | Web uses `SameSite=Strict` httpOnly refresh cookie + double-submit token for cookie-auth routes; mobile clients use Bearer only (CSRF N/A). |
 | Supply chain | Dependabot, `mvn dependency-check`, Trivy image scan in CI, SBOM (CycloneDX), Binary Authorization on prod. |
 | Audit | Every admin mutation → `audit_logs` (actor, action, entity, before/after JSON, IP, UA). Immutable, exported to BigQuery. |
 | PCI | **No card data ever touches our servers.** Paymob iframe / Fawry hosted page only. We store provider IDs and last4 only. |
@@ -203,7 +202,7 @@ Postgres write → transactional outbox row → Pub/Sub `product.updated` → in
 - **Logs** - JSON structured (`logstash-logback-encoder`), one line per request with `trace_id`, `span_id`, `user_id`, `route`, `status`, `duration_ms`. Auto-ingested by Cloud Logging on GKE. Log-based metrics + alerts on `ERROR` rate.
 - **Metrics** - Micrometer → Prometheus endpoint → Google Managed Prometheus. RED metrics per endpoint + business metrics (`orders_placed_total`, `payment_failures_total`, `cart_abandonment_ratio`, `search_latency_seconds`).
 - **Traces** - OpenTelemetry auto-instrumentation → Cloud Trace. Trace propagated browser → Next.js → API → DB/Redis/ES.
-- **Errors** - Cloud Error Reporting + Sentry (frontend + mobile).
+- **Errors** - Cloud Error Reporting + Sentry (frontend).
 - **Dashboards** - Terraform-managed Cloud Monitoring dashboards: Golden Signals, Business KPIs, Infra.
 - **Alerts** - p99 latency > 1s (5m), 5xx rate > 1%, DB CPU > 80%, Redis memory > 85%, payment failure rate > 5%, certificate expiry < 15d, HPA at max replicas.
 - **SLOs** - availability 99.9%, p95 API latency < 300ms, checkout success rate > 98%. Error budget policy documented.

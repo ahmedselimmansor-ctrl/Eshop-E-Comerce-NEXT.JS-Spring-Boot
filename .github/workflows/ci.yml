@@ -196,35 +196,6 @@ jobs:
         run: npm run build
 
   # -------------------------------------------------------------- security --
-  # ------------------------------------------------------------------ mobile --
-  mobile:
-    name: Mobile
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.5'
-          channel: stable
-          cache: true
-
-      - name: Install
-        working-directory: mobile
-        run: flutter pub get
-
-      # `analyze` is the closest thing to a compile here: it is what catches an undefined parameter
-      # or a type error without needing a device or an emulator in CI.
-      - name: Analyze
-        working-directory: mobile
-        run: flutter analyze
-
-      - name: Tests
-        working-directory: mobile
-        run: flutter test
-
   security:
     name: Security
     runs-on: ubuntu-latest

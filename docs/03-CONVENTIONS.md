@@ -22,7 +22,6 @@ Every agent/contributor MUST follow this file. Deviating breaks the build for ev
 | TanStack Query | **v5** |
 | Zustand | **v5** |
 | next-intl | **3.x** |
-| Flutter | **3.24+** / Dart 3.5+ |
 | Terraform | **1.9+**, `hashicorp/google` **~> 6.0** |
 | Kubernetes | 1.30+ (GKE Autopilot) |
 
@@ -113,21 +112,7 @@ src/
 
 **Fonts** - `next/font/local` with **IBM Plex Sans Arabic** (ar) and **Inter** (en), swapped per locale.
 
-## 4. Mobile (Flutter) conventions
-
-```
-lib/
-├── main.dart
-├── core/            # config, di (get_it), network (dio + interceptors), storage, theme, l10n, router
-├── features/<f>/
-│   ├── data/        # dtos (freezed+json_serializable), remote data source, repository impl
-│   ├── domain/      # entities, repository interface, usecases
-│   └── presentation/# riverpod providers/notifiers, screens, widgets
-└── shared/          # common widgets, extensions, formatters
-```
-Riverpod (code-gen) for state · go_router for navigation · dio + interceptors (auth refresh, retry, logging) · flutter_secure_storage for tokens · freezed for models · easy RTL via `Directionality` driven by locale · `flutter_localizations` + ARB files for ar/en · cached_network_image · firebase_messaging for push.
-
-## 5. Naming
+## 4. Naming
 
 | Thing | Style | Example |
 |---|---|---|
@@ -145,7 +130,7 @@ Riverpod (code-gen) for state · go_router for navigation · dio + interceptors 
 | Git branch | `type/short-desc` | `feat/checkout-idempotency` |
 | Commit | Conventional Commits | `feat(order): add partial refunds` |
 
-## 6. Environment variables (canonical names)
+## 5. Environment variables (canonical names)
 
 **Backend**
 ```
@@ -170,7 +155,7 @@ NEXT_PUBLIC_DEFAULT_LOCALE NEXT_PUBLIC_SENTRY_DSN NEXT_PUBLIC_GA_ID
 API_INTERNAL_BASE_URL   # cluster-internal, server-side only
 ```
 
-## 7. Definition of done for any module
+## 6. Definition of done for any module
 - [ ] Compiles / typechecks with zero errors and zero new warnings
 - [ ] Matches the data model and API contract exactly (field names, status codes, `code` values)
 - [ ] Validation on every input; authorization on every non-public endpoint
@@ -178,4 +163,4 @@ API_INTERNAL_BASE_URL   # cluster-internal, server-side only
 - [ ] Tests written and passing
 - [ ] No secret, key, or credential committed
 - [ ] `ar` + `en` supported wherever text is user-facing
-- [ ] Documented in OpenAPI (backend) or a README (frontend/mobile/infra)
+- [ ] Documented in OpenAPI (backend) or a README (frontend/infra)
